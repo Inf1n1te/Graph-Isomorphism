@@ -11,21 +11,19 @@ def refine(g):
 			colordict[v.a] = [v]
 		else:
 			colordict[v.a].append(v)
+	print(colordict.keys())
 	changed = True
-	colorrangeinc = len(g.V())
-	colorvalue = 0
+	newcolor = max(colordict.keys()) + 1
 	while changed:
 		tempcolordict = colordict
 		for key in colordict.keys():
 			buren = []
-			colorvalue += colorrangeinc
-			colorinc2 = 1
 			for value in colordict.get(key):
 				nc = getNeighbourColors(value)
 				if nc not in buren and len(buren) != 0:
 					buren.append(nc)
-					value.a = colorvalue + colorinc2
-					colorinc2 += 1
+					value.a = newcolor
+					newcolor += 1
 				elif len(buren) == 0:
 					buren.append(nc)
 		if tempcolordict == colordict:
