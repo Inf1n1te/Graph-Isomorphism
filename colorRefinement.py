@@ -11,7 +11,6 @@ def refine(g):
 			colordict[v.a] = [v]
 		else:
 			colordict[v.a].append(v)
-	print(colordict.keys())
 	changed = True
 	newcolor = max(colordict.keys()) + 1
 	while changed:
