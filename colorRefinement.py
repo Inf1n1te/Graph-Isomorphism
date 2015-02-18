@@ -30,7 +30,6 @@ def refine(g):
 	finalcolors = []
 	for node in g.V():
 		finalcolors.append(node.a)
-
 	return finalcolors
 
 
@@ -48,17 +47,22 @@ def compare(x):
 	d = []
 	r = []
 	for i in range(len(a)):
-		b.append(sorted(refine(a[i])))
+		z=refine(a[i])
+		print(z)
+		z.sort()
+		print(z)
+		b.append(refine(a[i]).sort())
 
 	for j in range(len(b)):
-		d.append(j)
-		l = []
-		for k in range(len(b)):
-			if b[k] == b[j]:
-				l.append(k)
-				d.append(k)
-		if len(l) is not 0:
-			r.append(l)
+		if j not in d:
+			d.append(j)
+			l = []
+			for k in range(len(b)):
+				if k not in d and b[k] == b[j]:
+					l.append(b[k])
+					d.append(b[k])
+			if len(l) is not 0:
+				r.append(l)
 	return r
 
 
