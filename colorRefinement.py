@@ -30,7 +30,6 @@ def refine(g):
 	finalcolors = []
 	for node in g.V():
 		finalcolors.append(node.a)
-	print(finalcolors)
 	return finalcolors
 
 
@@ -56,12 +55,12 @@ def compare(x):
 			l = []
 			for k in range(len(b)):
 				if k not in d and b[k] == b[j]:
-					l.append(b(k))
-					d.append(b(k))
+					l.append(b[k])
+					d.append(b[k])
 			if len(l) is not 0:
 				r.append(l)
 	return r
 
 
-compare(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=True))
+print(compare(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=True)))
 # refine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False))
