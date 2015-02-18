@@ -29,9 +29,11 @@ def refine(g):
 					buren.append(nc)
 		if tempcolordict == colordict:
 			changed = False
+	finalcolors = []
 	for node in g.V():
-		print(node.a, colorvalue)
-	return None
+		finalcolors.append(node.a)
+	print(finalcolors)
+	return finalcolors
 
 def getNeighbourColors(v):
 	colors = []
@@ -40,4 +42,5 @@ def getNeighbourColors(v):
 		colors.sort()
 	return colors
 
-refine(loadgraph("GI_TestInstancesWeek1/crefBM_4_7.grl", readlist=False))
+
+refine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False))
