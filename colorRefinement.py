@@ -13,7 +13,7 @@ def refine(g):
 			colordict[v.colornum] = [v]
 		else:
 			colordict[v.colornum].append(v)
-	print(colordict)
+	# print(colordict)
 
 	changed = True
 	newcolor = max(colordict.keys()) + 1
@@ -28,11 +28,11 @@ def refine(g):
 					buren = nc
 				elif nc != buren:
 					tempcolordict[value] = tuple([value.colornum, newcolor])
-			print('step', colordict)
+			# print('step', colordict)
 			newcolor = max(colordict.keys()) + 1
 		if len(tempcolordict) == 0:
 			changed = False
-			print(colordict)
+		# print(colordict)
 		for value in tempcolordict:
 			old = tempcolordict[value][0]
 			new = tempcolordict[value][1]
@@ -42,6 +42,7 @@ def refine(g):
 				colordict[new].append(value)
 			else:
 				colordict[new] = [value]
+	print(colordict)
 	finalcolors = []
 	for node in g.V():
 		finalcolors.append(node.colornum)
@@ -62,13 +63,6 @@ def compare(x):
 		graphs = disjointunion(graphs, x[0][y])
 	print(sorted(refine(graphs)))
 
-
-def removeDuplicates(original):
-	new = []
-	for element in original:
-		if not new.__contains__(element):
-			new.append(element)
-	return new
 
 
 compare(loadgraph("GI_TestInstancesWeek1/crefBM_4_9.grl", readlist=True))
