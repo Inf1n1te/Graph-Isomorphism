@@ -4,7 +4,7 @@ from graphIO import *
 
 
 def refine(g):
-	colordict = {}
+	colordict = { }
 	for v in g.V():
 		v.a = v.deg()
 		if not colordict.__contains__(v.a):
@@ -59,8 +59,16 @@ def compare(x):
 				d.append(k)
 		if len(l) is not 0:
 			r.append(l)
-	return r
+	return removeDuplicates(r)
 
 
-print(compare(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=True)))
-# refine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False))
+def removeDuplicates(original):
+	new = []
+	for element in original:
+		if not new.__contains__(element):
+			new.append(element)
+	return new
+
+
+print(compare(loadgraph("GI_TestInstancesWeek1/crefBM_4_7.grl", readlist=True)))
+
