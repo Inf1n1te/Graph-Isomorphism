@@ -54,7 +54,7 @@ def getNeighbourColors(v):
 	for i in v.nbs():
 		colors.append(i.colornum)
 	return colors
-
+#herman
 
 def compare(x):
 	graphs = x[0][0]
