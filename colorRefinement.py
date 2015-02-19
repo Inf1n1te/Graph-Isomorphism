@@ -70,5 +70,5 @@ def removeDuplicates(original):
 	return new
 
 
-print(compare(loadgraph("GI_TestInstancesWeek1/crefBM_4_7.grl", readlist=True)))
-
+print(compare(loadgraph("GI_TestInstancesWeek1/crefBM_6_15.grl", readlist=True)))
+\
