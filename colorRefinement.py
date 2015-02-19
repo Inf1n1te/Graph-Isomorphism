@@ -4,7 +4,7 @@ from graphIO import *
 
 
 def refine(g):
-	colordict = {}
+	colordict = { }
 	for v in g.V():
 		v.a = v.deg()
 		if not colordict.__contains__(v.a):
@@ -30,6 +30,7 @@ def refine(g):
 	finalcolors = []
 	for node in g.V():
 		finalcolors.append(node.a)
+
 	return finalcolors
 
 
@@ -47,24 +48,27 @@ def compare(x):
 	d = []
 	r = []
 	for i in range(len(a)):
-		z=refine(a[i])
-		print(z)
-		z.sort()
-		print(z)
-		b.append(refine(a[i]).sort())
+		b.append(sorted(refine(a[i])))
 
 	for j in range(len(b)):
-		if j not in d:
-			d.append(j)
-			l = []
-			for k in range(len(b)):
-				if k not in d and b[k] == b[j]:
-					l.append(b[k])
-					d.append(b[k])
-			if len(l) is not 0:
-				r.append(l)
-	return r
+		d.append(j)
+		l = []
+		for k in range(len(b)):
+			if b[k] == b[j]:
+				l.append(k)
+				d.append(k)
+		if len(l) is not 0:
+			r.append(l)
+	return removeDuplicates(r)
 
 
-print(compare(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=True)))
-# refine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False))
+def removeDuplicates(original):
+	new = []
+	for element in original:
+		if not new.__contains__(element):
+			new.append(element)
+	return new
+
+
+print(compare(loadgraph("GI_TestInstancesWeek1/crefBM_4_7.grl", readlist=True)))
+
