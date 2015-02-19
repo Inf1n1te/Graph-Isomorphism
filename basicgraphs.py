@@ -28,7 +28,7 @@ class vertex():
 	and an attribute <_label> which can be anything: it is not used for any methods,
 	except for __repr__. 
 	"""
-	a = None
+	colorNum = None
 
 	def __init__(self, graph, label=0):
 		"""
