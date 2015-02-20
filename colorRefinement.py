@@ -1,4 +1,4 @@
-__author__ = 'Tim'
+__author__ = 'Tim108'
 
 from makegraphs import disjointunion
 from graphIO import *
@@ -62,7 +62,6 @@ def compare(x):
 	for y in range(1, len(x[0])):
 		graphs = disjointunion(graphs, x[0][y])
 	coloredgraphs = refine(graphs)
-	print(refine(graphs))
 	nrofgraphs = len(x[0])
 	partitions = splitlist(range(len(graphs.V())), int(len(graphs.V()) / nrofgraphs))
 	split = []
@@ -71,11 +70,9 @@ def compare(x):
 	for key in coloredgraphs:
 		for value in coloredgraphs.get(key):
 			for list in partitions:
-				# print(value.__repr__())
 				if int(value.__repr__()) in list:
 					split[partitions.index(list)].append(value.colornum)
-
-	print('##', split)
+	return split
 
 
 def splitlist(l, n):
@@ -83,4 +80,4 @@ def splitlist(l, n):
 
 
 # print(splitList([1, 2, 3, 4, 5, 6, 7, 8], 3))
-compare(loadgraph("GI_TestInstancesWeek1/crefBM_4_9.grl", readlist=True))
+print(compare(loadgraph("GI_TestInstancesWeek1/crefBM_4_9.grl", readlist=True)))
