@@ -1,7 +1,7 @@
 __author__ = 'Tim'
 
-from graphIO import *
 from makegraphs import disjointunion
+from graphIO import *
 
 
 def refine(g):
@@ -42,12 +42,12 @@ def refine(g):
 				colordict[new].append(value)
 			else:
 				colordict[new] = [value]
-	print(colordict)
+	# print(colordict)
 	finalcolors = []
 	for node in g.V():
 		finalcolors.append(node.colornum)
 
-	return finalcolors
+	return colordict
 
 
 def getNeighbourColors(v):
@@ -61,8 +61,26 @@ def compare(x):
 	graphs = x[0][0]
 	for y in range(1, len(x[0])):
 		graphs = disjointunion(graphs, x[0][y])
-	print(sorted(refine(graphs)))
+	coloredgraphs = refine(graphs)
+	print(refine(graphs))
+	nrofgraphs = len(x[0])
+	partitions = splitlist(range(len(graphs.V())), int(len(graphs.V()) / nrofgraphs))
+	split = []
+	for j in range(nrofgraphs):
+		split.append([])
+	for key in coloredgraphs:
+		for value in coloredgraphs.get(key):
+			for list in partitions:
+				# print(value.__repr__())
+				if int(value.__repr__()) in list:
+					split[partitions.index(list)].append(value.colornum)
+
+	print('##', split)
 
 
+def splitlist(l, n):
+	return [l[i:i + n] for i in range(0, len(l), n)]
 
+
+# print(splitList([1, 2, 3, 4, 5, 6, 7, 8], 3))
 compare(loadgraph("GI_TestInstancesWeek1/crefBM_4_9.grl", readlist=True))
