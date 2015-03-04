@@ -43,4 +43,3 @@ if __name__ == "__main__":
 	print(C)
 	print(K)
 	print(disjointunion(disjointunion(P, C), K))
-
