@@ -75,7 +75,6 @@ def compare(x):
 					split[partitions.index(list)].append(value.colornum)
 	return split
 
-
 def comparegraphs(x):
 	r = []
 	ccs = compare(x)
@@ -93,6 +92,19 @@ def comparegraphs(x):
 def splitlist(l, n):
 	return [l[i:i + n] for i in range(0, len(l), n)]
 
+
+def preprocessing(g):
+	modules = {}
+	for i in range(len(g.V())):
+		vertex1 = g.V()[i]
+		for vertex2 in g.V()[i + 1:]:
+			if vertex1.nbs() == vertex2.nbs():
+				if vertex1.nbs() in modules.keys():
+					modules[vertex1.nbs()].append(vertex1)
+					modules[vertex1.nbs()].append(vertex2)
+				else:
+					modules[vertex1.nbs()] = [vertex1, vertex2]
+	return modules
 
 # print(splitList([1, 2, 3, 4, 5, 6, 7, 8], 3))
 print(comparegraphs(loadgraph("GI_TestInstancesWeek1/crefBM_6_15.grl", readlist=True)))
