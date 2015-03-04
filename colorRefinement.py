@@ -1,4 +1,4 @@
-__author__ = 'Tim108'
+__author__ = 'Tim (& [Jeroen])'
 
 from makegraphs import disjointunion
 from graphIO import *
@@ -50,8 +50,8 @@ def refine(g):
 	for node in g.V():
 		finalcolors.append(node.colornum)
 
-		# DUS HIER SHIT DOEN MET COLORDICT EN DUBBELE KLEUREN ENZO
-		return compareColors(splitColorDict(colordict, g))
+	# DUS HIER SHIT DOEN MET COLORDICT EN DUBBELE KLEUREN ENZO
+	return compareColors(splitColorDict(colordict, g))
 
 
 def getNeighbourColors(v):
