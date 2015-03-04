@@ -1,74 +1,83 @@
-__author__ = 'Tim'
+__author__ = 'Tim108'
 
+from makegraphs import disjointunion
 from graphIO import *
 
 
 def refine(g):
-	colordict = { }
+	# initialize
+	colordict = {}  # dictionary with key=colornum and value=vertex array
 	for v in g.V():
-		v.a = v.deg()
-		if not colordict.__contains__(v.a):
-			colordict[v.a] = [v]
+		v.colornum = v.deg()
+		if v.colornum not in colordict:
+			colordict[v.colornum] = [v]
 		else:
-			colordict[v.a].append(v)
+			colordict[v.colornum].append(v)
+	# print(colordict)
+
 	changed = True
 	newcolor = max(colordict.keys()) + 1
+
 	while changed:
-		tempcolordict = colordict
+		tempcolordict = dict()
 		for key in colordict.keys():
-			buren = []
-			for value in colordict.get(key):
-				nc = getNeighbourColors(value)
-				if nc not in buren and len(buren) != 0:
-					buren.append(nc)
-					value.a = newcolor
-					newcolor += 1
-				elif len(buren) == 0:
-					buren.append(nc)
-		if tempcolordict == colordict:
+			buren = tuple()
+			for value in colordict[key]:
+				nc = sorted(tuple(getNeighbourColors(value)))
+				if len(buren) == 0:
+					buren = nc
+				elif nc != buren:
+					tempcolordict[value] = tuple([value.colornum, newcolor])
+			# print('step', colordict)
+			newcolor = max(colordict.keys()) + 1
+		if len(tempcolordict) == 0:
 			changed = False
+		# print(colordict)
+		for value in tempcolordict:
+			old = tempcolordict[value][0]
+			new = tempcolordict[value][1]
+			colordict[old].remove(value)
+			value.colornum = new
+			if new in colordict:
+				colordict[new].append(value)
+			else:
+				colordict[new] = [value]
+	# print(colordict)
 	finalcolors = []
 	for node in g.V():
-		finalcolors.append(node.a)
+		finalcolors.append(node.colornum)
 
-	return finalcolors
+	return colordict
 
 
 def getNeighbourColors(v):
 	colors = []
 	for i in v.nbs():
-		colors.append(i.a)
-		colors.sort()
+		colors.append(i.colornum)
 	return colors
 
 
 def compare(x):
-	a = x[0]
-	b = []
-	d = []
-	r = []
-	for i in range(len(a)):
-		b.append(sorted(refine(a[i])))
-
-	for j in range(len(b)):
-		d.append(j)
-		l = []
-		for k in range(len(b)):
-			if b[k] == b[j]:
-				l.append(k)
-				d.append(k)
-		if len(l) is not 0:
-			r.append(l)
-	return removeDuplicates(r)
+	graphs = x[0][0]
+	for y in range(1, len(x[0])):
+		graphs = disjointunion(graphs, x[0][y])
+	coloredgraphs = refine(graphs)
+	nrofgraphs = len(x[0])
+	partitions = splitlist(range(len(graphs.V())), int(len(graphs.V()) / nrofgraphs))
+	split = []
+	for j in range(nrofgraphs):
+		split.append([])
+	for key in coloredgraphs:
+		for value in coloredgraphs.get(key):
+			for list in partitions:
+				if int(value.__repr__()) in list:
+					split[partitions.index(list)].append(value.colornum)
+	return split
 
 
-def removeDuplicates(original):
-	new = []
-	for element in original:
-		if not new.__contains__(element):
-			new.append(element)
-	return new
+def splitlist(l, n):
+	return [l[i:i + n] for i in range(0, len(l), n)]
 
 
-print(compare(loadgraph("GI_TestInstancesWeek1/crefBM_6_15.grl", readlist=True)))
-\
+# print(splitList([1, 2, 3, 4, 5, 6, 7, 8], 3))
+print(compare(loadgraph("GI_TestInstancesWeek1/crefBM_4_9.grl", readlist=True)))
