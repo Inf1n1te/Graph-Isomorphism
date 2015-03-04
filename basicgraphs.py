@@ -55,12 +55,28 @@ class vertex():
 		"""
 		Returns the list of edges incident with vertex <self>.
 		"""
-		if self.incl == -1:
-			self.incl = []
-			for e in self._graph._E:
-				if e.incident(self):
-					self.incl.append(e)
-		return self.incl
+		# if self.incl == -1:
+		# self.incl = []
+		# for e in self._graph._E:
+		# 		if e.incident(self):
+		# 			self.incl.append(e)
+		# return self.incl
+		if self._graph.enlist == []:
+			self.makeinclist()
+		return self._graph.enlist[self]
+
+	def makeinclist(self):
+		edges = self._graph.E()
+		r = {}  # key is a node, values are the connected edges
+		for edge in edges:
+			head = edge.head()
+			tail = edge.tail()
+			for e in [head, tail]:
+				if e in r:
+					r[e].append(edge)
+				else:
+					r[e] = [edge]
+		self._graph.enlist = r
 
 	def nbs(self):
 		"""
@@ -157,6 +173,7 @@ class graph():
 		self._nextlabel = 0
 		for i in range(n):
 			self.addvertex()
+		self.enlist = []
 
 	def __repr__(self):
 		return 'V=' + str(self._V) + '\nE=' + str(self._E)
@@ -196,6 +213,7 @@ class graph():
 			self._nextlabel += 1
 		u = vertex(self, label)
 		self._V.append(u)
+		self.enlist = []
 		return u
 
 	def addedge(self, tail, head):
@@ -219,6 +237,7 @@ class graph():
 				'Edges of a graph G must be between vertices of G')
 		e = edge(tail, head)
 		self._E.append(e)
+		self.enlist = []
 		return e
 
 	def findedge(self, u, v):
