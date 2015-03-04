@@ -84,13 +84,10 @@ def comparegraphs(x):
 		if len(ccs[i]) > len(set(ccs[i])):
 			undecided.append(i)
 	for i in range(len(ccs)):
-		l = []
 		for j in range(len(ccs)):
 			if i != j and i < j:
-				if ccs[i] == ccs[j]:
-					l.append([i, j])
-		if l:
-			r.append(l)
+				if ccs[i] == ccs[j] and i not in undecided:
+					r.append([i, j])
 	return r, undecided
 
 def splitlist(l, n):
