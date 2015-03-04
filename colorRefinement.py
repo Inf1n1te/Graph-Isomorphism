@@ -47,6 +47,8 @@ def refine(g):
 	for node in g.V():
 		finalcolors.append(node.colornum)
 
+	# DUS HIER SHIT DOEN MET COLORDICT EN DUBBELE KLEUREN ENZO
+
 	return colordict
 
 
@@ -75,9 +77,23 @@ def compare(x):
 	return split
 
 
+def comparegraphs(x):
+	r = []
+	ccs = compare(x)
+	for i in range(len(ccs)):
+		l = []
+		for j in range(len(ccs)):
+			if i != j and i < j:
+				if ccs[i] == ccs[j]:
+					l.append([i, j])
+					print("herman")
+		if l:
+			r.append(l)
+	return r
+
 def splitlist(l, n):
 	return [l[i:i + n] for i in range(0, len(l), n)]
 
 
 # print(splitList([1, 2, 3, 4, 5, 6, 7, 8], 3))
-print(compare(loadgraph("GI_TestInstancesWeek1/crefBM_4_9.grl", readlist=True)))
+print(comparegraphs(loadgraph("GI_TestInstancesWeek1/crefBM_6_15.grl", readlist=True)))
