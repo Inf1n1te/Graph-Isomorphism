@@ -48,7 +48,6 @@ def refine(g):
 		finalcolors.append(node.colornum)
 
 	# DUS HIER SHIT DOEN MET COLORDICT EN DUBBELE KLEUREN ENZO
-
 	return colordict
 
 
@@ -80,6 +79,10 @@ def compare(x):
 def comparegraphs(x):
 	r = []
 	ccs = compare(x)
+	undecided = []
+	for i in range(len(ccs)):
+		if len(ccs[i]) > len(set(ccs[i])):
+			undecided.append(i)
 	for i in range(len(ccs)):
 		l = []
 		for j in range(len(ccs)):
@@ -88,7 +91,7 @@ def comparegraphs(x):
 					l.append([i, j])
 		if l:
 			r.append(l)
-	return r
+	return r, undecided
 
 def splitlist(l, n):
 	return [l[i:i + n] for i in range(0, len(l), n)]
