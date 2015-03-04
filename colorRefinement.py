@@ -86,7 +86,6 @@ def comparegraphs(x):
 			if i != j and i < j:
 				if ccs[i] == ccs[j]:
 					l.append([i, j])
-					print("herman")
 		if l:
 			r.append(l)
 	return r
