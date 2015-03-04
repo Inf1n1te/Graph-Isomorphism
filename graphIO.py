@@ -145,7 +145,7 @@ def writegraphlist(GL, writeline, options=[]):
 		writeline('# Number of vertices:')
 		writeline(str(n))
 		# Give the vertices (temporary) labels from 0 to n-1:
-		NL = { }
+		NL = {}
 		for j in range(n):
 			NL[G[j]] = j
 		writeline('# Edge list:')
@@ -211,7 +211,7 @@ def writeDOT(G, filename, directed=False):
 		writefile.write('digraph G {\n')
 	else:
 		writefile.write('graph G {\n')
-	name = { }
+	name = {}
 	nextname = 0
 	for v in G.V():
 		name[v] = nextname
