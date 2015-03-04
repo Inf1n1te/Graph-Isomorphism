@@ -117,8 +117,6 @@ def compareColors(split):
 def splitlist(l, n):
 	return [l[i:i + n] for i in range(0, len(l), n)]
 
-
-print(compare("GI_TestInstancesWeek1/crefBM_4_7.grl"))
 # Alleen False Twins werkt nog
 def preprocessing(g):  #Maakt modules van (False) Twins (improvement 2)
 	falsetwins = {}
@@ -151,11 +149,5 @@ def preprocessing(g):  #Maakt modules van (False) Twins (improvement 2)
 					twins[nbs1ext] = [vertex1, vertex2]
 	return falsetwins, twins
 
-# print(splitList([1, 2, 3, 4, 5, 6, 7, 8], 3))
-print(comparegraphs(loadgraph("GI_TestInstancesWeek1/crefBM_4_7.grl", readlist=True)))
 
-
-# test preprocessing
-#aa = loadgraph("GI_TestInstancesWeek1/crefBM_4_7copy.grl", readlist=False)
-#print(aa)
-#print(preprocessing(aa))
+print(compare("GI_TestInstancesWeek1/crefBM_4_16.grl"))
