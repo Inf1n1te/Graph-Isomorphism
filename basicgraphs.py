@@ -28,7 +28,9 @@ class vertex():
 	and an attribute <_label> which can be anything: it is not used for any methods,
 	except for __repr__. 
 	"""
-	a = None
+
+	nbl = -1
+	incl = -1
 
 	def __init__(self, graph, label=0):
 		"""
@@ -53,21 +55,23 @@ class vertex():
 		"""
 		Returns the list of edges incident with vertex <self>.
 		"""
-		incl = []
-		for e in self._graph._E:
-			if e.incident(self):
-				incl.append(e)
-		return incl
+		if self.incl == -1:
+			self.incl = []
+			for e in self._graph._E:
+				if e.incident(self):
+					self.incl.append(e)
+		return self.incl
 
 	def nbs(self):
 		"""
 		Returns the list of neighbors of vertex <self>.
 		In case of parallel edges: duplicates are not removed from this list!
 		"""
-		nbl = []
-		for e in self.inclist():
-			nbl.append(e.otherend(self))
-		return nbl
+		if self.nbl == -1:
+			self.nbl = []
+			for e in self.inclist():
+				self.nbl.append(e.otherend(self))
+		return self.nbl
 
 	def deg(self):
 		"""
