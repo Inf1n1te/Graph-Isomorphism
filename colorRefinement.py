@@ -2,6 +2,7 @@ __author__ = 'Tim (& [Jeroen])'
 
 from makegraphs import disjointunion
 from graphIO import *
+import time
 
 numberOfGraphs = 0
 graphlist = []
@@ -9,47 +10,61 @@ graphlist = []
 
 def refine(g):
 	# initialize
-	colordict = { }  # dictionary with key=colornum and value=vertex array
+	colordict = {}  # dictionary with key=colornum and value=vertex array
 	for v in g.V():
 		v.colornum = v.deg()
 		if v.colornum not in colordict:
 			colordict[v.colornum] = [v]
 		else:
 			colordict[v.colornum].append(v)
-	# print(colordict)
 
-	changed = True
-	newcolor = max(colordict.keys()) + 1
-
-	while changed:
+	done = False
+	print('start while')
+	start_time = time.clock()
+	elapsed_time = time.clock() - start_time
+	print('a: {0:.4f} sec'.format(elapsed_time))
+	counter = 0
+	while not done:
+		done = True
+		counter += 1
+		if counter % 100 == 0:
+			print(counter)
 		tempcolordict = dict()
+
 		for key in colordict.keys():
+			newcolor = max(colordict.keys()) + 1
 			buren = tuple()
 			for value in colordict[key]:
 				nc = sorted(tuple(getNeighbourColors(value)))
 				if len(buren) == 0:
 					buren = nc
-				elif nc != buren:
-					tempcolordict[value] = tuple([value.colornum, newcolor])
-			# print('step', colordict)
-			newcolor = max(colordict.keys()) + 1
-		if len(tempcolordict) == 0:
-			changed = False
-		# print(colordict)
-		for value in tempcolordict:
-			old = tempcolordict[value][0]
-			new = tempcolordict[value][1]
-			colordict[old].remove(value)
-			value.colornum = new
-			if new in colordict:
-				colordict[new].append(value)
-			else:
-				colordict[new] = [value]
-	# print(colordict)
+
+				if buren != nc:
+					done = False
+					if newcolor in tempcolordict:
+						tempcolordict[newcolor].append(value)
+					else:
+						tempcolordict[newcolor] = [value]
+
+				else:
+					if key in tempcolordict:
+						tempcolordict[key].append(value)
+					else:
+						tempcolordict[key] = [value]
+
+		colordict = tempcolordict.copy()
+
+		for key in colordict.keys():
+			for value in colordict[key]:
+				value.colornum = key
+
 	finalcolors = []
 	for node in g.V():
 		finalcolors.append(node.colornum)
 
+	print('end of while')
+	elapsed_time = time.clock() - start_time
+	print('Time: {0:.4f} sec'.format(elapsed_time))
 	# DUS HIER SHIT DOEN MET COLORDICT EN DUBBELE KLEUREN ENZO
 	return compareColors(splitColorDict(colordict, g))
 
@@ -117,8 +132,9 @@ def compareColors(split):
 def splitlist(l, n):
 	return [l[i:i + n] for i in range(0, len(l), n)]
 
+
 # Alleen False Twins werkt nog
-def preprocessing(g):  #Maakt modules van (False) Twins (improvement 2)
+def preprocessing(g):  # Maakt modules van (False) Twins (improvement 2)
 	falsetwins = {}
 	twins = {}
 	for i in range(len(g.V())):
@@ -128,7 +144,6 @@ def preprocessing(g):  #Maakt modules van (False) Twins (improvement 2)
 		print(nbs1app, i)
 		nbs1app.append(vertex1)
 		nbs1ext = tuple(nbs1app)
-		#print(nbs1ext)
 		for vertex2 in g.V()[i + 1:]:
 			nbs2 = tuple(vertex2.nbs())
 			nbs2app = vertex2.nbs()
