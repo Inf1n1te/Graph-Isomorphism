@@ -1,11 +1,8 @@
 __author__ = 'Tim (& [Jeroen])'
 
-import time
-
 from makegraphs import disjointunion
-
 from graphIO import *
-
+import time
 
 numberOfGraphs = 0
 graphlist = []
@@ -136,7 +133,7 @@ def splitlist(l, n):
 	return [l[i:i + n] for i in range(0, len(l), n)]
 
 
-#
+# Alleen False Twins werkt nog
 def preprocessing(g):  # Maakt modules van (False) Twins (improvement 2)
 	falsetwins = {}
 	twins = {}
