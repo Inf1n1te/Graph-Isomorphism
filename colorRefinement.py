@@ -135,56 +135,8 @@ def compareColors(split):
 def splitlist(l, n):
 	return [l[i:i + n] for i in range(0, len(l), n)]
 
-def preprocessing(g):  # Maakt modules van (False) Twins (improvement 2)
-	falsetwins = {}
-	twins = {}
-	for i in range(len(g.V())):
-		vertex1 = g.V()[i]
-		# nbs1 = tuple(vertex1.nbs())
-		nbs1 = vertex1.nbs()
-		nbs1ext = nbs1[:]
-		nbs1ext.append(vertex1)
-		nbs2 = tuple(nbs1)
-		nbs1ext.sort(key=lambda x: x._label)
-		nbs1ext = tuple(nbs1ext)
-		for vertex2 in g.V()[i + 1:]:
-			#nbs2 = tuple(vertex2.nbs())
-			nbs2 = vertex2.nbs()
-			nbs2ext = nbs2[:]
-			nbs2ext.append(vertex2)
-			nbs2 = tuple(nbs2)
-			nbs2ext.sort(key=lambda x: x._label)
-			nbs2ext = tuple(nbs2ext)
-			#print(nbs1,nbs2,nbs1ext, nbs2ext)
-			if nbs1 == nbs2:  #False twins
-				if nbs1 in falsetwins.keys():
-					falsetwins[nbs1].append(vertex1)
-					falsetwins[nbs1].append(vertex2)
-				else:
-					falsetwins[nbs1] = [vertex1, vertex2]
-			elif nbs1ext == nbs2ext:  # Twins
-				if nbs1ext not in twins.keys():
-					twins[nbs1ext] = nbs1ext
-	return list(falsetwins.values()), list(twins.values())
 
-
-def preprocessingfast(g):  # Tweede deel O(n)
-	nbs = []
-	for vertex in g.V():
-		nbs.append(tuple(vertex.nbs()))
-
-	print(nbs)
-	falsetwins = {}
-	for i, item in enumerate(nbs):
-		try:
-			falsetwins[item].append(i)
-		except KeyError:
-			falsetwins[item] = [i]
-	falsetwins = {k: v for k, v in falsetwins.items() if len(v) > 1}
-	return falsetwins
-
-
-def preprocessingfast2(g):  # Eerste deel n^2 * log(n) Tweede deel O(n)
+def preprocessing(g):  # Eerste deel n^2 * log(n) Tweede deel O(n)
 	nbs = []
 	nbs2 = []
 	for vertex in g.V():
@@ -214,7 +166,7 @@ def preprocessingfast2(g):  # Eerste deel n^2 * log(n) Tweede deel O(n)
 print('start while')
 start_time = time.clock()
 aa = loadgraph("GI_TestInstancesWeek1/crefBM_4_7copy.grl", readlist=False)
-print(preprocessingfast2(aa))
+print(preprocessing(aa))
 elapsed_time = time.clock() - start_time
 print('a: {0:.4f} sec'.format(elapsed_time))
 
