@@ -8,21 +8,54 @@ numberOfGraphs = 0
 graphlist = []
 
 
+def fastrefine(g):
+    colordict = degcolordict(g)
+    print(colordict)
+    queue = [min(colordict.keys())]
+    nextcolor = max(colordict.keys()) + 1
+    i = 0
+    while i < len(queue):
+        connectednodes = dict()
+        print("queue:     ", queue[i])
+        print("colordict keys:     ", colordict.keys())
+        if queue[i] not in colordict.keys():
+            i += 1
+            break
+        for node in colordict[queue[i]]:
+            for nb in node.nbs():
+                color = nb.c
+                if color in connectednodes and nb not in connectednodes[color]:
+                    connectednodes[color].append(nb)
+                else:
+                    connectednodes[color] = [nb]
+        for key in connectednodes.keys():
+            connectednodes[key].sort(key=lambda x: x.__repr__())
+            if not colordict[key] == connectednodes[key]: #then add the shortest to the queue..
+                print(key, ' >> ', queue)
+                if key not in queue: # and len(connectednodes[key]) > len(colordict[key])
+                    print('key appended')
+                    queue.append(key)
+                else:
+                    print('nextcolor appended')
+                    queue.append(nextcolor)
+                for vertex in connectednodes[key]:
+                    vertex.c = nextcolor
+                colordict = g.generatecolordict()
+                nextcolor = max(colordict.keys()) + 1
+        i += 1
+    try:
+        return compareColors(splitColorDict(colordict, g))
+    except:
+        print('its only one graph appearantly')
+    return colordict
+
+
 def refine(g):
     # initialize
-    colordict = {}  # dictionary with key=colornum and value=vertex array
-    for v in g.V():
-        v.colornum = v.deg()
-        if v.colornum not in colordict:
-            colordict[v.colornum] = [v]
-        else:
-            colordict[v.colornum].append(v)
+    colordict = degcolordict(g)
 
     done = False
-    print('start while')
     start_time = time.clock()
-    elapsed_time = time.clock() - start_time
-    print('a: {0:.4f} sec'.format(elapsed_time))
     counter = 0
     while not done:
         done = True
@@ -56,30 +89,44 @@ def refine(g):
 
         for key in colordict.keys():
             for value in colordict[key]:
-                value.colornum = key
+                value.c = key
 
     finalcolors = []
     for node in g.V():
-        finalcolors.append(node.colornum)
+        finalcolors.append(node.c)
 
-    print('end of while')
     elapsed_time = time.clock() - start_time
     print('Time: {0:.4f} sec'.format(elapsed_time))
     # DUS HIER SHIT DOEN MET COLORDICT EN DUBBELE KLEUREN ENZO
-    return compareColors(splitColorDict(colordict, g))
+    try:
+        return compareColors(splitColorDict(colordict, g))
+    except:
+        print('its only one graph appearantly')
+    return colordict
+
+
+def degcolordict(g):
+    colordict = {}  # dictionary with key=c and value=vertex array
+    for v in g.V():
+        v.c = v.deg()
+        if v.c not in colordict:
+            colordict[v.c] = [v]
+        else:
+            colordict[v.c].append(v)
+    return colordict
 
 
 def getNeighbourColors(v):
     colors = []
     for i in v.nbs():
-        colors.append(i.colornum)
+        colors.append(i.c)
     return colors
 
 
 def compare(graphlisturl):
     global graphlist
     graphlist = loadgraph(graphlisturl, readlist=True)
-    return refine(disjoint())
+    return fastrefine(disjoint())
 
 
 def disjoint(graphnumbers=-1):
@@ -110,7 +157,7 @@ def splitColorDict(colordict, g):
         for value in colordict.get(key):
             for e in partitions:
                 if int(value.__repr__()) in e:
-                    split[partitions.index(e)].append(value.colornum)
+                    split[partitions.index(e)].append(value.c)
     # print(split)
     return split
 
@@ -150,7 +197,7 @@ def preprocessing(g):  # Maakt modules van (False) Twins (improvement 2)
             nbs2app.append(vertex2)
             nbs2ext = tuple(nbs2app)
             # print(nbs1ext,nbs2ext)
-            if nbs1 == nbs2:  #False twins
+            if nbs1 == nbs2:  # False twins
                 if nbs1 in falsetwins.keys():
                     falsetwins[nbs1].append(vertex1)
                     falsetwins[nbs1].append(vertex2)
@@ -164,5 +211,5 @@ def preprocessing(g):  # Maakt modules van (False) Twins (improvement 2)
                     twins[nbs1ext] = [vertex1, vertex2]
     return falsetwins, twins
 
-
+#print(fastrefine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False)))
 print(compare("GI_TestInstancesWeek1/crefBM_4_16.grl"))
