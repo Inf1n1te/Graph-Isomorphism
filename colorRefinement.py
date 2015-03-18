@@ -1,8 +1,10 @@
 __author__ = 'Tim (& [Jeroen])'
 
+import time
+
 from makegraphs import disjointunion
 from graphIO import *
-import time
+
 
 numberOfGraphs = 0
 graphlist = []
@@ -133,23 +135,26 @@ def splitlist(l, n):
 	return [l[i:i + n] for i in range(0, len(l), n)]
 
 
-# Alleen False Twins werkt nog
+#
 def preprocessing(g):  # Maakt modules van (False) Twins (improvement 2)
 	falsetwins = {}
 	twins = {}
 	for i in range(len(g.V())):
 		vertex1 = g.V()[i]
-		nbs1 = tuple(vertex1.nbs())
-		nbs1app = vertex1.nbs()
-		print(nbs1app, i)
-		nbs1app.append(vertex1)
-		nbs1ext = tuple(nbs1app)
+		nbs1 = vertex1.nbs()
+		nbs1ext = nbs1[:]
+		nbs1ext.append(vertex1)
+		nbs1 = tuple(nbs1)
+		nbs1ext.sort(key=lambda x: x._label)
+		nbs1ext = tuple(nbs1ext)
 		for vertex2 in g.V()[i + 1:]:
-			nbs2 = tuple(vertex2.nbs())
-			nbs2app = vertex2.nbs()
-			nbs2app.append(vertex2)
-			nbs2ext = tuple(nbs2app)
-			# print(nbs1ext,nbs2ext)
+			nbs2 = vertex2.nbs()
+			nbs2ext = nbs2[:]
+			nbs2ext.append(vertex2)
+			nbs2 = tuple(nbs2)
+			nbs2ext.sort(key=lambda x: x._label)
+			nbs2ext = tuple(nbs2ext)
+			# print(nbs1,nbs2,nbs1ext, nbs2ext)
 			if nbs1 == nbs2:  #False twins
 				if nbs1 in falsetwins.keys():
 					falsetwins[nbs1].append(vertex1)
@@ -157,12 +162,15 @@ def preprocessing(g):  # Maakt modules van (False) Twins (improvement 2)
 				else:
 					falsetwins[nbs1] = [vertex1, vertex2]
 			elif nbs1ext == nbs2ext:  # Twins
-				if nbs1ext in twins.keys():
-					twins[nbs1ext].append(vertex1)
-					twins[nbs1ext].append(vertex2)
-				else:
-					twins[nbs1ext] = [vertex1, vertex2]
-	return falsetwins, twins
+				if nbs1ext not in twins.keys():
+					twins[nbs1ext] = nbs1ext
+	return list(falsetwins.keys()), list(twins.keys())
 
 
-print(compare("GI_TestInstancesWeek1/crefBM_4_16.grl"))
+# test preprocessing
+aa = loadgraph("GI_TestInstancesWeek1/crefBM_4_4098", readlist=False)
+print(aa)
+print(preprocessing(aa))
+
+
+#print(compare("GI_TestInstancesWeek1/crefBM_4_16.grl"))
