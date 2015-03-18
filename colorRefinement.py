@@ -1,7 +1,6 @@
 __author__ = 'Tim (& [Jeroen])'
 
 import time
-import collections
 
 from makegraphs import disjointunion
 from graphIO import *
@@ -169,38 +168,53 @@ def preprocessing(g):  # Maakt modules van (False) Twins (improvement 2)
 	return list(falsetwins.values()), list(twins.values())
 
 
-def preprocessingfast(g):  # Maakt modules van (False) Twins (improvement 2)
-	falsetwins = {}
-	for i in range(len(g.V())):
-		vertex1 = g.V()[i]
-		nbs1 = tuple(vertex1.nbs())
-		for vertex2 in g.V()[i + 1:]:
-			nbs2 = tuple(vertex2.nbs())
-			if nbs1 == nbs2:  # False twins
-				if nbs1 in falsetwins.keys():
-					falsetwins[nbs1].append(vertex1)
-					falsetwins[nbs1].append(vertex2)
-				else:
-					falsetwins[nbs1] = [vertex1, vertex2]
-	return list(falsetwins.values())
-
-
-def preprocessingfaster(g):  # Tweede deel O(n)
+def preprocessingfast(g):  # Tweede deel O(n)
 	nbs = []
 	for vertex in g.V():
 		nbs.append(tuple(vertex.nbs()))
-	falsetwins = collections.defaultdict(list)
+
+	print(nbs)
+	falsetwins = {}
 	for i, item in enumerate(nbs):
-		falsetwins[item].append(i)
+		try:
+			falsetwins[item].append(i)
+		except KeyError:
+			falsetwins[item] = [i]
 	falsetwins = {k: v for k, v in falsetwins.items() if len(v) > 1}
 	return falsetwins
 
 
+def preprocessingfast2(g):  # Eerste deel n^2 * log(n) Tweede deel O(n)
+	nbs = []
+	nbs2 = []
+	for vertex in g.V():
+		nb = vertex.nbs()[:]  # bijna 80 % vd tijd
+		nb.sort(key=lambda x: x._label)
+		nbs.append(tuple(nb))
+		nb.append(vertex)
+		nb.sort(key=lambda x: x._label)
+		nbs2.append(tuple(nb))
+	falsetwins = {}
+	twins = {}
+	for i, item in enumerate(nbs):
+		if item in falsetwins.keys():
+			falsetwins[item].append(i)
+		else:
+			falsetwins[item] = [i]
+	for i, item in enumerate(nbs2):
+		if item in twins.keys():
+			twins[item].append(i)
+		else:
+			twins[item] = [i]
+	falsetwins = {k: v for k, v in falsetwins.items() if len(v) > 1}
+	twins = {k: v for k, v in twins.items() if len(v) > 1}
+	return falsetwins, twins
+
 # test preprocessing
 print('start while')
 start_time = time.clock()
-aa = loadgraph("GI_TestInstancesWeek1/crefBM_4_4098.grl", readlist=False)
-print(preprocessingfaster(aa))
+aa = loadgraph("GI_TestInstancesWeek1/crefBM_4_7copy.grl", readlist=False)
+print(preprocessingfast2(aa))
 elapsed_time = time.clock() - start_time
 print('a: {0:.4f} sec'.format(elapsed_time))
 
