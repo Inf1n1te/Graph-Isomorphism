@@ -3,6 +3,7 @@ __author__ = 'Tim (& [Jeroen])'
 import time
 
 from makegraphs import disjointunion
+
 from graphIO import *
 
 
@@ -168,7 +169,7 @@ def preprocessing(g):  # Maakt modules van (False) Twins (improvement 2)
 
 
 # test preprocessing
-aa = loadgraph("GI_TestInstancesWeek1/crefBM_4_4098", readlist=False)
+aa = loadgraph("GI_TestInstancesWeek1/crefBM_4_4098.grl", readlist=False)
 print(aa)
 print(preprocessing(aa))
 
