@@ -160,12 +160,12 @@ def preprocessing(g):  # Eerste deel n^2 * log(n) Tweede deel O(n)
 			twins[item] = [i]
 	falsetwins = {k: v for k, v in falsetwins.items() if len(v) > 1}
 	twins = {k: v for k, v in twins.items() if len(v) > 1}
-	return falsetwins, twins  # values zijn twins
+	return list(falsetwins.values()), list(twins.values())  # values zijn twins
 
 # test preprocessing
 print('start while')
 start_time = time.clock()
-aa = loadgraph("GI_TestInstancesWeek1/wheelstar12.grl", readlist=False)
+aa = loadgraph("GI_TestInstancesWeek1/cographs1.grl", readlist=False)
 print(preprocessing(aa))
 elapsed_time = time.clock() - start_time
 print('a: {0:.4f} sec'.format(elapsed_time))
