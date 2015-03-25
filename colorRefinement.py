@@ -220,25 +220,6 @@ def gettwins(g):
     return list(falsetwins.values()), list(twins.values()), list(falsetwins.keys()), list(
         twins.keys())  # value zijn twins
 
-def preprocessing2(g):
-    falsetwins, twins, falsetwinsN, twinsN = gettwins(g)
-    removed = []
-    for index in range(len(falsetwins)):
-        for u in falsetwins[index]:
-            for v in falsetwinsN[index]:
-                for i, e in enumerate(g._E):
-                    if (e._tail == u and e._head == v) or (e._tail == v and e._head == u):
-                        g._E.pop(i)
-            removed.append(u._label)
-
-    print('removed:', removed)
-    print('a', g.E())
-    for twin in twins:
-        for i in range(len(twin)):
-            pass
-    return falsetwins, twins
-
-
 def preprocessing(g):
     falsetwins, twins, falsetwinsN, twinsN = gettwins(g)
     deledges = []
@@ -247,18 +228,22 @@ def preprocessing(g):
                         e._tail in twin for twin in twins) or any(e._head in twin for twin in twins):
             deledges.append(i)
     deledges.sort(reverse=True)
-    for index in deledges:
-        g._E.pop(index)
+    for i in deledges:
+        g._E.pop(i)
     delnodes = []
     for i, V in enumerate(g._V):
         if any(V in ftwin for ftwin in falsetwins) or any(V in twin for twin in twins):
             delnodes.append(i)
     delnodes.sort(reverse=True)
-    for index in delnodes:
-        g._V.pop(index)
-    print(g.V())
-
-    return falsetwins, twins
+    for i in delnodes:
+        g._V.pop(i)
+    combined = falsetwinsN + twinsN
+    print(combined)
+    for i, twin in enumerate(falsetwins + twins):
+        g.addvertex(twin[0]._label)
+        for j in combined[i]:
+            g.addedge(twin[0], j)
+    return g
 
 
 def findDuplicates(split2):
@@ -297,9 +282,7 @@ def testpre(graphlisturl):
     start_time = time.clock()
     global graphlist
     graphlist = loadgraph(graphlisturl, readlist=True)
-    result = preprocessing(disjoint())
-    print(result[0])
-    print(result[1])
+    print(preprocessing(disjoint()))
     elapsed_time = time.clock() - start_time
     print('a: {0:.4f} sec'.format(elapsed_time))
 
@@ -307,4 +290,4 @@ def testpre(graphlisturl):
 # print(compare("GI_TestInstancesWeek1/crefBM_4_16.grl"))
 # print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
 
-print(testpre("GI_TestInstancesWeek1/hugecographs.grl"))
+print(testpre("GI_TestInstancesWeek1/crefBM_4_7copy.grl"))
