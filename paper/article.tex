@@ -1,0 +1,230 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Journal Article
+% LaTeX Template
+% Version 1.3 (9/9/13)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Slightly updated by  Marc Uetz
+%
+% Original author:
+% Frits Wenneker (http://www.howtotex.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[twoside]{article}
+
+\usepackage{lipsum} % Package to generate dummy text throughout this template
+
+\usepackage{amsmath,amssymb,amsthm} % Mathematical Symbols, styles, etc
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\usepackage[sc]{mathpazo} % Use the Palatino font
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\linespread{1.05} % Line spacing - Palatino needs more space between lines
+\usepackage{microtype} % Slightly tweak font spacing for aesthetics
+
+\usepackage[hmarginratio=1:1,top=32mm,columnsep=20pt]{geometry} % Document margins
+\usepackage{multicol} % Used for the two-column layout of the document
+\usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
+\usepackage{booktabs} % Horizontal rules in tables
+\usepackage{float} % Required for tables and figures in the multi-column environment - they need to be placed in specific locations with the [H] (e.g. \begin{table}[H])
+\usepackage{hyperref} % For hyperlinks in the PDF
+
+\usepackage{lettrine} % The lettrine is the first enlarged letter at the beginning of the text
+\usepackage{paralist} % Used for the compactitem environment which makes bullet points with less space between them
+
+\usepackage{abstract} % Allows abstract customization
+\renewcommand{\abstractnamefont}{\normalfont\bfseries} % Set the "Abstract" text to bold
+\renewcommand{\abstracttextfont}{\normalfont\small\itshape} % Set the abstract itself to small italic text
+
+\usepackage{titlesec} % Allows customization of titles
+%\renewcommand\thesection{\Roman{section}} % Roman numerals for the sections
+%\renewcommand\thesubsection{\Roman{subsection}} % Roman numerals for subsections
+\titleformat{\section}[block]{\large\scshape}{\thesection.}{1em}{} % Change the look of the section titles
+\titleformat{\subsection}[block]{\large}{\thesubsection.}{1em}{} % Change the look of the section titles
+
+\usepackage{fancyhdr} % Headers and footers
+\pagestyle{fancy} % All pages have headers and footers
+\fancyhead{} % Blank out the default header
+\fancyfoot{} % Blank out the default footer
+\fancyhead[C]{J.\ Smith, M.\ Koopmans, P.\ Blank: \shorttitle} % Custom header text
+\fancyfoot[RO,LE]{\thepage} % Custom footer text
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\articletitle}{Isomorphisms and Their Use in the Ancient Times}
+\newcommand{\shorttitle}{Isomorphisms in Ancient Times}
+
+\title{\vspace{-15mm}\fontsize{24pt}{10pt}\selectfont\textbf{\articletitle}} % Article title
+
+\author{
+\large
+\textsc{John Smith, Maarten Koopmans, and Pietje Blank}\thanks{Thanks to our helpful mentor.}\\[2mm] % Your name
+\normalsize University of Twente \\ % Your institution
+\normalsize \href{mailto:john@smith.com}{john@smith.com}, 
+\href{mailto:Maarten@Koopmans.nl}{Maarten@Koopmans.nl},
+\href{mailto:Pietje@Blank.nl}{Pietje@Blank.nl}% Your email addresses
+}
+
+\date{\today}
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\thispagestyle{empty}
+\maketitle % Insert title
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT
+%----------------------------------------------------------------------------------------
+
+\begin{abstract}
+
+\noindent \lipsum[1] % Dummy abstract text
+
+\end{abstract}
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE CONTENTS
+%----------------------------------------------------------------------------------------
+
+\begin{multicols}{2} % Two-column layout throughout the main article text
+
+
+
+%------------------------------------------------
+\section{Introduction}
+
+%\lettrine[nindent=0em,lines=3]{L} orem ipsum dolor sit amet, consectetur adipiscing elit.
+\lipsum[2-3] % Dummy text
+
+%------------------------------------------------
+
+\section{Scope \& Objectives}
+
+Describe \lipsum[1] % Dummy text
+
+%------------------------------------------------
+\section{Methods}
+This results in the following, exhaustive list of possibilities. 
+\begin{compactitem}
+\item Donec dolor arcu, rutrum id molestie in, viverra sed diam
+\item Curabitur feugiat
+\item turpis sed auctor facilisis
+\item arcu eros accumsan lorem, at posuere mi diam sit amet tortor
+\item Fusce fermentum, mi sit amet euismod rutrum
+\item sem lorem molestie diam, iaculis aliquet sapien tortor non nisi
+\item Pellentesque bibendum pretium aliquet
+\end{compactitem}
+\lipsum[4] % Dummy text
+
+%------------------------------------------------
+\section{Results}
+
+The results with this algorithm are given in Table~\ref{table:example}.
+\begin{table}[H]
+\caption{Example table}\label{table:example}
+\centering
+\begin{tabular}{llr}
+\toprule
+\multicolumn{2}{c}{Name} \\
+\cmidrule(r){1-2}
+First name & Last Name & Grade \\
+\midrule
+John & Doe & $7.5$ \\
+Richard & Miles & $2$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\lipsum[5] % Dummy text
+
+%------------------------------------------------
+\subsection{Subsection One}
+\lipsum[1]
+The following therefore holds for all
+planar graphs $G$ with $n$ vertices, $m$ edges, and $r$ regions.
+
+\begin{equation}
+\label{eq:emc}
+n-m+r=2
+\end{equation}
+
+%------------------------------------------------
+\subsection{Subsection Two}
+
+The following conclusion follows directly from \eqref{eq:emc}.
+\lipsum[6] % Dummy text
+\begin{theorem}
+Whenever two graphs $G$ and $G'$ are isomorphic, they share the same degree sequences.
+\end{theorem}
+\begin{proof}
+Obvious.
+\end{proof}
+We immediately conclude the following.
+\begin{corollary}
+Whenever two planar graphs $G$ and $G'$ are isomorphic, their maximum degree vertices have the same degree. 
+\end{corollary}
+This observation first appeared in \cite{Fig2009}, and was later generalized to arbitrary graphs in \cite{Lang2011}.
+In our implementation, we have therefore used the following algorithmic idea.
+\begin{verbatim}
+def gcd(a,b):
+    if b > a:
+        a,b = b,a
+    r = a%b
+    while r>0:
+        a = b
+        b = r
+        r = a%b
+    return b
+\end{verbatim}
+For more information on programming in {\tt python}, we refer to \cite{Lang2011}.
+
+%------------------------------------------------
+\section{Conclusions}
+
+
+\lipsum[8] % Dummy text. 
+
+
+%----------------------------------------------------------------------------------------
+%	REFERENCE LIST
+%----------------------------------------------------------------------------------------
+ 
+% Bibliography - this is intentionally simple in this template
+\begin{thebibliography}{99}
+
+\bibitem{Fig2009}
+Figueredo, A.~J.\ and Wolf, P.\ S.~A.\ (2009).
+Assortative pairing and life history strategy - a cross-cultural study.
+\emph{Human Nature \& Arts}, 20:317-330.
+
+\bibitem{Lang2011}
+R.\ Langerak  (2011).
+How to write a {\tt python} computer program.
+\emph{Annals of Improbable Research}, 2:16-27.
+
+\end{thebibliography}
+
+%----------------------------------------------------------------------------------------
+
+\end{multicols}
+
+\end{document}
