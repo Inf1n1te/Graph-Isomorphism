@@ -136,7 +136,7 @@ def splitlist(l, n):
 	return [l[i:i + n] for i in range(0, len(l), n)]
 
 
-def preprocessing(g):  # Eerste deel n^2 * log(n) Tweede deel O(n)
+def preprocessing(g):
 	nbs = []
 	nbs2 = []
 	for vertex in g.V():
@@ -169,6 +169,7 @@ aa = loadgraph("GI_TestInstancesWeek1/cographs1.grl", readlist=False)
 print(preprocessing(aa))
 elapsed_time = time.clock() - start_time
 print('a: {0:.4f} sec'.format(elapsed_time))
+
 
 
 #print(compare("GI_TestInstancesWeek1/crefBM_4_16.grl"))
