@@ -223,16 +223,16 @@ def gettwins(g):
 
 def preprocessing(g):
     falsetwins, twins, falsetwinsN, twinsN = gettwins(g)
-    print(g.V())
-    for i in falsetwins:
-        for j in falsetwinsN:
-            pass
+    print(twins)
+    print(twinsN)
+    for index in range(len(falsetwins)):
+        for i in falsetwins[index]:
+            for j in falsetwinsN[index]:
+                print(i, j, g.findedge(i, j))
     print(g.E())
     for twin in twins:
         for i in range(len(twin)):
             pass
-    g._V.pop(3)
-    print(g.V())
     return falsetwins, twins
 
 def findDuplicates(split2):
