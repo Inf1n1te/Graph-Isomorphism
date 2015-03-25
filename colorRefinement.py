@@ -193,7 +193,7 @@ def splitlist(l, n):
     return [l[i:i + n] for i in range(0, len(l), n)]
 
 
-def preprocessing(g):
+def gettwins(g):
     nbs = []
     nbs2 = []
     for vertex in g.V():
@@ -217,8 +217,23 @@ def preprocessing(g):
             twins[item] = [i]
     falsetwins = {k: v for k, v in falsetwins.items() if len(v) > 1}
     twins = {k: v for k, v in twins.items() if len(v) > 1}
-    return list(falsetwins.values()), list(twins.values())  # values zijn twins
+    return list(falsetwins.values()), list(twins.values()), list(falsetwins.keys()), list(
+        twins.keys())  # value zijn twins
 
+
+def preprocessing(g):
+    falsetwins, twins, falsetwinsN, twinsN = gettwins(g)
+    print(g.V())
+    for i in falsetwins:
+        for j in falsetwinsN:
+            pass
+    print(g.E())
+    for twin in twins:
+        for i in range(len(twin)):
+            pass
+    g._V.pop(3)
+    print(g.V())
+    return falsetwins, twins
 
 def findDuplicates(split2):
     # split2: lijst met tupels (colornum, vertices)
@@ -256,8 +271,9 @@ def testpre(graphlisturl):
     start_time = time.clock()
     global graphlist
     graphlist = loadgraph(graphlisturl, readlist=True)
-    print(preprocessing(disjoint())[0])
-    print(preprocessing(disjoint())[1])
+    result = preprocessing(disjoint())
+    print(result[0])
+    print(result[1])
     elapsed_time = time.clock() - start_time
     print('a: {0:.4f} sec'.format(elapsed_time))
 
