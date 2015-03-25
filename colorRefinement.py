@@ -216,16 +216,6 @@ def preprocessing(g):
 	twins = {k: v for k, v in twins.items() if len(v) > 1}
 	return list(falsetwins.values()), list(twins.values())  # values zijn twins
 
-# test preprocessing
-print('start while')
-start_time = time.clock()
-aa = loadgraph("GI_TestInstancesWeek1/hugecographs.grl", readlist=False)
-print(preprocessing(aa))
-elapsed_time = time.clock() - start_time
-print('a: {0:.4f} sec'.format(elapsed_time))
-
-
-
 def findDuplicates(split2):
 	# split2: lijst met tupels (colornum, vertices)
 	# IN case we do need the sort:
@@ -264,9 +254,8 @@ print(compare("GI_TestInstancesWeek1/crefBM_4_4098.grl"))
 
 
 # test preprocessing
-# print('start while')
 # start_time = time.clock()
-# aa = loadgraph("GI_TestInstancesWeek1/cographs1.grl", readlist=False)
-# print(preprocessing(aa))
-# elapsed_time = time.clock() - start_time
-# print('a: {0:.4f} sec'.format(elapsed_time))
+#aa = loadgraph("GI_TestInstancesWeek1/hugecographs.grl", readlist=False)
+#print(preprocessing(aa))
+#elapsed_time = time.clock() - start_time
+#print('a: {0:.4f} sec'.format(elapsed_time))
