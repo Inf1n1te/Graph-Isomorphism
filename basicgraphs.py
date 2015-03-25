@@ -175,18 +175,23 @@ class graph():
         for i in range(n):
             self.addvertex()
         self.enlist = []
+        self.colordict = -1
 
     def __repr__(self):
         return 'V=' + str(self._V) + '\nE=' + str(self._E)
 
     def generatecolordict(self):
-        colordict = dict()
+        colordict0 = dict()
         for v in self.V():
-            if v.c not in colordict:
-                colordict[v.c] = [v]
+            if v.c not in colordict0:
+                colordict0[v.c] = [v]
             else:
-                colordict[v.c].append(v)
-        return colordict
+                colordict0[v.c].append(v)
+        self.colordict = colordict0
+
+    def getcolordict(self):
+        self.generatecolordict()
+        return self.colordict
 
     def V(self):
         """

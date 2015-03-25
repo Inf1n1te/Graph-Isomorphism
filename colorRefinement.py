@@ -9,40 +9,40 @@ graphlist = []
 
 
 def fastrefine(g):
+    start_time = time.clock()
     colordict = degcolordict(g)
-    print(colordict)
     queue = [min(colordict.keys())]
     nextcolor = max(colordict.keys()) + 1
     i = 0
     while i < len(queue):
         connectednodes = dict()
-        print("queue:     ", queue[i])
-        print("colordict keys:     ", colordict.keys())
-        if queue[i] not in colordict.keys():
-            i += 1
-            break
         for node in colordict[queue[i]]:
-            for nb in node.nbs():
-                color = nb.c
-                if color in connectednodes and nb not in connectednodes[color]:
-                    connectednodes[color].append(nb)
-                else:
-                    connectednodes[color] = [nb]
+            for nb in node.nbs(): # make colordict of neighbours
+                if nb.c not in connectednodes:
+                    connectednodes[nb.c] = [nb]
+                elif nb not in connectednodes[nb.c]:
+                    connectednodes[nb.c].append(nb)
         for key in connectednodes.keys():
-            connectednodes[key].sort(key=lambda x: x.__repr__())
-            if not colordict[key] == connectednodes[key]: #then add the shortest to the queue..
-                print(key, ' >> ', queue)
-                if key not in queue: # and len(connectednodes[key]) > len(colordict[key])
-                    print('key appended')
-                    queue.append(key)
-                else:
-                    print('nextcolor appended')
-                    queue.append(nextcolor)
+            colordictchanged = False
+            if len(colordict[key]) == len(connectednodes[key]):
+                pass
+            elif key not in queue and len(colordict[key]) < len(connectednodes[key]):
+                queue.append(key)
+                colordictchanged = True
+            else:
+                queue.append(nextcolor)
+                colordictchanged = True
+
+            if colordictchanged:
                 for vertex in connectednodes[key]:
                     vertex.c = nextcolor
-                colordict = g.generatecolordict()
+                colordict = g.getcolordict()
                 nextcolor = max(colordict.keys()) + 1
         i += 1
+    print('end')
+    print(colordict)
+    elapsed_time = time.clock() - start_time
+    print('Time: {0:.4f} sec'.format(elapsed_time))
     try:
         return compareColors(splitColorDict(colordict, g))
     except:
@@ -211,5 +211,9 @@ def preprocessing(g):  # Maakt modules van (False) Twins (improvement 2)
                     twins[nbs1ext] = [vertex1, vertex2]
     return falsetwins, twins
 
-#print(fastrefine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False)))
-print(compare("GI_TestInstancesWeek1/crefBM_4_16.grl"))
+# print(fastrefine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False)))
+print(compare("GI_TestInstancesWeek1/crefBM_4_4098.grl"))
+#print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
+
+# hij is wel optijd klaar, maar hoe weet ik of dit antwoord klopt? bij de crefBM test dingen klopt hij iig wel..
+# je kan testen of het werkt door naar isomorphismes te kijken, als ie de juiste vind, werkt je color refine
