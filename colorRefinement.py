@@ -214,6 +214,7 @@ def preprocessing(g):
 			twins[item] = [i]
 	falsetwins = {k: v for k, v in falsetwins.items() if len(v) > 1}
 	twins = {k: v for k, v in twins.items() if len(v) > 1}
+
 	return list(falsetwins.values()), list(twins.values())  # values zijn twins
 
 def findDuplicates(split2):
@@ -248,14 +249,19 @@ def individualizationRefinement():
 	return 0
 
 
+def testpre(graphlisturl):
+	start_time = time.clock()
+	global graphlist
+	graphlist = loadgraph(graphlisturl, readlist=True)
+	print(preprocessing(disjoint())[0])
+	print(preprocessing(disjoint())[1])
+	elapsed_time = time.clock() - start_time
+	print('a: {0:.4f} sec'.format(elapsed_time))
+
 # print(fastrefine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False)))
-print(compare("GI_TestInstancesWeek1/crefBM_4_4098.grl"))
+# print(compare("GI_TestInstancesWeek1/crefBM_4_4098.grl"))
 # print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
 
 
 # test preprocessing
-# start_time = time.clock()
-#aa = loadgraph("GI_TestInstancesWeek1/hugecographs.grl", readlist=False)
-#print(preprocessing(aa))
-#elapsed_time = time.clock() - start_time
-#print('a: {0:.4f} sec'.format(elapsed_time))
+testpre("GI_TestInstancesWeek1/hugecographs.grl")
