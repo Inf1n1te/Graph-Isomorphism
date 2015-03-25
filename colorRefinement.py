@@ -140,7 +140,7 @@ def preprocessing(g):
 	nbs = []
 	nbs2 = []
 	for vertex in g.V():
-		nb = vertex.nbs()[:]  # bijna 80 % vd tijd
+		nb = vertex.nbs()[:]
 		nb.sort(key=lambda x: x._label)
 		nbs.append(tuple(nb))
 		nb.append(vertex)
@@ -165,7 +165,7 @@ def preprocessing(g):
 # test preprocessing
 print('start while')
 start_time = time.clock()
-aa = loadgraph("GI_TestInstancesWeek1/cographs1.grl", readlist=False)
+aa = loadgraph("GI_TestInstancesWeek1/hugecographs.grl", readlist=False)
 print(preprocessing(aa))
 elapsed_time = time.clock() - start_time
 print('a: {0:.4f} sec'.format(elapsed_time))
