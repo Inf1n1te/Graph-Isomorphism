@@ -28,7 +28,7 @@ class vertex():
 	and an attribute <_label> which can be anything: it is not used for any methods,
 	except for __repr__. 
 	"""
-	colorNum = None
+	colornum = None
 
 	nbl = -1
 	incl = -1
@@ -59,8 +59,8 @@ class vertex():
 		# if self.incl == -1:
 		# self.incl = []
 		# for e in self._graph._E:
-		# 		if e.incident(self):
-		# 			self.incl.append(e)
+		# if e.incident(self):
+		# self.incl.append(e)
 		# return self.incl
 		if self._graph.enlist == []:
 			self.makeinclist()
@@ -155,7 +155,7 @@ class graph():
 	In addition:
 	 <_simple> is True iff the graph must stay simple (used when trying to add edges)
 	 <_directed> is False for now (feel free to write a directed variant of this
-	 	module)
+		 module)
 	 <_nextlabel> is used to assign default labels to vertices.
 	"""
 
@@ -168,16 +168,30 @@ class graph():
 		self._V = []
 		self._E = []
 		self._directed = False
-		# may be changed later for a more general version that can also 
+		# may be changed later for a more general version that can also
 		# handle directed graphs.
 		self._simple = simple
 		self._nextlabel = 0
 		for i in range(n):
 			self.addvertex()
 		self.enlist = []
+		self.colordict = -1
 
 	def __repr__(self):
 		return 'V=' + str(self._V) + '\nE=' + str(self._E)
+
+	def generatecolordict(self):
+		colordict0 = dict()
+		for v in self.V():
+			if v.colornum not in colordict0:
+				colordict0[v.colornum] = [v]
+			else:
+				colordict0[v.colornum].append(v)
+		self.colordict = colordict0
+
+	def getcolordict(self):
+		self.generatecolordict()
+		return self.colordict
 
 	def V(self):
 		"""

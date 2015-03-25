@@ -6,26 +6,59 @@ from makegraphs import disjointunion
 from graphIO import *
 
 
-
 numberOfGraphs = 0
+undecidedGraphs = []
 graphlist = []
+
+
+def fastrefine(g):
+	start_time = time.clock()
+	colordict = degcolordict(g)
+	queue = [min(colordict.keys())]
+	nextcolor = max(colordict.keys()) + 1
+	i = 0
+	while i < len(queue):
+		connectednodes = dict()
+		for node in colordict[queue[i]]:
+			for nb in node.nbs():  # make colordict of neighbours
+				if nb.colornum not in connectednodes:
+					connectednodes[nb.colornum] = [nb]
+				elif nb not in connectednodes[nb.colornum]:
+					connectednodes[nb.colornum].append(nb)
+		for key in connectednodes.keys():
+			colordictchanged = False
+			if len(colordict[key]) == len(connectednodes[key]):
+				pass
+			elif key not in queue and len(colordict[key]) < len(connectednodes[key]):
+				queue.append(key)
+				colordictchanged = True
+			else:
+				queue.append(nextcolor)
+				colordictchanged = True
+
+			if colordictchanged:
+				for vertex in connectednodes[key]:
+					vertex.colornum = nextcolor
+				colordict = g.getcolordict()
+				nextcolor = max(colordict.keys()) + 1
+		i += 1
+	print('end')
+	print(colordict)
+	elapsed_time = time.clock() - start_time
+	print('Time: {0:.4f} sec'.format(elapsed_time))
+	try:
+		return compareColors(splitColorDict(colordict, g)[0])
+	except:
+		print('its only one graph apparently')
+	return colordict
 
 
 def refine(g):
 	# initialize
-	colordict = {}  # dictionary with key=colornum and value=vertex array
-	for v in g.V():
-		v.colornum = v.deg()
-		if v.colornum not in colordict:
-			colordict[v.colornum] = [v]
-		else:
-			colordict[v.colornum].append(v)
+	colordict = degcolordict(g)
 
 	done = False
-	print('start while')
 	start_time = time.clock()
-	elapsed_time = time.clock() - start_time
-	print('a: {0:.4f} sec'.format(elapsed_time))
 	counter = 0
 	while not done:
 		done = True
@@ -35,7 +68,7 @@ def refine(g):
 		tempcolordict = dict()
 
 		for key in colordict.keys():
-			newcolor = max(colordict.keys()) + 1
+			nextcolor = max(colordict.keys()) + 1
 			buren = tuple()
 			for value in colordict[key]:
 				nc = sorted(tuple(getNeighbourColors(value)))
@@ -44,10 +77,10 @@ def refine(g):
 
 				if buren != nc:
 					done = False
-					if newcolor in tempcolordict:
-						tempcolordict[newcolor].append(value)
+					if nextcolor in tempcolordict:
+						tempcolordict[nextcolor].append(value)
 					else:
-						tempcolordict[newcolor] = [value]
+						tempcolordict[nextcolor] = [value]
 
 				else:
 					if key in tempcolordict:
@@ -65,11 +98,29 @@ def refine(g):
 	for node in g.V():
 		finalcolors.append(node.colornum)
 
-	print('end of while')
 	elapsed_time = time.clock() - start_time
 	print('Time: {0:.4f} sec'.format(elapsed_time))
 	# DUS HIER SHIT DOEN MET COLORDICT EN DUBBELE KLEUREN ENZO
-	return compareColors(splitColorDict(colordict, g))
+	try:
+		result = compareColors(splitColorDict(colordict, g)[0])
+		if len(undecidedGraphs) > 0:
+			print(undecidedGraphs)
+			findDuplicates(splitColorDict(colordict, g)[1])
+		return result
+	except:
+		print('its only one graph apparently')
+		return colordict
+
+
+def degcolordict(g):
+	colordict = {}  # dictionary with key=c and value=vertex array
+	for v in g.V():
+		v.colornum = v.deg()
+		if v.colornum not in colordict:
+			colordict[v.colornum] = [v]
+		else:
+			colordict[v.colornum].append(v)
+	return colordict
 
 
 def getNeighbourColors(v):
@@ -82,7 +133,7 @@ def getNeighbourColors(v):
 def compare(graphlisturl):
 	global graphlist
 	graphlist = loadgraph(graphlisturl, readlist=True)
-	return refine(disjoint())
+	return fastrefine(disjoint())
 
 
 def disjoint(graphnumbers=-1):
@@ -107,29 +158,32 @@ def disjoint(graphnumbers=-1):
 def splitColorDict(colordict, g):
 	partitions = splitlist(range(len(g.V())), int(len(g.V()) / numberOfGraphs))
 	split = []
+	split2 = []
 	for j in range(numberOfGraphs):
 		split.append([])
+		split2.append([])
 	for key in colordict:
 		for value in colordict.get(key):
 			for e in partitions:
 				if int(value.__repr__()) in e:
 					split[partitions.index(e)].append(value.colornum)
+					split2[partitions.index(e)].append((value.colornum, value))
 	# print(split)
-	return split
+	return split, split2
 
 
 def compareColors(split):
+	global undecidedGraphs
 	r = []
-	undecided = []
 	for i in range(len(split)):
 		if len(split[i]) > len(set(split[i])):
-			undecided.append(i)
+			undecidedGraphs.append(i)
 	for i in range(len(split)):
 		for j in range(len(split)):
 			if i != j and i < j:
-				if split[i] == split[j] and i not in undecided:
+				if split[i] == split[j] and i not in undecidedGraphs:
 					r.append([i, j])
-	return r, undecided
+	return r, undecidedGraphs
 
 
 def splitlist(l, n):
@@ -172,4 +226,47 @@ print('a: {0:.4f} sec'.format(elapsed_time))
 
 
 
-#print(compare("GI_TestInstancesWeek1/crefBM_4_16.grl"))
+def findDuplicates(split2):
+	# split2: lijst met tupels (colornum, vertices)
+	# IN case we do need the sort:
+	# for e in split2:
+	# sorted(e, key=lambda x: x[0])
+	print(split2)
+	result = {}
+	for e in range(len(split2)):
+		if e in undecidedGraphs:
+			newDict = {}
+			result[e] = []
+			i = 0
+			while i < len(split2[e]) - 1:
+				if split2[e][i][0] == split2[e][i + 1][0]:
+					x = 2
+					newList = [split2[e][i][1], split2[e][i + 1][1]]
+					while (i + x) < len(split2[e]) - 1 and split2[e][i][0] == split2[e][i + x][0]:
+						newList.append(split2[e][i + x][1])
+						x += 1
+					newDict[split2[e][i][0]] = newList
+					i += x
+				else:
+					i += 1
+			result[e].append(newDict)
+	print(result)
+	return result
+
+
+def individualizationRefinement():
+	return 0
+
+
+# print(fastrefine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False)))
+print(compare("GI_TestInstancesWeek1/crefBM_4_4098.grl"))
+# print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
+
+
+# test preprocessing
+# print('start while')
+# start_time = time.clock()
+# aa = loadgraph("GI_TestInstancesWeek1/cographs1.grl", readlist=False)
+# print(preprocessing(aa))
+# elapsed_time = time.clock() - start_time
+# print('a: {0:.4f} sec'.format(elapsed_time))
