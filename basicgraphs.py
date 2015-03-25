@@ -56,28 +56,9 @@ class vertex():
         """
         Returns the list of edges incident with vertex <self>.
         """
-        # if self.incl == -1:
-        # self.incl = []
-        # for e in self._graph._E:
-        # if e.incident(self):
-        # self.incl.append(e)
-        # return self.incl
-        if self._graph.enlist == []:
-            self.makeinclist()
+        if not self._graph.enlist:
+            self._graph.makeinclist()
         return self._graph.enlist[self]
-
-    def makeinclist(self):
-        edges = self._graph.E()
-        r = {}  # key is a node, values are the connected edges
-        for edge in edges:
-            head = edge.head()
-            tail = edge.tail()
-            for e in [head, tail]:
-                if e in r:
-                    r[e].append(edge)
-                else:
-                    r[e] = [edge]
-        self._graph.enlist = r
 
     def nbs(self):
         """
@@ -192,6 +173,19 @@ class graph():
     def getcolordict(self):
         self.generatecolordict()
         return self.colordict
+
+    def makeinclist(self):
+        edges = self.E()
+        r = {}  # key is a node, values are the connected edges
+        for edge in edges:
+            head = edge.head()
+            tail = edge.tail()
+            for e in [head, tail]:
+                if e in r:
+                    r[e].append(edge)
+                else:
+                    r[e] = [edge]
+        self.enlist = r
 
     def V(self):
         """

@@ -252,14 +252,17 @@ def individualizationRefinement():
     return 0
 
 
+def testpre(graphlisturl):
+    start_time = time.clock()
+    global graphlist
+    graphlist = loadgraph(graphlisturl, readlist=True)
+    print(preprocessing(disjoint())[0])
+    print(preprocessing(disjoint())[1])
+    elapsed_time = time.clock() - start_time
+    print('a: {0:.4f} sec'.format(elapsed_time))
+
 # print(fastrefine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False)))
-print(compare("GI_TestInstancesWeek1/crefBM_4_16.grl"))
+# print(compare("GI_TestInstancesWeek1/crefBM_4_16.grl"))
 # print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
 
-
-# test preprocessing
-# start_time = time.clock()
-# aa = loadgraph("GI_TestInstancesWeek1/hugecographs.grl", readlist=False)
-# print(preprocessing(aa))
-#elapsed_time = time.clock() - start_time
-#print('a: {0:.4f} sec'.format(elapsed_time))
+print(testpre("GI_TestInstancesWeek1/hugecographs.grl"))
