@@ -143,37 +143,39 @@ def splitlist(l, n):
 	return [l[i:i + n] for i in range(0, len(l), n)]
 
 
-# Alleen False Twins werkt nog
-def preprocessing(g):  # Maakt modules van (False) Twins (improvement 2)
+def preprocessing(g):  # Eerste deel n^2 * log(n) Tweede deel O(n)
+	nbs = []
+	nbs2 = []
+	for vertex in g.V():
+		nb = vertex.nbs()[:]  # bijna 80 % vd tijd
+		nb.sort(key=lambda x: x._label)
+		nbs.append(tuple(nb))
+		nb.append(vertex)
+		nb.sort(key=lambda x: x._label)
+		nbs2.append(tuple(nb))
 	falsetwins = {}
 	twins = {}
-	for i in range(len(g.V())):
-		vertex1 = g.V()[i]
-		nbs1 = tuple(vertex1.nbs())
-		nbs1app = vertex1.nbs()
-		print(nbs1app, i)
-		nbs1app.append(vertex1)
-		nbs1ext = tuple(nbs1app)
-		for vertex2 in g.V()[i + 1:]:
-			nbs2 = tuple(vertex2.nbs())
-			nbs2app = vertex2.nbs()
-			nbs2app.append(vertex2)
-			nbs2ext = tuple(nbs2app)
-			# print(nbs1ext,nbs2ext)
-			if nbs1 == nbs2:  # False twins
-				if nbs1 in falsetwins.keys():
-					falsetwins[nbs1].append(vertex1)
-					falsetwins[nbs1].append(vertex2)
-				else:
-					falsetwins[nbs1] = [vertex1, vertex2]
-			elif nbs1ext == nbs2ext:  # Twins
-				if nbs1ext in twins.keys():
-					twins[nbs1ext].append(vertex1)
-					twins[nbs1ext].append(vertex2)
-				else:
-					twins[nbs1ext] = [vertex1, vertex2]
-	return falsetwins, twins
+	for i, item in enumerate(nbs):
+		if item in falsetwins.keys():
+			falsetwins[item].append(i)
+		else:
+			falsetwins[item] = [i]
+	for i, item in enumerate(nbs2):
+		if item in twins.keys():
+			twins[item].append(i)
+		else:
+			twins[item] = [i]
+	falsetwins = {k: v for k, v in falsetwins.items() if len(v) > 1}
+	twins = {k: v for k, v in twins.items() if len(v) > 1}
+	return list(falsetwins.values()), list(twins.values())  # values zijn twins
 
+# test preprocessing
+print('start while')
+start_time = time.clock()
+aa = loadgraph("GI_TestInstancesWeek1/cographs1.grl", readlist=False)
+print(preprocessing(aa))
+elapsed_time = time.clock() - start_time
+print('a: {0:.4f} sec'.format(elapsed_time))
 
 def findDuplicates(split2):
 	# split2: lijst met tupels (colornum, vertices)
