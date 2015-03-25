@@ -1,1 +1,155 @@
+\documentclass[twoside]{article}
+
+\usepackage{amsmath,amssymb,amsthm} % Mathematical Symbols, styles, etc
+
+% Used to enable use of the defined labeled enunciations. Usage: \begin{definition}text\end{definition}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+% --Optional-- Font and tweaking used in template
+\usepackage[sc]{mathpazo} % Use the Palatino font
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\linespread{1.05} % Line spacing - Palatino needs more space between lines
+\usepackage{microtype} % Slightly tweak font spacing for aesthetics
+
+% Formatting, refs and stuff
+\usepackage[hmarginratio=1:1,top=32mm,columnsep=20pt]{geometry} % Document margins
+\usepackage{multicol} % Used for the two-column layout of the document
+\usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
+\usepackage{booktabs} % Horizontal rules in tables
+\usepackage{float} % Required for tables and figures in the multi-column environment - they need to be placed in specific locations with the [H] (e.g. \begin{table}[H])
+\usepackage{hyperref} % For hyperlinks in the PDF
+
+% Fancy lists. Usage: http://lmgtfy.com/?q=latex+paralist
+\usepackage{paralist} % Used for the compactitem environment which makes bullet points with less space between them
+
+% Abstract customization
+\usepackage{abstract} % Allows abstract customization
+\renewcommand{\abstractnamefont}{\normalfont\bfseries} % Set the "Abstract" text to bold
+\renewcommand{\abstracttextfont}{\normalfont\small\itshape} % Set the abstract itself to small italic text
+
+% Title customization
+\usepackage{titlesec} % Allows customization of titles
+%\renewcommand\thesection{\Roman{section}} % Roman numerals for the sections
+%\renewcommand\thesubsection{\Roman{subsection}} % Roman numerals for subsections
+\titleformat{\section}[block]{\large\scshape}{\thesection.}{1em}{} % Change the look of the section titles
+\titleformat{\subsection}[block]{\large}{\thesubsection.}{1em}{} % Change the look of the section titles
+
+% Header and footer customization
+\usepackage{fancyhdr} % Headers and footers
+\pagestyle{fancy} % All pages have headers and footers
+\fancyhead{} % Blank out the default header
+\fancyfoot{} % Blank out the default footer
+\fancyhead[C]{T.\ Kemp, T.\ Kerkhoven, J.\ Klein Brinke, T.\ Sonderen: \shorttitle} % Custom header text
+\fancyfoot[RO,LE]{\thepage} % Custom footer text
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\articletitle}{The Effects of Preprocessing Methods on Computation Times for Graph Isomorphisms}
+\newcommand{\shorttitle}{Preprocessing for Graph Isomorphisms}
+
+\title{\vspace{-15mm}\fontsize{24pt}{10pt}\selectfont\textbf{\articletitle}} % Article title
+
+\author{
+\large
+\textsc{Tim Kemp, Tim Kerkhoven, Jeroen Klein Brinke, and Tim Sonderen}\\[2mm] % Your names
+\normalsize University of Twente \\ % Your institution
+\normalsize \href{mailto:t.kerkhoven@student.utwente.nl}{t.kerkhoven@student.utwente.nl}, 
+\href{mailto:t.kemp@student.utwente.nl}{t.kemp@student.utwente.nl},\\ \normalsize
+\href{mailto:j.klein.brinke@student.utwente.nl}{j.klein.brinke@student.utwente.nl}, \href{mailto:t.sonderen@student.utwente.nl}{t.sonderen@student.utwente.nl}% Your email addresses
+}
+
+\date{\today}
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\thispagestyle{empty}
+\maketitle % Insert title
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT
+%----------------------------------------------------------------------------------------
+
+\begin{abstract}
+
+\noindent Abstract here
+
+\end{abstract}
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE CONTENTS
+%----------------------------------------------------------------------------------------
+
+\begin{multicols}{2} % Two-column layout throughout the main article text
+
+%------------------------------------------------
+\section{Introduction}
+
+Introduction here
+
+%------------------------------------------------
+
+\section{Scope \& Objectives}
+
+Scope \& Objectives here
+
+%------------------------------------------------
+\section{Methods}
+
+Methods here
+
+%------------------------------------------------
+\section{Description of Algorithms}
+
+Description of Algorithms here
+
+%------------------------------------------------
+\section{Proof of Correctness}
+
+Proof of Correctness here
+
+%------------------------------------------------
+\section{Computational Experiments}
+
+Computational Experiments here
+
+%------------------------------------------------
+\section{Results}
+
+Results here
+
+%------------------------------------------------
+\section{Conclusions}
+
+Conclusions here 
+
+%----------------------------------------------------------------------------------------
+%	REFERENCE LIST
+%----------------------------------------------------------------------------------------
  
+% Bibliography - this is intentionally simple in this template
+\begin{thebibliography}{99}
+
+\bibitem{Fig2009}
+Figueredo, A.~J.\ and Wolf, P.\ S.~A.\ (2009).
+Assortative pairing and life history strategy - a cross-cultural study.
+\emph{Human Nature \& Arts}, 20:317-330.
+
+\bibitem{Lang2011}
+R.\ Langerak  (2011).
+How to write a {\tt python} computer program.
+\emph{Annals of Improbable Research}, 2:16-27.
+
+\end{thebibliography}
+
+%----------------------------------------------------------------------------------------
+
+\end{multicols}
+
+\end{document}
