@@ -6,7 +6,6 @@ from makegraphs import disjointunion
 from graphIO import *
 
 
-numberOfGraphs = 0
 undecidedGraphs = []
 graphlist = []
 
@@ -170,11 +169,9 @@ def splitColorDict(colordict, g):
 	number = 0
 	partitions = []
 	for i in range(len(subgraphsl)):
-		partitions.append(list(range(number, number+subgraphsl[i])))
+		partitions.append(list(range(number, number + subgraphsl[i])))
 		number += subgraphsl[i]
-	print('partitions  ', partitions)
 
-	#partitions = splitlist(range(len(g.V())), int(len(g.V()) / numberOfGraphs))
 	split = []
 	split2 = []
 	for j in range(numberOfGraphs):
@@ -277,4 +274,4 @@ print(compare("GI_TestInstancesWeek1/crefBM_4_7.grl"))
 # aa = loadgraph("GI_TestInstancesWeek1/hugecographs.grl", readlist=False)
 # print(preprocessing(aa))
 # elapsed_time = time.clock() - start_time
-#print('a: {0:.4f} sec'.format(elapsed_time))
+# print('a: {0:.4f} sec'.format(elapsed_time))
