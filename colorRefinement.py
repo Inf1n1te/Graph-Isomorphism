@@ -12,60 +12,60 @@ graphlist = []
 
 
 def fastrefine(g):
-    start_time = time.clock()
-    colordict = degcolordict(g)
-    queue = [min(colordict.keys())]
-    nextcolor = max(colordict.keys()) + 1
-    i = 0
-    while i < len(queue):
-        connectednodes = dict()
-        for node in colordict[queue[i]]:
-            for nb in node.nbs(): # make colordict of neighbours
-                if nb.c not in connectednodes:
-                    connectednodes[nb.c] = [nb]
-                elif nb not in connectednodes[nb.c]:
-                    connectednodes[nb.c].append(nb)
-        for key in connectednodes.keys():
-            colordictchanged = False
-            if len(colordict[key]) == len(connectednodes[key]):
-                pass
-            elif key not in queue and len(colordict[key]) < len(connectednodes[key]):
-                queue.append(key)
-                colordictchanged = True
-            else:
-                queue.append(nextcolor)
-                colordictchanged = True
+	start_time = time.clock()
+	colordict = degcolordict(g)
+	queue = [min(colordict.keys())]
+	nextcolor = max(colordict.keys()) + 1
+	i = 0
+	while i < len(queue):
+		connectednodes = dict()
+		for node in colordict[queue[i]]:
+			for nb in node.nbs():  # make colordict of neighbours
+				if nb.colornum not in connectednodes:
+					connectednodes[nb.colornum] = [nb]
+				elif nb not in connectednodes[nb.colornum]:
+					connectednodes[nb.colornum].append(nb)
+		for key in connectednodes.keys():
+			colordictchanged = False
+			if len(colordict[key]) == len(connectednodes[key]):
+				pass
+			elif key not in queue and len(colordict[key]) < len(connectednodes[key]):
+				queue.append(key)
+				colordictchanged = True
+			else:
+				queue.append(nextcolor)
+				colordictchanged = True
 
-            if colordictchanged:
-                for vertex in connectednodes[key]:
-                    vertex.c = nextcolor
-                colordict = g.getcolordict()
-                nextcolor = max(colordict.keys()) + 1
-        i += 1
-    print('end')
-    print(colordict)
-    elapsed_time = time.clock() - start_time
-    print('Time: {0:.4f} sec'.format(elapsed_time))
-    try:
-        return compareColors(splitColorDict(colordict, g))
-    except:
-        print('its only one graph appearantly')
-    return colordict
+			if colordictchanged:
+				for vertex in connectednodes[key]:
+					vertex.colornum = nextcolor
+				colordict = g.getcolordict()
+				nextcolor = max(colordict.keys()) + 1
+		i += 1
+	print('end')
+	print(colordict)
+	elapsed_time = time.clock() - start_time
+	print('Time: {0:.4f} sec'.format(elapsed_time))
+	try:
+		return compareColors(splitColorDict(colordict, g)[0])
+	except:
+		print('its only one graph apparently')
+	return colordict
 
 
 def refine(g):
-    # initialize
-    colordict = degcolordict(g)
+	# initialize
+	colordict = degcolordict(g)
 
-    done = False
-    start_time = time.clock()
-    counter = 0
-    while not done:
-        done = True
-        counter += 1
-        if counter % 100 == 0:
-            print(counter)
-        tempcolordict = dict()
+	done = False
+	start_time = time.clock()
+	counter = 0
+	while not done:
+		done = True
+		counter += 1
+		if counter % 100 == 0:
+			print(counter)
+		tempcolordict = dict()
 
 		for key in colordict.keys():
 			nextcolor = max(colordict.keys()) + 1
@@ -98,30 +98,29 @@ def refine(g):
 	for node in g.V():
 		finalcolors.append(node.colornum)
 
-    elapsed_time = time.clock() - start_time
-    print('Time: {0:.4f} sec'.format(elapsed_time))
-    # DUS HIER SHIT DOEN MET COLORDICT EN DUBBELE KLEUREN ENZO
-    try:
+	elapsed_time = time.clock() - start_time
+	print('Time: {0:.4f} sec'.format(elapsed_time))
+	# DUS HIER SHIT DOEN MET COLORDICT EN DUBBELE KLEUREN ENZO
+	try:
 		result = compareColors(splitColorDict(colordict, g)[0])
 		if len(undecidedGraphs) > 0:
 			print(undecidedGraphs)
 			findDuplicates(splitColorDict(colordict, g)[1])
-		return result    
+		return result
 	except:
-        print('its only one graph apparantly')
-    	return colordict
-	
+		print('its only one graph apparently')
+		return colordict
 
 
 def degcolordict(g):
-    colordict = {}  # dictionary with key=c and value=vertex array
-    for v in g.V():
-        v.c = v.deg()
-        if v.c not in colordict:
-            colordict[v.c] = [v]
-        else:
-            colordict[v.c].append(v)
-    return colordict
+	colordict = {}  # dictionary with key=c and value=vertex array
+	for v in g.V():
+		v.colornum = v.deg()
+		if v.colornum not in colordict:
+			colordict[v.colornum] = [v]
+		else:
+			colordict[v.colornum].append(v)
+	return colordict
 
 
 def getNeighbourColors(v):
@@ -132,9 +131,9 @@ def getNeighbourColors(v):
 
 
 def compare(graphlisturl):
-    global graphlist
-    graphlist = loadgraph(graphlisturl, readlist=True)
-    return fastrefine(disjoint())
+	global graphlist
+	graphlist = loadgraph(graphlisturl, readlist=True)
+	return fastrefine(disjoint())
 
 
 def disjoint(graphnumbers=-1):
@@ -217,16 +216,7 @@ def preprocessing(g):  # Eerste deel n^2 * log(n) Tweede deel O(n)
 	twins = {k: v for k, v in twins.items() if len(v) > 1}
 	return list(falsetwins.values()), list(twins.values())  # values zijn twins
 
-# print(fastrefine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False)))
-print(compare("GI_TestInstancesWeek1/crefBM_4_4098.grl"))
-#print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
-# test preprocessing
-print('start while')
-start_time = time.clock()
-aa = loadgraph("GI_TestInstancesWeek1/cographs1.grl", readlist=False)
-print(preprocessing(aa))
-elapsed_time = time.clock() - start_time
-print('a: {0:.4f} sec'.format(elapsed_time))
+
 
 def findDuplicates(split2):
 	# split2: lijst met tupels (colornum, vertices)
@@ -256,11 +246,19 @@ def findDuplicates(split2):
 	return result
 
 
-def f
-
-
 def individualizationRefinement():
 	return 0
 
 
-print(compare("GI_TestInstancesWeek1/crefBM_6_15.grl"))
+# print(fastrefine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False)))
+print(compare("GI_TestInstancesWeek1/crefBM_4_4098.grl"))
+# print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
+
+
+# test preprocessing
+# print('start while')
+# start_time = time.clock()
+# aa = loadgraph("GI_TestInstancesWeek1/cographs1.grl", readlist=False)
+# print(preprocessing(aa))
+# elapsed_time = time.clock() - start_time
+# print('a: {0:.4f} sec'.format(elapsed_time))
