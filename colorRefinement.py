@@ -55,64 +55,64 @@ def fastrefine(g, startcolor=-1):
 	return colordict
 
 
-def refine(g):
-	# initialize
-	colordict = degcolordict(g)
-
-
-done = False
-start_time = time.clock()
-counter = 0
-while not done:
-    done = True
-    counter += 1
-    if counter % 100 == 0:
-        print(counter)
-    tempcolordict = dict()
-
-    for key in colordict.keys():
-        nextcolor = max(colordict.keys()) + 1
-        buren = tuple()
-        for value in colordict[key]:
-            nc = sorted(tuple(getNeighbourColors(value)))
-            if len(buren) == 0:
-                buren = nc
-
-            if buren != nc:
-                done = False
-                if nextcolor in tempcolordict:
-                    tempcolordict[nextcolor].append(value)
-                else:
-                    tempcolordict[nextcolor] = [value]
-
-            else:
-                if key in tempcolordict:
-                    tempcolordict[key].append(value)
-                else:
-                    tempcolordict[key] = [value]
-
-    colordict = tempcolordict.copy()
-
-    for key in colordict.keys():
-        for value in colordict[key]:
-            value.colornum = key
-
-finalcolors = []
-for node in g.V():
-    finalcolors.append(node.colornum)
-
-elapsed_time = time.clock() - start_time
-print('Time: {0:.4f} sec'.format(elapsed_time))
-# DUS HIER SHIT DOEN MET COLORDICT EN DUBBELE KLEUREN ENZO
-try:
-    result = compareColors(splitColorDict(colordict, g)[0])
-    if len(undecidedGraphs) > 0:
-        print(undecidedGraphs)
-        findDuplicates(splitColorDict(colordict, g)[1])
-    return result
-except:
-    print('its only one graph apparently')
-    return colordict
+# def refine(g):
+# # initialize
+# 	colordict = degcolordict(g)
+#
+#
+# done = False
+# start_time = time.clock()
+# counter = 0
+# while not done:
+#     done = True
+#     counter += 1
+#     if counter % 100 == 0:
+#         print(counter)
+#     tempcolordict = dict()
+#
+#     for key in colordict.keys():
+#         nextcolor = max(colordict.keys()) + 1
+#         buren = tuple()
+#         for value in colordict[key]:
+#             nc = sorted(tuple(getNeighbourColors(value)))
+#             if len(buren) == 0:
+#                 buren = nc
+#
+#             if buren != nc:
+#                 done = False
+#                 if nextcolor in tempcolordict:
+#                     tempcolordict[nextcolor].append(value)
+#                 else:
+#                     tempcolordict[nextcolor] = [value]
+#
+#             else:
+#                 if key in tempcolordict:
+#                     tempcolordict[key].append(value)
+#                 else:
+#                     tempcolordict[key] = [value]
+#
+#     colordict = tempcolordict.copy()
+#
+#     for key in colordict.keys():
+#         for value in colordict[key]:
+#             value.colornum = key
+#
+# finalcolors = []
+# for node in g.V():
+#     finalcolors.append(node.colornum)
+#
+# elapsed_time = time.clock() - start_time
+# print('Time: {0:.4f} sec'.format(elapsed_time))
+# # DUS HIER SHIT DOEN MET COLORDICT EN DUBBELE KLEUREN ENZO
+# try:
+#     result = compareColors(splitColorDict(colordict, g)[0])
+#     if len(undecidedGraphs) > 0:
+#         print(undecidedGraphs)
+#         findDuplicates(splitColorDict(colordict, g)[1])
+#     return result
+# except:
+#     print('its only one graph apparently')
+#     return colordict
 
 
 def degcolordict(g):
@@ -220,21 +220,46 @@ def gettwins(g):
     return list(falsetwins.values()), list(twins.values()), list(falsetwins.keys()), list(
         twins.keys())  # value zijn twins
 
-
-def preprocessing(g):
+def preprocessing2(g):
     falsetwins, twins, falsetwinsN, twinsN = gettwins(g)
+    removed = []
     for index in range(len(falsetwins)):
         for u in falsetwins[index]:
             for v in falsetwinsN[index]:
                 for i, e in enumerate(g._E):
                     if (e._tail == u and e._head == v) or (e._tail == v and e._head == u):
                         g._E.pop(i)
+            removed.append(u._label)
 
+    print('removed:', removed)
     print('a', g.E())
     for twin in twins:
         for i in range(len(twin)):
             pass
     return falsetwins, twins
+
+
+def preprocessing(g):
+    falsetwins, twins, falsetwinsN, twinsN = gettwins(g)
+    deledges = []
+    for i, e in enumerate(g._E):
+        if any(e._tail in ftwin for ftwin in falsetwins) or any(e._head in ftwin for ftwin in falsetwins) or any(
+                        e._tail in twin for twin in twins) or any(e._head in twin for twin in twins):
+            deledges.append(i)
+    deledges.sort(reverse=True)
+    for index in deledges:
+        g._E.pop(index)
+    delnodes = []
+    for i, V in enumerate(g._V):
+        if any(V in ftwin for ftwin in falsetwins) or any(V in twin for twin in twins):
+            delnodes.append(i)
+    delnodes.sort(reverse=True)
+    for index in delnodes:
+        g._V.pop(index)
+    print(g.V())
+
+    return falsetwins, twins
+
 
 def findDuplicates(split2):
     # split2: lijst met tupels (colornum, vertices)
