@@ -1,10 +1,13 @@
 __author__ = 'Tim (& [Jeroen])'
 
-from makegraphs import disjointunion
-from graphIO import *
 import time
 
+from makegraphs import disjointunion
+from graphIO import *
+
+
 numberOfGraphs = 0
+undecidedGraphs = []
 graphlist = []
 
 
@@ -32,7 +35,7 @@ def refine(g):
 		tempcolordict = dict()
 
 		for key in colordict.keys():
-			newcolor = max(colordict.keys()) + 1
+			nextcolor = max(colordict.keys()) + 1
 			buren = tuple()
 			for value in colordict[key]:
 				nc = sorted(tuple(getNeighbourColors(value)))
@@ -41,10 +44,10 @@ def refine(g):
 
 				if buren != nc:
 					done = False
-					if newcolor in tempcolordict:
-						tempcolordict[newcolor].append(value)
+					if nextcolor in tempcolordict:
+						tempcolordict[nextcolor].append(value)
 					else:
-						tempcolordict[newcolor] = [value]
+						tempcolordict[nextcolor] = [value]
 
 				else:
 					if key in tempcolordict:
@@ -66,7 +69,11 @@ def refine(g):
 	elapsed_time = time.clock() - start_time
 	print('Time: {0:.4f} sec'.format(elapsed_time))
 	# DUS HIER SHIT DOEN MET COLORDICT EN DUBBELE KLEUREN ENZO
-	return compareColors(splitColorDict(colordict, g))
+	result = compareColors(splitColorDict(colordict, g)[0])
+	if len(undecidedGraphs) > 0:
+		print(undecidedGraphs)
+		findDuplicates(splitColorDict(colordict, g)[1])
+	return result
 
 
 def getNeighbourColors(v):
@@ -104,29 +111,32 @@ def disjoint(graphnumbers=-1):
 def splitColorDict(colordict, g):
 	partitions = splitlist(range(len(g.V())), int(len(g.V()) / numberOfGraphs))
 	split = []
+	split2 = []
 	for j in range(numberOfGraphs):
 		split.append([])
+		split2.append([])
 	for key in colordict:
 		for value in colordict.get(key):
 			for e in partitions:
 				if int(value.__repr__()) in e:
 					split[partitions.index(e)].append(value.colornum)
+					split2[partitions.index(e)].append((value.colornum, value))
 	# print(split)
-	return split
+	return split, split2
 
 
 def compareColors(split):
+	global undecidedGraphs
 	r = []
-	undecided = []
 	for i in range(len(split)):
 		if len(split[i]) > len(set(split[i])):
-			undecided.append(i)
+			undecidedGraphs.append(i)
 	for i in range(len(split)):
 		for j in range(len(split)):
 			if i != j and i < j:
-				if split[i] == split[j] and i not in undecided:
+				if split[i] == split[j] and i not in undecidedGraphs:
 					r.append([i, j])
-	return r, undecided
+	return r, undecidedGraphs
 
 
 def splitlist(l, n):
@@ -150,7 +160,7 @@ def preprocessing(g):  # Maakt modules van (False) Twins (improvement 2)
 			nbs2app.append(vertex2)
 			nbs2ext = tuple(nbs2app)
 			# print(nbs1ext,nbs2ext)
-			if nbs1 == nbs2:  #False twins
+			if nbs1 == nbs2:  # False twins
 				if nbs1 in falsetwins.keys():
 					falsetwins[nbs1].append(vertex1)
 					falsetwins[nbs1].append(vertex2)
@@ -165,4 +175,39 @@ def preprocessing(g):  # Maakt modules van (False) Twins (improvement 2)
 	return falsetwins, twins
 
 
-print(compare("GI_TestInstancesWeek1/crefBM_4_16.grl"))
+def findDuplicates(split2):
+	# split2: lijst met tupels (colornum, vertices)
+	# IN case we do need the sort:
+	# for e in split2:
+	# sorted(e, key=lambda x: x[0])
+	print(split2)
+	result = {}
+	for e in range(len(split2)):
+		if e in undecidedGraphs:
+			newDict = {}
+			result[e] = []
+			i = 0
+			while i < len(split2[e]) - 1:
+				if split2[e][i][0] == split2[e][i + 1][0]:
+					x = 2
+					newList = [split2[e][i][1], split2[e][i + 1][1]]
+					while (i + x) < len(split2[e]) - 1 and split2[e][i][0] == split2[e][i + x][0]:
+						newList.append(split2[e][i + x][1])
+						x += 1
+					newDict[split2[e][i][0]] = newList
+					i += x
+				else:
+					i += 1
+			result[e].append(newDict)
+	print(result)
+	return result
+
+
+def f
+
+
+def individualizationRefinement():
+	return 0
+
+
+print(compare("GI_TestInstancesWeek1/crefBM_6_15.grl"))
