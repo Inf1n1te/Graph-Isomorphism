@@ -6,30 +6,36 @@ from makegraphs import disjointunion
 from graphIO import *
 
 
-undecidedGraphs = []
-graphlist = []
-
-
-def fastrefine(g, startcolor=-1):
+def fastrefine(g, startcolor=-1, colordict=-1):
 	start_time = time.clock()
-	colordict = degcolordict(g)
+	if colordict is -1:
+		colordict = degcolordict(g)
+
 	if startcolor is -1:
-		queue = [min(colordict.keys())]
+		shortest = min(colordict.keys())
+		for key in colordict.keys():
+			if len(colordict[key]) <= len(colordict[shortest]):
+				shortest = key
+		queue = [shortest]
 	else:
 		queue = [startcolor]
+
 	nextcolor = max(colordict.keys()) + 1
+
 	i = 0
 	while i < len(queue):
 		connectednodes = dict()
-		for node in colordict[queue[i]]:
-			for nb in node.nbs():  # make colordict of neighbours
+		for value in colordict[queue[i]]:
+			for nb in value.nbs():  # make colordict of neighbours
 				if nb.colornum not in connectednodes:
 					connectednodes[nb.colornum] = [nb]
 				elif nb not in connectednodes[nb.colornum]:
 					connectednodes[nb.colornum].append(nb)
 		for key in connectednodes.keys():
 			colordictchanged = False
-			if len(colordict[key]) == len(connectednodes[key]):
+			colordict[key].sort(key=lambda x: x._label)
+			connectednodes[key].sort(key=lambda x: x._label)
+			if colordict[key] == connectednodes[key]:
 				pass
 			elif key not in queue and len(colordict[key]) < len(connectednodes[key]):
 				queue.append(key)
@@ -42,16 +48,14 @@ def fastrefine(g, startcolor=-1):
 				for vertex in connectednodes[key]:
 					vertex.colornum = nextcolor
 				colordict = g.getcolordict()
-				nextcolor = max(colordict.keys()) + 1
+				nextcolor += 1
 		i += 1
-	print('end')
-	print(colordict)
 	elapsed_time = time.clock() - start_time
 	print('Time: {0:.4f} sec'.format(elapsed_time))
-	try:
-		return compareColors(splitColorDict(colordict, g)[0])
-	except:
-		print('its only one graph apparently')
+	# try:
+	# return compareColors(splitColorDict(colordict, g)[0])
+	# except:
+	# print('its only one graph apparently')
 	return colordict
 
 
@@ -132,51 +136,129 @@ def getNeighbourColors(v):
 	return colors
 
 
-def compare(graphlisturl):
-	global graphlist
-	graphlist = loadgraph(graphlisturl, readlist=True)
-	return fastrefine(disjoint())
+def compare(graphlisturl=-1, gs=-1):
+	assert graphlisturl != -1 or gs != -1
 
-
-def disjoint(graphnumbers=-1):
-	if not graphnumbers:
-		return None
-
-	subgraphlist = []
-
-	for graph in graphlist[0]:
-		subgraphlist.append(len(graph.V()))
-	print(subgraphlist)
-
-	graphs = graphlist[0][0]
-	global numberOfGraphs
-
-	if graphnumbers == -1:
-		for y in range(1, len(graphlist[0])):
-			numberOfGraphs = len(graphlist[0])
-			graphs = disjointunion(graphs, graphlist[0][y])
+	if gs is -1:
+		graphlist = loadgraph(graphlisturl, readlist=True)[0]
 	else:
-		numberOfGraphs = len(graphnumbers)
-		graphs = graphlist[0][graphnumbers.pop(0)]
-		for y in graphnumbers:
-			graphs = disjointunion(graphs, graphlist[0][y])
-	graphs.subgraphs = subgraphlist
-	return graphs
+		graphlist = gs
+	g = graphlist[0]
+	subgraphlist = []
+	subgraphlist.append(len(g.V()))
+	for i in range(1, len(graphlist)): # make one big graph from the graphlist
+		h = graphlist[i]
+		g = disjointunion(g, h)
+		subgraphlist.append(len(h.V()))
+	g.subgraphs = subgraphlist
+
+	colordict = fastrefine(g)
+	graphcolors = splitColorDict(colordict, g)[0]
+
+	isomorphisms = []
+	undicided = []
+	for i in range(len(graphcolors)): # find isomorphisms
+		if len(list(set(graphcolors[i]))) != len(graphcolors[i]):
+			undicided.append(i)
+		else:
+			for j in range(i + 1, len(graphcolors)):
+				if graphcolors[i] == graphcolors[j]:
+					isomorphisms.append([i, j])
+
+	if not undicided: # status update
+		if isomorphisms:
+			print("Isomorphisms found: ", isomorphisms)
+		else:
+			print("No Isomorphisms found.")
+		return colordict
+	else:
+		print('Isomorphisms found: ', isomorphisms)
+		print('There are still undecided graphs left, continuing search..')
+
+	# individualization here
+	for i in range(len(undicided)):
+		for j in range(len(undicided)):
+			if i < j:
+				individualization(graphlist[undicided[i]], graphlist[undicided[j]], graphcolors[undicided[i]])
+
+
+	return colordict
+
+def individualization(g1, g2, colors):
+	colordict = dict()
+	for i in range(len(colors)): # make new colordict
+		color = colors[i]
+		if color in colordict.keys():
+			colordict[color].append(g1.getvertexbyrepr(str(i)))
+			colordict[color].append(g2.getvertexbyrepr(str(i)))
+		else:
+			colordict[color] = [g1.getvertexbyrepr(str(i))]
+			colordict[color].append(g2.getvertexbyrepr(str(i)))
+	print(colordict)
+	nextcolor = max(colordict.keys()) + 1
+	for color in colordict.keys():
+		if len(colordict[color]) > 2: #dan moeten we hier dus echt individualiseren..
+			colordict[color][0].colornum = nextcolor
+			for node in colordict[color]:
+				if not colordict[color].index(node) % 2 == 0:
+					node.colornum = nextcolor
+					gs = [g1,g2]
+					compare(-1,gs)
+					#print('a') # nu recursief weer compare aan roepen..
+
+	# todo = dict()
+	# for c in colors: #find wich colors we have to check
+	# 	a = colors.count(c)
+	# 	if a > 1:
+	# 		if c not in todo.keys():
+	# 			todo[c] = a
+	# print('todo', todo)
+	#
+	# nextcolor = max(colors) + 1
+	# for key in todo:
+	#
+
+	return 0
+
+#
+# def disjoint(graphnumbers=-1):
+# if not graphnumbers:
+# return None
+#
+# 	subgraphlist = []
+#
+# 	for graph in graphlist[0]:
+# 		subgraphlist.append(len(graph.V()))
+# 	print(subgraphlist)
+#
+# 	graphs = graphlist[0][0]
+# 	global numberOfGraphs
+#
+# 	if graphnumbers == -1:
+# 		for y in range(1, len(graphlist[0])):
+# 			numberOfGraphs = len(graphlist[0])
+# 			graphs = disjointunion(graphs, graphlist[0][y])
+# 	else:
+# 		numberOfGraphs = len(graphnumbers)
+# 		graphs = graphlist[0][graphnumbers.pop(0)]
+# 		for y in graphnumbers:
+# 			graphs = disjointunion(graphs, graphlist[0][y])
+# 	graphs.subgraphs = subgraphlist
+# 	return graphs
 
 
 def splitColorDict(colordict, g):
 	subgraphsl = g.subgraphs
 	number = 0
 	partitions = []
+	split = []
+	split2 = []
 	for i in range(len(subgraphsl)):
 		partitions.append(list(range(number, number + subgraphsl[i])))
 		number += subgraphsl[i]
-
-	split = []
-	split2 = []
-	for j in range(numberOfGraphs):
 		split.append([])
 		split2.append([])
+
 	for key in colordict:
 		for value in colordict.get(key):
 			for e in partitions:
@@ -265,7 +347,7 @@ def individualizationRefinement():
 
 
 # print(fastrefine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False)))
-print(compare("GI_TestInstancesWeek1/crefBM_4_7.grl"))
+compare("GI_TestInstancesWeek1/crefBM_4_9.grl")
 # print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
 
 

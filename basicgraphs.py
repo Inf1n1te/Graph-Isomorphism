@@ -158,6 +158,12 @@ class graph():
 			self.addvertex()
 		self.enlist = []
 		self.colordict = -1
+		self.vertexreprmap = dict()
+		for v in self._V:
+			self.vertexreprmap[v.__repr__()] = v
+
+	def getvertexbyrepr(self, repr):
+		return self.vertexreprmap[repr]
 
 	def __repr__(self):
 		return 'V=' + str(self._V) + '\nE=' + str(self._E)
