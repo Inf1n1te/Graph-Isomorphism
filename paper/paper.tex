@@ -45,6 +45,10 @@
 \fancyhead[C]{T.\ Kemp, T.\ Kerkhoven, J.\ Klein Brinke, T.\ Sonderen: \shorttitle} % Custom header text
 \fancyfoot[RO,LE]{\thepage} % Custom footer text
 
+% Bibliography
+\usepackage[backend=bibtex]{biblatex}
+\bibliography{references.bib}
+
 %----------------------------------------------------------------------------------------
 %	TITLE SECTION
 %----------------------------------------------------------------------------------------
@@ -132,21 +136,8 @@ Conclusions here
 %----------------------------------------------------------------------------------------
 %	REFERENCE LIST
 %----------------------------------------------------------------------------------------
- 
-% Bibliography - this is intentionally simple in this template
-\begin{thebibliography}{99}
 
-\bibitem{Fig2009}
-Figueredo, A.~J.\ and Wolf, P.\ S.~A.\ (2009).
-Assortative pairing and life history strategy - a cross-cultural study.
-\emph{Human Nature \& Arts}, 20:317-330.
-
-\bibitem{Lang2011}
-R.\ Langerak  (2011).
-How to write a {\tt python} computer program.
-\emph{Annals of Improbable Research}, 2:16-27.
-
-\end{thebibliography}
+\printbibliography
 
 %----------------------------------------------------------------------------------------
 
