@@ -6,59 +6,59 @@ from makegraphs import disjointunion
 from graphIO import *
 
 
-def fastrefine(g, startcolor=-1, colordict=-1):
-	start_time = time.clock()
-	if colordict is -1:
-		colordict = degcolordict(g)
-
-	if startcolor is -1:
-		shortest = min(colordict.keys())
-		for key in colordict.keys():
-			if len(colordict[key]) <= len(colordict[shortest]):
-				shortest = key
-		queue = [shortest]
-	else:
-		queue = [startcolor]
-
-	nextcolor = max(colordict.keys()) + 1
-
-	i = 0
-	while i < len(queue):
-		connectednodes = dict()
-		for value in colordict[queue[i]]:
-			for nb in value.nbs():  # make colordict of neighbours
-				if nb.colornum not in connectednodes:
-					connectednodes[nb.colornum] = [nb]
-				elif nb not in connectednodes[nb.colornum]:
-					connectednodes[nb.colornum].append(nb)
-		for key in connectednodes.keys():
-			colordictchanged = False
-			colordict[key].sort(key=lambda x: x._label)
-			connectednodes[key].sort(key=lambda x: x._label)
-			if colordict[key] == connectednodes[key]:
-				pass
-			elif key not in queue and len(colordict[key]) < len(connectednodes[key]):
-				queue.append(key)
-				colordictchanged = True
-			else:
-				queue.append(nextcolor)
-				colordictchanged = True
-
-			if colordictchanged:
-				for vertex in connectednodes[key]:
-					vertex.colornum = nextcolor
-				colordict = g.getcolordict()
-                nextcolor = max(colordict.keys()) + 1
-		i += 1
-    print('end')
-    print(colordict)
-	elapsed_time = time.clock() - start_time
-	print('Time: {0:.4f} sec'.format(elapsed_time))
-	try:
-        return compareColors(splitColorDict(colordict, g)[0])
-	except:
-		print('its only one graph apparently')
-	return colordict
+# def fastrefine(g, startcolor=-1, colordict=-1):
+# start_time = time.clock()
+# 	if colordict is -1:
+# 		colordict = degcolordict(g)
+#
+# 	if startcolor is -1:
+# 		shortest = min(colordict.keys())
+# 		for key in colordict.keys():
+# 			if len(colordict[key]) <= len(colordict[shortest]):
+# 				shortest = key
+# 		queue = [shortest]
+# 	else:
+# 		queue = [startcolor]
+#
+# 	nextcolor = max(colordict.keys()) + 1
+#
+# 	i = 0
+# 	while i < len(queue):
+# 		connectednodes = dict()
+# 		for value in colordict[queue[i]]:
+# 			for nb in value.nbs():  # make colordict of neighbours
+# 				if nb.colornum not in connectednodes:
+# 					connectednodes[nb.colornum] = [nb]
+# 				elif nb not in connectednodes[nb.colornum]:
+# 					connectednodes[nb.colornum].append(nb)
+# 		for key in connectednodes.keys():
+# 			colordictchanged = False
+# 			colordict[key].sort(key=lambda x: x._label)
+# 			connectednodes[key].sort(key=lambda x: x._label)
+# 			if colordict[key] == connectednodes[key]:
+# 				pass
+# 			elif key not in queue and len(colordict[key]) < len(connectednodes[key]):
+# 				queue.append(key)
+# 				colordictchanged = True
+# 			else:
+# 				queue.append(nextcolor)
+# 				colordictchanged = True
+#
+# 			if colordictchanged:
+# 				for vertex in connectednodes[key]:
+# 					vertex.colornum = nextcolor
+# 				colordict = g.getcolordict()
+#                 nextcolor = max(colordict.keys()) + 1
+# 		i += 1
+#     print('end')
+#     print(colordict)
+# 	elapsed_time = time.clock() - start_time
+# 	print('Time: {0:.4f} sec'.format(elapsed_time))
+# 	try:
+#         return compareColors(splitColorDict(colordict, g)[0])
+# 	except:
+# 		print('its only one graph apparently')
+# 	return colordict
 
 
 # def refine(g):
@@ -249,6 +249,7 @@ def preprocessing(g):
     for i, twin in enumerate(falsetwins + twins):
         g.addvertex(twin[0]._label)
     labels = [l._label for l in g.V()]
+    print(falsetwins + twins)
     for i, twin in enumerate(falsetwins + twins):
         for j in combined[i]:
             if j._label in labels and twin[0] != j:
