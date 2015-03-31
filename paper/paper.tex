@@ -2,6 +2,8 @@
 
 \usepackage{amsmath,amssymb,amsthm} % Mathematical Symbols, styles, etc
 
+\usepackage[utf8]{inputenc} % UTF-8 character encoding stuff
+
 % Used to enable use of the defined labeled enunciations. Usage: \begin{definition}text\end{definition}
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
@@ -93,25 +95,35 @@
 \begin{multicols}{2} % Two-column layout throughout the main article text
 
 %------------------------------------------------
-\section{Introduction}
+\section{Introduction} 
 
-Introduction here
+This paper will discuss the effect of several preprocessing methods on the computation time of the graph isomorphism problem. This paper will mostly focus on the algorithms and their correctness, in combination with computational experiments and their results.
+
+The graph isomorphism problem is the computational problem of determining whether two finite graphs are isomorphic. Besides its practical importance, the graph isomorphism problem is a curiosity in computational complexity theory as it is one of a very small number of problems belonging to NP neither known to be solvable in polynomial time nor NP-complete: it is one of only 12 such problems listed by Garey \& Johnson (1979)\cite{book:garyJohnson1979}, and one of only two of that list whose complexity remains unresolved. As of 2008 the best algorithm (Eugene Luks, 1983) has run time $2^{O(\sqrt{n log n})}$ for graphs with \emph{n} vertices.\cite{article:davidJohnson2005}\cite{inproceedings:babaiCodenotti2008}\cite{website:wikiGI}
+
+The preprocessing part are algorithms that look at the graphs before determining whether they are isomorphic with the intent of speeding up the actual process of the determining whether the graphs are isomorphic.
 
 %------------------------------------------------
 
 \section{Scope \& Objectives}
 
-Scope \& Objectives here
+The aim of this research paper is to determine whether certain preprocessing methods significantly reduce the time required to check whether two graphs are isomorphic. At the core, two cases will be compared: a basic case without preprocessing, and a case with preprocessing. 
+
+For this paper, the time complexity of the algorithms will not be discussed or calculated. The difference in performance of the cases will be shown from a statistical analysis of computational results.
+
+This paper will give a description of the algorithms used for preproccesing, as well as proof of correctness. The algorithms used to check for isomorphisms will be left out of consideration.
 
 %------------------------------------------------
 \section{Methods}
 
-Methods here
+TBD - exact setup of experiment - what methods were used to test
+Used to examine validity of the experiment by outsiders, by very precise, give reasons for methods and setup, possibly give alternatives and arguments for them, but describe why we chose the current methods.
 
 %------------------------------------------------
 \section{Description of Algorithms}
 
 Description of Algorithms here
+Don't forget to reference the slides
 
 %------------------------------------------------
 \section{Proof of Correctness}
@@ -122,16 +134,19 @@ Proof of Correctness here
 \section{Computational Experiments}
 
 Computational Experiments here
+Setup good experiments beforehand and test extensively
 
 %------------------------------------------------
 \section{Results}
 
 Results here
+And statistical analysis of the results
 
 %------------------------------------------------
 \section{Conclusions}
 
 Conclusions here 
+Is it faster?
 
 %----------------------------------------------------------------------------------------
 %	REFERENCE LIST
