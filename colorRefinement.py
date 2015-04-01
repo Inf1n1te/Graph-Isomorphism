@@ -216,7 +216,7 @@ def countIsomorphism(graph):
 					n]  # we'll give the the colors in the colordict the assigned colors
 			newcolor = max(graph.get_colordict().keys()) + 1  # assign a new color
 			# todo: permenantly change colors of nodes.. Instead of resetting them :(
-			# what needs to be done is basically change a nodes color in one graph and one in the other and then use fastrefine.
+			# what needs to be done is basically change a nodes color in one graph and one in the other and then use countIsomorphisms on that.
 			num += countIsomorphism(graph)
 		print(num)
 		return num
