@@ -6,7 +6,7 @@ from makegraphs import disjointunion
 from graphIO import *
 
 
-def fastrefine(g, startcolor=-1, colordict=-1):
+def fastrefine(g, colordict=-1, startcolor=-1):
 	start_time = time.clock()
 	if colordict is -1:
 		colordict = degcolordict(g)
@@ -181,17 +181,23 @@ def compare(graphlisturl=-1, gs=-1):
 			for second in undecided:
 				if second > first:
 					print("First: ", first, ", Second: ", second)
-					countIsomorphism(disjointunion(graphlist[first], graphlist[second]))
+					num = countIsomorphism(disjointunion(graphlist[first], graphlist[second]))
+
 
 	# individualization here
 
 	return colordict
 
 
-def countIsomorphism(graph):
-	colordict = fastrefine(graph)
+def countIsomorphism(graph, hasColordict=False):
+	print("CountIsomorphism bruh!")
+	if hasColordict is False:
+		colordict = fastrefine(graph)
+	else:
+		colordict = fastrefine(graph, hasColordict)
 	isomorphism = True
 	colors = []
+	print("Colordict: ", colordict)
 	for c in colordict.keys():
 		length = len(colordict[c])
 		if length >= 4:  # if there are more than 4 elemts in colordict[c], it means there are duplicates
@@ -207,19 +213,29 @@ def countIsomorphism(graph):
 		nodes = graph.V()
 		anotherDict = dict()
 		for n in nodes:
-			anotherDict[n] = n.colornum  # node and it's color to a dict (Node: color)
-		x = colors[0]  # we'lls tart with the first color
+			anotherDict[n] = n.colornum  # node and its color to a dict (Node: color)
+		onehalf = colors[0:int(len(colors) / 2)]
+		otherhalf = colors[int((len(colors) / 2)):(len(colors))]
+		index = 0
+		x = colors[index]  # we'lls tart with the first color
 		num = 0
-		for y in colors[int(len(colors) / 2)::]:  # get the middle of colors[] (as it skips the first half)
+		for y in otherhalf:  # get the middle of colors[] (as it skips the first half)
 			for n in nodes:
 				graph.getcolordict()[n] = anotherDict[
 					n]  # we'll give the the colors in the colordict the assigned colors
-			newcolor = max(graph.get_colordict().keys()) + 1  # assign a new color
+			newcolor = max(graph.getcolordict().keys()) + 1  # assign a new color
+			colordict[c].remove(x)
+			colordict[c].remove(y)
+			colordict[newcolor] = [x]
+			colordict[newcolor].append(y)
+			print("Print colordict: ", colordict)
+			num += countIsomorphism(graph, colordict)
+			colordict.pop(newcolor, None)
+			colordict[c].append(x)
+			colordict[c].append(y)
 			# todo: permenantly change colors of nodes.. Instead of resetting them :(
 			# what needs to be done is basically change a nodes color in one graph and one in the other and then use countIsomorphisms on that.
-			num += countIsomorphism(graph)
-		print(num)
-		return num
+	return num
 
 	return 0
 
