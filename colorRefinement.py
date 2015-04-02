@@ -210,10 +210,6 @@ def countIsomorphism(graph, hasColordict=False):
 	if isomorphism:
 		return 1
 	else:
-		nodes = graph.V()
-		anotherDict = dict()
-		for n in nodes:
-			anotherDict[n] = n.colornum  # node and its color to a dict (Node: color)
 		onehalf = colors[0:int(len(colors) / 2)]
 		otherhalf = colors[int((len(colors) / 2)):(len(colors))]
 		index = 0
