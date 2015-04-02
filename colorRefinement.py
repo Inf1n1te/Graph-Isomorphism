@@ -219,10 +219,7 @@ def countIsomorphism(graph, hasColordict=False):
 		index = 0
 		x = colors[index]  # we'lls tart with the first color
 		num = 0
-		for y in otherhalf:  # get the middle of colors[] (as it skips the first half)
-			for n in nodes:
-				graph.getcolordict()[n] = anotherDict[
-					n]  # we'll give the the colors in the colordict the assigned colors
+		for y in otherhalf:  # get the middle of colors[] (as it skips the first half)s
 			newcolor = max(graph.getcolordict().keys()) + 1  # assign a new color
 			colordict[c].remove(x)
 			colordict[c].remove(y)
