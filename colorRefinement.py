@@ -6,9 +6,11 @@ from makegraphs import disjointunion
 from graphIO import *
 
 
-def fastrefine(g, colordict=-1, startcolor=-1):
-    if colordict is -1:
+def fastrefine(g, colordict=-1, startcolor=-1, preproc=False):
+    if colordict is -1 and not preproc:
         colordict = degcolordict(g)
+    elif colordict is -1 and preproc:
+        colordict = preproccolordict(g)
 
     if startcolor is -1:
         shortest = min(colordict.keys())
@@ -122,6 +124,20 @@ def degcolordict(g):
     return colordict
 
 
+def preproccolordict(g):
+    colordict = {}  # dictionary with key=c and value=vertex array
+    for v in g.V():
+        if not v.twin:
+            v.colornum = v.deg()
+        else:
+            v.colornum = -v.twinsize
+        if v.colornum not in colordict:
+            colordict[v.colornum] = [v]
+        else:
+            colordict[v.colornum].append(v)
+    return colordict
+
+
 def getNeighbourColors(v):
     colors = []
     for i in v.nbs():
@@ -129,7 +145,7 @@ def getNeighbourColors(v):
     return colors
 
 
-def compare(graphlisturl=-1, gs=-1):
+def compare(graphlisturl=-1, gs=-1, preproc=False):
     assert graphlisturl != -1 or gs != -1
 
     if gs is -1:
@@ -144,8 +160,10 @@ def compare(graphlisturl=-1, gs=-1):
         g = disjointunion(g, h)
         subgraphlist.append(len(h.V()))
     g.subgraphs = subgraphlist
-
-    colordict = fastrefine(g)
+    if preproc:
+        colordict = fastrefine(g, preproc=True)
+    else:
+        colordict = fastrefine(g)
     graphcolors = splitColorDict(colordict, g)[0]
 
     isomorphisms = []
@@ -343,8 +361,12 @@ def preprocessing(g):
         for i in delnodes:
             g._V.pop(i)
         combined = falsetwinsN + twinsN
-        for i, twin in enumerate(falsetwins + twins):
-            g.addvertex(twin[0]._label)
+        mx = 0
+        for i, twin in enumerate(falsetwins):
+            g.addvertex(twin[0]._label, True, len(twin))
+            mx = max(mx, len(twin))
+        for i, twin in enumerate(twins):
+            g.addvertex(twin[0]._label, True, mx + len(twin))
         labels = [l._label for l in g.V()]
         for i, twin in enumerate(falsetwins + twins):
             for j in combined[i]:
@@ -363,10 +385,11 @@ def testpre(graphlisturl):
     nfalsetwins, ntwins = [None] * ngraphs, [None] * ngraphs
     for i in range(ngraphs):
         graphlist[0][i], nfalsetwins[i], ntwins[i] = preprocessing(graphlist[0][i])
+        print(graphlist[0][i])
     print(nfalsetwins, ntwins)
     elapsed_time = time.clock() - start_time
     print('total time: {0:.4f} sec'.format(elapsed_time))
-    return 1  # fastrefine(disjoint())
+    return compare(gs=graphlist[0], preproc=True)
 
 
 def individualizationRefinement():
@@ -374,8 +397,9 @@ def individualizationRefinement():
 
 
 # print(fastrefine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False)))
-compare("GI_TestInstancesWeek1/crefBM_4_9.grl")
+# compare("GI_TestInstancesWeek1/crefBM_4_9.grl")
 # print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
 
 
+#print(compare("GI_TestInstancesWeek1/hugecographs.grl"))
 print(testpre("GI_TestInstancesWeek1/hugecographs.grl"))
