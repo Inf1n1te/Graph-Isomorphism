@@ -126,8 +126,10 @@ def degcolordict(g):
 
 def preproccolordict(g):
     colordict = {}  # dictionary with key=c and value=vertex array
+    print('V:', g.V())
     for v in g.V():
         if not v.twin:
+            print('nbs', list(g.nbsdict.keys()))
             v.colornum = v.deg()
         else:
             v.colornum = -v.twinsize
@@ -157,11 +159,9 @@ def compare(graphlisturl=-1, gs=-1, preproc=False):
     subgraphlist.append(len(g.V()))
     for i in range(1, len(graphlist)):  # make one big graph from the graphlist
         h = graphlist[i]
-        print(i)
-        print(h)
-        print(g)
         g = disjointunion(g, h)
         subgraphlist.append(len(h.V()))
+    g.makenbsdict()
     g.subgraphs = subgraphlist
     if preproc:
         colordict = fastrefine(g, preproc=True)
@@ -388,7 +388,8 @@ def testpre(graphlisturl):
     nfalsetwins, ntwins = [None] * ngraphs, [None] * ngraphs
     for i in range(ngraphs):
         graphlist[0][i], nfalsetwins[i], ntwins[i] = preprocessing(graphlist[0][i])
-        print(graphlist[0][i])
+        # print(graphlist[0][i])
+        #isgraph(graphlist[0][i])
     print(nfalsetwins, ntwins)
     elapsed_time = time.clock() - start_time
     print('total time: {0:.4f} sec'.format(elapsed_time))
@@ -399,6 +400,13 @@ def individualizationRefinement():
     return 0
 
 
+def isgraph(g):
+    print('V:', g.V())
+    for edge in g.E():
+        if edge.head() not in g.V() or edge.tail() not in g.V():
+            print('error: ', edge)
+
+
 # print(fastrefine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False)))
 # compare("GI_TestInstancesWeek1/crefBM_4_9.grl")
 # print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
@@ -406,3 +414,5 @@ def individualizationRefinement():
 
 #print(compare("GI_TestInstancesWeek1/hugecographs.grl"))
 print(testpre("GI_TestInstancesWeek1/hugecographs.grl"))
+
+

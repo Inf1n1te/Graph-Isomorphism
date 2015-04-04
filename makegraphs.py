@@ -1,5 +1,6 @@
 # DW 2 practicum, Ex1 solution
 from builtins import print
+
 from basicgraphs import graph
 
 
@@ -29,9 +30,10 @@ def disjointunion(G, H):
 	vmap = {}
 	K = graph()
 	for v in G.V() + H.V():
-		vmap[v] = K.addvertex()
+        vmap[v._label] = K.addvertex()
+    print(vmap)
 	for e in G.E() + H.E():
-		K.addedge(vmap[e.tail()], vmap[e.head()])
+        K.addedge(vmap[e.tail()._label], vmap[e.head()._label])
 	return K
 
 
