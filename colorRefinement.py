@@ -7,7 +7,6 @@ from graphIO import *
 
 
 def fastrefine(g, colordict=-1, startcolor=-1):
-	start_time = time.clock()
 	if colordict is -1:
 		colordict = degcolordict(g)
 
@@ -50,8 +49,6 @@ def fastrefine(g, colordict=-1, startcolor=-1):
 				colordict = g.getcolordict()
 				nextcolor += 1
 		i += 1
-	elapsed_time = time.clock() - start_time
-	print('Time: {0:.4f} sec'.format(elapsed_time))
 	# try:
 	# return compareColors(splitColorDict(colordict, g)[0])
 	# except:
@@ -103,10 +100,6 @@ def refine(g):
 	finalcolors = []
 	for node in g.V():
 		finalcolors.append(node.colornum)
-
-	elapsed_time = time.clock() - start_time
-	print('Time: {0:.4f} sec'.format(elapsed_time))
-	# DUS HIER SHIT DOEN MET COLORDICT EN DUBBELE KLEUREN ENZO
 	try:
 		result = compareColors(splitColorDict(colordict, g)[0])
 		if len(undecidedGraphs) > 0:
@@ -165,7 +158,6 @@ def compare(graphlisturl=-1, gs=-1):
 				if graphcolors[i] == graphcolors[j]:
 					isomorphisms.append([i, j])
 
-	print(undecided)
 	if not undecided:  # status update
 		if isomorphisms:
 			print("Isomorphisms found: ", isomorphisms)
@@ -174,17 +166,15 @@ def compare(graphlisturl=-1, gs=-1):
 		return colordict
 	else:
 		print('Isomorphisms found: ', isomorphisms)
-		print('There are still undecided graphs left, continuing search..')
+		print('There are still undecided graphs left: ', undecided)
+		print('Continuing search...')
 
-	if len(undecided) > 0:
-		for first in undecided:
-			for second in undecided:
-				if second > first:
-					print("First: ", first, ", Second: ", second)
-					num = countIsomorphism(disjointunion(graphlist[first], graphlist[second]))
-
-
-	# individualization here
+	# if len(undecided) > 0:  #########################################uncomment this to activate individualization again
+	# 	for first in undecided:
+	# 		for second in undecided:
+	# 			if second > first:
+	# 				print("First: ", first, ", Second: ", second)
+	# 				num = countIsomorphism(disjointunion(graphlist[first], graphlist[second]))
 
 	return colordict
 
