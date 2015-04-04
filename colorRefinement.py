@@ -22,7 +22,6 @@ def fastrefine(g, colordict=-1, startcolor=-1, preproc=False):
         queue = [startcolor]
 
     nextcolor = max(colordict.keys()) + 1
-
     i = 0
     while i < len(queue):
         connectednodes = dict()
@@ -126,10 +125,8 @@ def degcolordict(g):
 
 def preproccolordict(g):
     colordict = {}  # dictionary with key=c and value=vertex array
-    print('V:', g.V())
     for v in g.V():
         if not v.twin:
-            print('nbs', list(g.nbsdict.keys()))
             v.colornum = v.deg()
         else:
             v.colornum = -v.twinsize
@@ -161,7 +158,8 @@ def compare(graphlisturl=-1, gs=-1, preproc=False):
         h = graphlist[i]
         g = disjointunion(g, h)
         subgraphlist.append(len(h.V()))
-    g.makenbsdict()
+    g.makenbsdict()  # update nbs omdat er een nieuwe graph is
+    g.makeinclist()
     g.subgraphs = subgraphlist
     if preproc:
         colordict = fastrefine(g, preproc=True)
@@ -381,7 +379,6 @@ def preprocessing(g):
 
 
 def testpre(graphlisturl):
-    start_time = time.clock()
     global graphlist
     graphlist = loadgraph(graphlisturl, readlist=True)
     ngraphs = len(graphlist[0])
@@ -390,9 +387,8 @@ def testpre(graphlisturl):
         graphlist[0][i], nfalsetwins[i], ntwins[i] = preprocessing(graphlist[0][i])
         # print(graphlist[0][i])
         #isgraph(graphlist[0][i])
-    print(nfalsetwins, ntwins)
-    elapsed_time = time.clock() - start_time
-    print('total time: {0:.4f} sec'.format(elapsed_time))
+    print('number of twins:', nfalsetwins, ntwins)
+
     return compare(gs=graphlist[0], preproc=True)
 
 
@@ -400,19 +396,18 @@ def individualizationRefinement():
     return 0
 
 
-def isgraph(g):
-    print('V:', g.V())
-    for edge in g.E():
-        if edge.head() not in g.V() or edge.tail() not in g.V():
-            print('error: ', edge)
-
-
 # print(fastrefine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False)))
 # compare("GI_TestInstancesWeek1/crefBM_4_9.grl")
 # print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
 
+start_time = time.clock()
+print(compare("GI_TestInstancesWeek1/hugecographs.grl"))
+elapsed_time = time.clock() - start_time
+print('total time: {0:.4f} sec'.format(elapsed_time))
 
-#print(compare("GI_TestInstancesWeek1/hugecographs.grl"))
+start_time = time.clock()
 print(testpre("GI_TestInstancesWeek1/hugecographs.grl"))
+elapsed_time = time.clock() - start_time
+print('total time: {0:.4f} sec'.format(elapsed_time))
 
 

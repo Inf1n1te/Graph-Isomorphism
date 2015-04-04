@@ -57,10 +57,8 @@ class vertex():
         """
         Returns the list of edges incident with vertex <self>.
         """
-        print('enlist', self._graph.enlist)
         if not self._graph.enlist:
             self._graph.makeinclist()
-        print(self._graph.enlist)
         return self._graph.enlist[self]
 
     def nbs(self):
@@ -87,7 +85,11 @@ class vertex():
         """
         Returns the degree of vertex <self>.
         """
-        return len(self._graph.nbsdict[self])
+        try:
+            deg = len(self._graph.nbsdict[self])
+        except KeyError:
+            deg = 0
+        return deg
 
 
 class edge():
