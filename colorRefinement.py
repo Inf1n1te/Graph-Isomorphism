@@ -157,6 +157,9 @@ def compare(graphlisturl=-1, gs=-1, preproc=False):
     subgraphlist.append(len(g.V()))
     for i in range(1, len(graphlist)):  # make one big graph from the graphlist
         h = graphlist[i]
+        print(i)
+        print(h)
+        print(g)
         g = disjointunion(g, h)
         subgraphlist.append(len(h.V()))
     g.subgraphs = subgraphlist
