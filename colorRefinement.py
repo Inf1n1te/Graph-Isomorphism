@@ -9,7 +9,10 @@ from graphIO import *
 def fastrefine(g, colordict=-1, startcolor=-1):
 	start_time = time.clock()
 	if colordict is -1:
-		colordict = degcolordict(g)
+		if g.colordict == -1:
+			colordict = degcolordict(g)
+		else:
+			colordict = g.colordict
 
 	if startcolor is -1:
 		shortest = min(colordict.keys())
@@ -31,6 +34,7 @@ def fastrefine(g, colordict=-1, startcolor=-1):
 					connectednodes[nb.colornum] = [nb]
 				elif nb not in connectednodes[nb.colornum]:
 					connectednodes[nb.colornum].append(nb)
+
 		for key in connectednodes.keys():
 			colordictchanged = False
 			colordict[key].sort(key=lambda x: x._label)
@@ -181,7 +185,8 @@ def compare(graphlisturl=-1, gs=-1):
 			for second in undecided:
 				if second > first:
 					print("First: ", first, ", Second: ", second)
-					num = countIsomorphism(disjointunion(graphlist[first], graphlist[second]))
+					tempgraph = disjointunion(graphlist[first], graphlist[second])
+					num = countIsomorphism(tempgraph, fastrefine(tempgraph))
 
 
 	# individualization here
@@ -210,6 +215,7 @@ def countIsomorphism(graph, hasColordict=False):
 	if isomorphism:
 		return 1
 	else:
+		print('pindas')
 		onehalf = colors[0:int(len(colors) / 2)]
 		otherhalf = colors[int((len(colors) / 2)):(len(colors))]
 		index = 0
@@ -228,6 +234,7 @@ def countIsomorphism(graph, hasColordict=False):
 			colordict[c].append(y)
 			# todo: permenantly change colors of nodes.. Instead of resetting them :(
 			# what needs to be done is basically change a nodes color in one graph and one in the other and then use countIsomorphisms on that.
+	print('num is ', num)
 	return num
 
 	return 0
@@ -361,7 +368,8 @@ def individualizationRefinement():
 
 
 # print(fastrefine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False)))
-compare("GI_TestInstancesWeek1/crefBM_4_9.grl")
+compare("GI_TestInstancesWeek1/torus24.grl")
+#compare("GI_TestInstancesWeek1/crefBM_4_16.grl")
 # print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
 
 
