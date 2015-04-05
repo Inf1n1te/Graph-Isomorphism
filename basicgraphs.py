@@ -178,7 +178,8 @@ class graph():
 		self.colordict = colordict0
 
 	def getcolordict(self):
-		self.generatecolordict()
+		if self.colordict == -1:
+			self.generatecolordict()
 		return self.colordict
 
 	def makeinclist(self):

@@ -6,14 +6,15 @@ from makegraphs import disjointunion
 from graphIO import *
 
 
-def fastrefine(g, colordict=-1, startcolor=-1):
+def fastrefine(g, colordictarg=-1, startcolor=-1):
 	start_time = time.clock()
-	if colordict is -1:
+	if colordictarg is -1:
 		if g.colordict == -1:
 			colordict = degcolordict(g)
 		else:
 			colordict = g.colordict
-
+	else:
+		colordict = colordictarg
 	if startcolor is -1:
 		shortest = min(colordict.keys())
 		for key in colordict.keys():
@@ -23,6 +24,7 @@ def fastrefine(g, colordict=-1, startcolor=-1):
 	else:
 		queue = [startcolor]
 
+	applycolors(colordict)
 	nextcolor = max(colordict.keys()) + 1
 
 	i = 0
@@ -51,6 +53,7 @@ def fastrefine(g, colordict=-1, startcolor=-1):
 			if colordictchanged:
 				for vertex in connectednodes[key]:
 					vertex.colornum = nextcolor
+				g.generatecolordict()
 				colordict = g.getcolordict()
 				nextcolor += 1
 		i += 1
@@ -187,7 +190,10 @@ def compare(graphlisturl=-1, gs=-1):
 					print("First: ", first, ", Second: ", second)
 					tempgraph = disjointunion(graphlist[first], graphlist[second])
 					num = countIsomorphism(tempgraph, fastrefine(tempgraph))
+					if num > 0:
+						isomorphisms.append([first,second])
 
+	print('Search ended; Isomorphisms found: ', isomorphisms)
 
 	# individualization here
 
@@ -202,36 +208,41 @@ def countIsomorphism(graph, hasColordict=False):
 		colordict = fastrefine(graph, hasColordict)
 	isomorphism = True
 	colors = []
+	cvar = -1
 	print("Colordict: ", colordict)
 	for c in colordict.keys():
 		length = len(colordict[c])
+		print('length is ', length)
 		if length >= 4:  # if there are more than 4 elemts in colordict[c], it means there are duplicates
 			colorlength = len(colors)
 			if colorlength == 0 or length <= colorlength:
 				colors = colordict[c]  # add these to colors.
+				cvar = c
 				isomorphism = False  # meaning we found no isomorphism again
 		if length % 2 == 1:  # if there is an uneven number, it means we have no isomorphism (since there are unequal amount of colors in each graph)
 			return 0
 	if isomorphism:
 		return 1
 	else:
-		print('pindas')
 		onehalf = colors[0:int(len(colors) / 2)]
 		otherhalf = colors[int((len(colors) / 2)):(len(colors))]
+		print('otherhalf', otherhalf)
 		index = 0
 		x = colors[index]  # we'lls tart with the first color
 		num = 0
 		for y in otherhalf:  # get the middle of colors[] (as it skips the first half)s
+			print('y is ', y)
 			newcolor = max(graph.getcolordict().keys()) + 1  # assign a new color
-			colordict[c].remove(x)
-			colordict[c].remove(y)
+			print('x is ', x, ' -- colordict[c] is ', colordict[cvar], ' -- colors is ', colors)
+			colordict[cvar].remove(x)
+			colordict[cvar].remove(y)
 			colordict[newcolor] = [x]
 			colordict[newcolor].append(y)
 			print("Print colordict: ", colordict)
 			num += countIsomorphism(graph, colordict)
-			colordict.pop(newcolor, None)
-			colordict[c].append(x)
-			colordict[c].append(y)
+			colordict.pop(newcolor)
+			colordict[cvar].append(x)
+			colordict[cvar].append(y)
 			# todo: permenantly change colors of nodes.. Instead of resetting them :(
 			# what needs to be done is basically change a nodes color in one graph and one in the other and then use countIsomorphisms on that.
 	print('num is ', num)
@@ -239,7 +250,10 @@ def countIsomorphism(graph, hasColordict=False):
 
 	return 0
 
-
+def applycolors(colordict):
+	for color in colordict.keys():
+		for node in colordict[color]:
+			node.colornum = color
 #
 #
 # def disjoint(graphnumbers=-1):
@@ -368,8 +382,8 @@ def individualizationRefinement():
 
 
 # print(fastrefine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False)))
-compare("GI_TestInstancesWeek1/torus24.grl")
-#compare("GI_TestInstancesWeek1/crefBM_4_16.grl")
+#compare("GI_TestInstancesWeek1/torus24.grl")
+compare("GI_TestInstancesWeek1/crefBM_4_7.grl")
 # print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
 
 
