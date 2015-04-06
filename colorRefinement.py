@@ -8,7 +8,6 @@ from graphIO import *
 
 
 def fastrefine(g, colordictarg=-1, startcolor=-1):
-	start_time = time.clock()
 	if colordictarg is -1:
 		if g.colordict == -1:
 			colordict = degcolordict(g)
@@ -58,10 +57,6 @@ def fastrefine(g, colordictarg=-1, startcolor=-1):
 				colordict = g.getcolordict()
 				nextcolor += 1
 		i += 1
-	# try:
-	# return compareColors(splitColorDict(colordict, g)[0])
-	# except:
-	# print('its only one graph apparently')
 	return colordict
 
 
@@ -70,7 +65,6 @@ def refine(g):
 	colordict = degcolordict(g)
 
 	done = False
-	start_time = time.clock()
 	counter = 0
 	while not done:
 		done = True
@@ -110,8 +104,6 @@ def refine(g):
 	for node in g.V():
 		finalcolors.append(node.colornum)
 
-	elapsed_time = time.clock() - start_time
-	print('Time: {0:.4f} sec'.format(elapsed_time))
 	# DUS HIER SHIT DOEN MET COLORDICT EN DUBBELE KLEUREN ENZO
 	try:
 		result = compareColors(splitColorDict(colordict, g)[0])
@@ -141,8 +133,7 @@ def getNeighbourColors(v):
 		colors.append(i.colornum)
 	return colors
 
-
-def compare(graphlisturl=-1, gs=-1):
+def compare(graphlisturl=-1, GI_only=False, gs=-1):
 	assert graphlisturl != -1 or gs != -1
 
 	if gs is -1:
@@ -188,18 +179,16 @@ def compare(graphlisturl=-1, gs=-1):
 				if second > first:
 					print("First: ", first, ", Second: ", second)
 					tempgraph = disjointunion(graphlist[first], graphlist[second])
-					num = countIsomorphism(tempgraph, fastrefine(tempgraph))
+					num = countIsomorphism(tempgraph, fastrefine(tempgraph), GI_only)
 					if num > 0:
 						isomorphisms.append([first,second, num])
 
 	print('Search ended; Isomorphisms found: ', isomorphisms)
 
-	# individualization here
-
 	return colordict
 
 
-def countIsomorphism(graph, hasColordict=False):
+def countIsomorphism(graph, hasColordict=False, GI_only=False):
 	#print("CountIsomorphism bruh!")
 	if hasColordict is False:
 		colordict = fastrefine(graph)
@@ -227,29 +216,26 @@ def countIsomorphism(graph, hasColordict=False):
 		x = colors[index]  # we'lls tart with the first color
 		num = 0
 		for y in otherhalf:  # get the middle of colors[] (as it skips the first half)s
+			if GI_only and num > 0:
+				break
 			newcolor = max(graph.getcolordict().keys()) + 1  # assign a new color
-			colordict2 = copy.deepcopy(colordict)
-			print(colordict2, x)
-			x2 = graph.getvertexbyrepr(str(x._label))
-			y2 = graph.getvertexbyrepr(str(y._label))
-			colordict2[cvar].remove(x2)
-			colordict2[cvar].remove(y2)
-			colordict2[newcolor] = [x2]
-			colordict2[newcolor].append(y2)
-			num += countIsomorphism(graph, colordict)
+			applycolors(colordict)
 
-			#oud
-			# colordict[cvar].remove(x)
-			# colordict[cvar].remove(y)
-			# colordict[newcolor] = [x]
-			# colordict[newcolor].append(y)
-			# num += countIsomorphism(graph, colordict)
-			# colordict.pop(newcolor)
-			# colordict[cvar].append(x)
-			# colordict[cvar].append(y)
-			# todo: permenantly change colors of nodes.. Instead of resetting them :(
-			# what needs to be done is basically change a nodes color in one graph and one in the other and then use countIsomorphisms on that.
-	#print('num is ', num)
+			colordict[cvar].remove(x)
+			colordict[cvar].remove(y)
+			colordict[newcolor] = [x]
+			colordict[newcolor].append(y)
+
+			applycolors(colordict)
+			graph2 = copy.deepcopy(graph)
+			graph2.generatecolordict()
+			colordict2 = graph2.getcolordict()
+
+			colordict.pop(newcolor)
+			colordict[cvar].append(x)
+			colordict[cvar].append(y)
+
+			num += countIsomorphism(graph2, colordict2, GI_only)
 	return num
 
 	return 0
@@ -258,33 +244,6 @@ def applycolors(colordict):
 	for color in colordict.keys():
 		for node in colordict[color]:
 			node.colornum = color
-#
-#
-# def disjoint(graphnumbers=-1):
-# if not graphnumbers:
-# return None
-#
-# subgraphlist = []
-#
-# for graph in graphlist[0]:
-# 		subgraphlist.append(len(graph.V()))
-# 	print(subgraphlist)
-#
-# 	graphs = graphlist[0][0]
-# 	global numberOfGraphs
-#
-# 	if graphnumbers == -1:
-# 		for y in range(1, len(graphlist[0])):
-# 			numberOfGraphs = len(graphlist[0])
-# 			graphs = disjointunion(graphs, graphlist[0][y])
-# 	else:
-# 		numberOfGraphs = len(graphnumbers)
-# 		graphs = graphlist[0][graphnumbers.pop(0)]
-# 		for y in graphnumbers:
-# 			graphs = disjointunion(graphs, graphlist[0][y])
-# 	graphs.subgraphs = subgraphlist
-# 	return graphs
-
 
 def splitColorDict(colordict, g):
 	subgraphsl = g.subgraphs
@@ -380,11 +339,12 @@ def findDuplicates(split2):
 	print(result)
 	return result
 
+start_time = time.clock()
 
-#compare("GI_TestInstancesWeek1/torus24.grl")
-compare("GI_TestInstancesWeek1/crefBM_4_7.grl")
-#print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
+compare("GI_TestInstancesWeek1/bigtrees3.grl", True)
 
+elapsed_time = time.clock() - start_time
+print('a: {0:.4f} sec'.format(elapsed_time))
 
 # test preprocessing
 # start_time = time.clock()
