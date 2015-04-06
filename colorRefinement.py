@@ -394,6 +394,7 @@ def testpre(graphlisturl):
     print(graphlist[0][0])
     for i in range(ngraphs):
         writeDOT(graphlist[0][i], 'after' + str(i) + '.dot')
+    print(graphlist)
     return compare(gs=graphlist[0], preproc=True)
 
 
