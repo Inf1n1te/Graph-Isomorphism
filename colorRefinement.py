@@ -66,62 +66,6 @@ def fastrefine(g, colordictarg=-1, startcolor=-1, preproc=False):
 	return colordict
 
 
-def refine(g):
-	# initialize
-	colordict = degcolordict(g)
-
-	done = False
-	counter = 0
-	while not done:
-		done = True
-		counter += 1
-		if counter % 100 == 0:
-			print(counter)
-		tempcolordict = dict()
-
-		for key in colordict.keys():
-			nextcolor = max(colordict.keys()) + 1
-			buren = tuple()
-			for value in colordict[key]:
-				nc = sorted(tuple(getNeighbourColors(value)))
-				if len(buren) == 0:
-					buren = nc
-
-				if buren != nc:
-					done = False
-					if nextcolor in tempcolordict:
-						tempcolordict[nextcolor].append(value)
-					else:
-						tempcolordict[nextcolor] = [value]
-
-				else:
-					if key in tempcolordict:
-						tempcolordict[key].append(value)
-					else:
-						tempcolordict[key] = [value]
-
-		colordict = tempcolordict.copy()
-
-		for key in colordict.keys():
-			for value in colordict[key]:
-				value.colornum = key
-
-	finalcolors = []
-	for node in g.V():
-		finalcolors.append(node.colornum)
-
-	# DUS HIER SHIT DOEN MET COLORDICT EN DUBBELE KLEUREN ENZO
-	try:
-		result = compareColors(splitColorDict(colordict, g)[0])
-		if len(undecidedGraphs) > 0:
-			print(undecidedGraphs)
-			findDuplicates(splitColorDict(colordict, g)[1])
-		return result
-	except:
-		print('its only one graph apparently')
-		return colordict
-
-
 def degcolordict(g):
 	colordict = {}  # dictionary with key=c and value=vertex array
 	for v in g.V():
@@ -311,10 +255,6 @@ def compareColors(split):
 	return r, undecidedGraphs
 
 
-def splitlist(l, n):
-	return [l[i:i + n] for i in range(0, len(l), n)]
-
-
 def gettwins(g):
 	nbs = []
 	nbs2 = []
@@ -397,33 +337,6 @@ def comparepreproc(graphlisturl, GI_only=False):
     print('number of twins:', nfalsetwins, ntwins)
     return compare(gs=graphlist[0], preproc=True, GI_only=False)
 
-
-def findDuplicates(split2):
-	# split2: lijst met tupels (colornum, vertices)
-	# IN case we do need the sort:
-	# for e in split2:
-	# sorted(e, key=lambda x: x[0])
-	print(split2)
-	result = {}
-	for e in range(len(split2)):
-		if e in undecidedGraphs:
-			newDict = {}
-			result[e] = []
-			i = 0
-			while i < len(split2[e]) - 1:
-				if split2[e][i][0] == split2[e][i + 1][0]:
-					x = 2
-					newList = [split2[e][i][1], split2[e][i + 1][1]]
-					while (i + x) < len(split2[e]) - 1 and split2[e][i][0] == split2[e][i + x][0]:
-						newList.append(split2[e][i + x][1])
-						x += 1
-					newDict[split2[e][i][0]] = newList
-					i += x
-				else:
-					i += 1
-			result[e].append(newDict)
-	print(result)
-	return result
 
 start_time = time.clock()
 
