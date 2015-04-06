@@ -341,6 +341,44 @@ def gettwins(g):
         twins.keys())  # value zijn twins
 
 
+# def preprocessingold(g):
+# falsetwins, twins, falsetwinsN, twinsN = gettwins(g)
+#     lftwins = len(falsetwins)
+#     ltwins = len(twins)
+#     if lftwins != 0 or ltwins != 0:
+#         deledges = []
+#         for i, e in enumerate(g._E):
+#             if any(e._tail in ftwin for ftwin in falsetwins) or any(e._head in ftwin for ftwin in falsetwins) or any(
+#                             e._tail in twin for twin in twins) or any(e._head in twin for twin in twins):
+#                 deledges.append(i)
+#         deledges.sort(reverse=True)
+#         for i in deledges:
+#             g._E.pop(i)
+#         delnodes = []
+#         for i, V in enumerate(g._V):
+#             if any(V in ftwin for ftwin in falsetwins) or any(V in twin for twin in twins):
+#                 delnodes.append(i)
+#         delnodes.sort(reverse=True)
+#         for i in delnodes:
+#             g._V.pop(i)
+#         #Alles opnieuw aanmaken
+#         combined = falsetwinsN + twinsN
+#         mx = 0
+#         for i, twin in enumerate(falsetwins):
+#             g.addvertex(twin[0]._label, True, len(twin))
+#             mx = max(mx, len(twin))
+#         for i, twin in enumerate(twins):
+#             g.addvertex(twin[0]._label, True, mx + len(twin))
+#         labels = [l._label for l in g.V()]
+#         for i, twin in enumerate(falsetwins + twins):
+#             for j in combined[i]:
+#                 if j._label in labels and twin[0] != j and not g.findedge(twin[0],
+#                                                                           j):  # Geen loop en geen edges dubbel omgedraaid
+#                     g.addedge(twin[0], j)
+#         g._V.sort(key=lambda x: x._label)
+#         print(twins,falsetwins)
+#     return g, lftwins, ltwins
+
 def preprocessing(g):
     falsetwins, twins, falsetwinsN, twinsN = gettwins(g)
     lftwins = len(falsetwins)
@@ -361,18 +399,18 @@ def preprocessing(g):
         delnodes.sort(reverse=True)
         for i in delnodes:
             g._V.pop(i)
+        # Alles opnieuw aanmaken
         combined = falsetwinsN + twinsN
         mx = 0
         for i, twin in enumerate(falsetwins):
-            g.addvertex(twin[0]._label, True, len(twin))
+            g.addvertexobject(twin[0])
             mx = max(mx, len(twin))
         for i, twin in enumerate(twins):
-            g.addvertex(twin[0]._label, True, mx + len(twin))
-        labels = [l._label for l in g.V()]
+            g.addvertexobject(twin[0])
         for i, twin in enumerate(falsetwins + twins):
             for j in combined[i]:
-                if j._label in labels and twin[0] != j and not g.findedge(twin[0],
-                                                                          j):  # Geen loop en geen edges dubbel omgedraaid
+                if j in g.V() and twin[0] != j and not g.findedge(twin[0],
+                                                                  j):  # Geen loop en geen edges dubbel omgedraaid
                     g.addedge(twin[0], j)
         g._V.sort(key=lambda x: x._label)
     return g, lftwins, ltwins
@@ -382,13 +420,17 @@ def testpre(graphlisturl):
     global graphlist
     graphlist = loadgraph(graphlisturl, readlist=True)
     ngraphs = len(graphlist[0])
+    for i in range(ngraphs):
+        writeDOT(graphlist[0][i], 'before' + str(i) + '.dot')
     nfalsetwins, ntwins = [None] * ngraphs, [None] * ngraphs
     for i in range(ngraphs):
         graphlist[0][i], nfalsetwins[i], ntwins[i] = preprocessing(graphlist[0][i])
         # print(graphlist[0][i])
         #isgraph(graphlist[0][i])
     print('number of twins:', nfalsetwins, ntwins)
-
+    print(graphlist[0][0])
+    for i in range(ngraphs):
+        writeDOT(graphlist[0][i], 'after' + str(i) + '.dot')
     return compare(gs=graphlist[0], preproc=True)
 
 
@@ -396,18 +438,27 @@ def individualizationRefinement():
     return 0
 
 
+def isgraph(g):
+    print(g.V())
+    for edge in g.E():
+        if edge._tail not in g.V() or edge._head not in g.V():
+            print('error', edge)
+
 # print(fastrefine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False)))
 # compare("GI_TestInstancesWeek1/crefBM_4_9.grl")
 # print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
 
+# start_time = time.clock()
+# print(compare("GI_TestInstancesWeek1/crefBM_4_4098.grl"))
+# elapsed_time = time.clock() - start_time
+# print('total time: {0:.4f} sec'.format(elapsed_time))
+
 start_time = time.clock()
-print(compare("GI_TestInstancesWeek1/hugecographs.grl"))
+print(testpre("GI_TestInstancesWeek1/cographs1.grl"))
 elapsed_time = time.clock() - start_time
 print('total time: {0:.4f} sec'.format(elapsed_time))
 
-start_time = time.clock()
-print(testpre("GI_TestInstancesWeek1/hugecographs.grl"))
-elapsed_time = time.clock() - start_time
-print('total time: {0:.4f} sec'.format(elapsed_time))
 
+# V=[0, 1, 2, 3, 4, 8, 18]
+# E=[(2,8), (2,18), (8,18), (4,1), (3,0)]
 

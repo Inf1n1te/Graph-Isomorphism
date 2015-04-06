@@ -264,6 +264,12 @@ class graph():
         self.enlist = []
         return u
 
+    def addvertexobject(self, vobject):
+        self._V.append(vobject)
+        self.enlist = []
+        return vobject
+
+
     def addedge(self, tail, head):
         """
         Add an edge to the graph between <tail> and <head>.
