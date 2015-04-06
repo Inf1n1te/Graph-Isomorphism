@@ -21,6 +21,7 @@ def fastrefine(g, colordictarg=-1, startcolor=-1, preproc=False):
 				colordict = preproccolordict
 	else:
 		colordict = colordictarg
+
 	if startcolor is -1:
 		shortest = min(colordict.keys())
 		for key in colordict.keys():
@@ -65,6 +66,54 @@ def fastrefine(g, colordictarg=-1, startcolor=-1, preproc=False):
 		i += 1
 	return colordict
 
+
+def fastrefine2(g, colordictarg=-1, startcolor=-1, preproc=False):
+	# initialize
+	if colordictarg == -1:
+		colordict = degcolordict(g)
+	else:
+		colordict = colordictarg
+
+	done = False
+	counter = 0
+	while not done:
+		done = True
+		counter += 1
+		if counter % 100 == 0:
+			print(counter)
+		tempcolordict = dict()
+
+		for key in colordict.keys():
+			nextcolor = max(colordict.keys()) + 1
+			buren = tuple()
+			for value in colordict[key]:
+				nc = sorted(tuple(getNeighbourColors(value)))
+				if len(buren) == 0:
+					buren = nc
+
+				if buren != nc:
+					done = False
+					if nextcolor in tempcolordict:
+						tempcolordict[nextcolor].append(value)
+					else:
+						tempcolordict[nextcolor] = [value]
+
+				else:
+					if key in tempcolordict:
+						tempcolordict[key].append(value)
+					else:
+						tempcolordict[key] = [value]
+
+		colordict = tempcolordict.copy()
+
+		for key in colordict.keys():
+			for value in colordict[key]:
+				value.colornum = key
+
+	finalcolors = []
+	for node in g.V():
+		finalcolors.append(node.colornum)
+	return colordict
 
 def degcolordict(g):
 	colordict = {}  # dictionary with key=c and value=vertex array
@@ -116,19 +165,27 @@ def compare(graphlisturl=-1, GI_only=False, gs=-1, preproc=False):
 		colordict = fastrefine(g, preproc=True)
 	else:
 		colordict = fastrefine(g)
-	graphcolors = splitColorDict(colordict, g)[0]
-
+	graphcolors = splitColorDict(colordict, g)[0]  # is a list of colordicts
+	print(graphcolors)
 	isomorphisms = []
 	undecided = []
-	for i in range(len(graphcolors)):  # find isomorphisms
-		if len(list(set(graphcolors[i]))) != len(graphcolors[i]):
-			undecided.append(i)
-		else:
-			for j in range(i + 1, len(graphcolors)):
-				if graphcolors[i] == graphcolors[j]:
-					isomorphisms.append([i, j, 1])
 
-	print(undecided)
+	for i in range(len(graphcolors)):  # find isomorphisms
+		for j in range(len(graphcolors)):
+			if i < j:
+				if graphcolors[i].keys() == graphcolors[j].keys():
+					iso = True
+					single = True
+					for key in graphcolors[i].keys():
+						if not (len(graphcolors[i][key]) is len(graphcolors[j][key])):
+							iso = False
+						if len(graphcolors[i][key]) > 1:
+							single = False
+					if iso and not single:
+						undecided.append([i, j])
+					elif iso and single:
+						isomorphisms.append([i, j, 1])
+
 	if not undecided:  # status update
 		if isomorphisms:
 			print("Isomorphisms found: ", isomorphisms)
@@ -139,14 +196,15 @@ def compare(graphlisturl=-1, GI_only=False, gs=-1, preproc=False):
 		print('Isomorphisms found: ', isomorphisms)
 		print('There are still undecided graphs left, continuing search..')
 
-	if len(undecided) > 0:
-		for first in undecided:
-			for second in undecided:
-				if second > first:
-					tempgraph = disjointunion(graphlist[first], graphlist[second])
-					num = countIsomorphism(tempgraph, fastrefine(tempgraph), GI_only)
-					if num > 0:
-						isomorphisms.append([first, second, num])
+	for tuple in undecided:
+		first = tuple[0]
+		second = tuple[1]
+
+		print("Doing ", [first, second])
+		tempgraph = disjointunion(graphlist[first], graphlist[second])
+		num = countIsomorphism(tempgraph, fastrefine(tempgraph), GI_only)
+		if num > 0:
+			isomorphisms.append([first, second, num])
 
 	printresult(isomorphisms)
 
@@ -179,6 +237,11 @@ def countIsomorphism(graph, hasColordict=False, GI_only=False):
 				isomorphism = False  # meaning we found no isomorphism again
 		if length % 2 == 1:  # if there is an uneven number, it means we have no isomorphism (since there are unequal amount of colors in each graph)
 			return 0
+		# if length == 2:
+		# if int(colordict[c][0].__repr__()) <= int(graph.subgraphs[0]) < int(colordict[c][1].__repr__()):
+		# 		pass
+		# 	else:
+		# 		return 0
 	if isomorphism:
 		return 1
 	else:
@@ -228,16 +291,20 @@ def splitColorDict(colordict, g):
 	for i in range(len(subgraphsl)):
 		partitions.append(list(range(number, number + subgraphsl[i])))
 		number += subgraphsl[i]
-		split.append([])
+		split.append(dict())
 		split2.append([])
 
 	for key in colordict:
 		for value in colordict.get(key):
 			for e in partitions:
 				if int(value.__repr__()) in e:
-					split[partitions.index(e)].append(value.colornum)
+					if key in split[partitions.index(e)].keys():
+						split[partitions.index(e)][key].append(value)
+					else:
+						split[partitions.index(e)][key] = [value]
+					# split[partitions.index(e)].append(value.colornum)
 					split2[partitions.index(e)].append((value.colornum, value))
-	# print(split)
+	#print('split', split)
 	return split, split2
 
 
@@ -340,7 +407,7 @@ def comparepreproc(graphlisturl, GI_only=False):
 
 start_time = time.clock()
 
-compare("GI_TestInstancesWeek1/bigtrees3.grl", True)
+compare("GI_TestInstancesWeek1/cubes6.grl", True)
 
 # comparepreproc("GI_TestInstancesWeek1/torus72.grl")
 
