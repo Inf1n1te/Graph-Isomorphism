@@ -385,21 +385,17 @@ def preprocessing(g):
 	return g, lftwins, ltwins
 
 
-def testpre(graphlisturl, GI_only=False):
-	global graphlist
-	graphlist = loadgraph(graphlisturl, readlist=True)
-	ngraphs = len(graphlist[0])
-	for i in range(ngraphs):
-		writeDOT(graphlist[0][i], 'before' + str(i) + '.dot')
-	nfalsetwins, ntwins = [None] * ngraphs, [None] * ngraphs
-	for i in range(ngraphs):
-		graphlist[0][i], nfalsetwins[i], ntwins[i] = preprocessing(graphlist[0][i])
-	# print(graphlist[0][i])
-	# isgraph(graphlist[0][i])
-	print('number of twins:', nfalsetwins, ntwins)
-	for i in range(ngraphs):
-		writeDOT(graphlist[0][i], 'after' + str(i) + '.dot')
-	return compare(gs=graphlist[0], preproc=True, GI_only=False)
+def comparepreproc(graphlisturl, GI_only=False):
+    global graphlist
+    graphlist = loadgraph(graphlisturl, readlist=True)
+    ngraphs = len(graphlist[0])
+    nfalsetwins, ntwins = [None] * ngraphs, [None] * ngraphs
+    for i in range(ngraphs):
+        graphlist[0][i], nfalsetwins[i], ntwins[i] = preprocessing(graphlist[0][i])
+        # print(graphlist[0][i])
+        # isgraph(graphlist[0][i])
+    print('number of twins:', nfalsetwins, ntwins)
+    return compare(gs=graphlist[0], preproc=True, GI_only=False)
 
 
 def findDuplicates(split2):
@@ -429,12 +425,11 @@ def findDuplicates(split2):
 	print(result)
 	return result
 
-
 start_time = time.clock()
 
-compare("GI_TestInstancesWeek1/crefBM_6_15.grl", False)
+# compare("GI_TestInstancesWeek1/products72.grl", False)
 
-# testpre("GI_TestInstancesWeek1/cographs1.grl")
+comparepreproc("GI_TestInstancesWeek1/products72.grl")
 
 elapsed_time = time.clock() - start_time
 print('Time: {0:.4f} sec'.format(elapsed_time))
