@@ -71,10 +71,6 @@ class vertex():
                 self.nbl.append(e.otherend(self))
         return self.nbl
 
-    def fastnbs(self):
-        pass
-
-
     def deg(self):
         """
         Returns the degree of vertex <self>.
@@ -161,7 +157,6 @@ class graph():
         for i in range(n):
             self.addvertex()
         self.enlist = []
-        self.nbsdict = -1
         self.colordict = -1
         self.vertexreprmap = dict()
         for v in self._V:
@@ -202,21 +197,6 @@ class graph():
                 else:
                     r[e] = [edge]
         self.enlist = r
-
-    def makenbsdict(self):
-        nbsdict = {}  # key is a node, values are the adjacent nodes
-        for edge in self.E():
-            tail = edge.tail()
-            head = edge.head()
-            if tail in nbsdict.keys():
-                nbsdict[tail].append(head)
-            else:
-                nbsdict[tail] = [head]
-            if head in nbsdict.keys():
-                nbsdict[head].append(tail)
-            else:
-                nbsdict[head] = [tail]
-        self.nbsdict = nbsdict
 
     def V(self):
         """
