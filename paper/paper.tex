@@ -128,7 +128,21 @@ Don't forget to reference the slides
 %------------------------------------------------
 \section{Proof of Correctness}
 
-Proof of Correctness here
+\begin{definition}
+Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs. A function $f: V_1 \to V_2$ is called a \textit{graph isomorphism} if (a) $f$ is a bijection, (b) for all $a, b \in V_1, \{a, b\} \in E_1$ if and only if $\{f(a), f(b)\} \in E_2$, and (c) $color(v)$ = $color (f(v)$. When such a function exist, $G_1$ and $G_2$ are called \textit{ismorphic graphs}.
+\end{definition}
+\begin{definition}
+Let $G = (V,E)$ be a graph. The \textit{neighbourhood} $N(v)$ of $v \in V$ is:
+$N(v) = \left\{{u \in V : \{u,v\} \in E}\right\}$
+\end{definition}
+\begin{definition}
+Let $G = (V,E)$ be a graph.
+Two vertices $u, v \in V$ are \textit{twins} if $\{u,v\} \in E$ and $N(u)\textbackslash {v} = N(v)\textbackslash {u}$.
+\end{definition}
+\begin{definition}
+Let $G = (V,E)$ be a graph.
+Two vertices $u, v \in V(G)$ are \textit{false twins} if $N(u) = N(v).$
+\end{definition}
 
 %------------------------------------------------
 \section{Computational Experiments}
