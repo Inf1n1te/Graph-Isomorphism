@@ -1,6 +1,7 @@
 __author__ = 'Tim (& [Jeroen])'
 
 import time
+import copy
 
 from makegraphs import disjointunion
 from graphIO import *
@@ -39,10 +40,7 @@ def fastrefine(g, colordictarg=-1, startcolor=-1):
 
 		for key in connectednodes.keys():
 			colordictchanged = False
-			try:
-				colordict[key].sort(key=lambda x: x._label)
-			except:
-				print('colordict is ', colordict, '  -- connectednodes is ', connectednodes)
+			colordict[key].sort(key=lambda x: x._label)
 			connectednodes[key].sort(key=lambda x: x._label)
 			if colordict[key] == connectednodes[key]:
 				pass
@@ -60,8 +58,6 @@ def fastrefine(g, colordictarg=-1, startcolor=-1):
 				colordict = g.getcolordict()
 				nextcolor += 1
 		i += 1
-	elapsed_time = time.clock() - start_time
-	print('Time: {0:.4f} sec'.format(elapsed_time))
 	# try:
 	# return compareColors(splitColorDict(colordict, g)[0])
 	# except:
@@ -204,7 +200,7 @@ def compare(graphlisturl=-1, gs=-1):
 
 
 def countIsomorphism(graph, hasColordict=False):
-	print("CountIsomorphism bruh!")
+	#print("CountIsomorphism bruh!")
 	if hasColordict is False:
 		colordict = fastrefine(graph)
 	else:
@@ -232,23 +228,28 @@ def countIsomorphism(graph, hasColordict=False):
 		num = 0
 		for y in otherhalf:  # get the middle of colors[] (as it skips the first half)s
 			newcolor = max(graph.getcolordict().keys()) + 1  # assign a new color
-			print('######', newcolor)
-			colordict[cvar].remove(x)
-			colordict[cvar].remove(y)
-			colordict[newcolor] = [x]
-			colordict[newcolor].append(y)
-			print('colordict before ', colordict)
+			colordict2 = copy.deepcopy(colordict)
+			print(colordict2, x)
+			x2 = graph.getvertexbyrepr(str(x._label))
+			y2 = graph.getvertexbyrepr(str(y._label))
+			colordict2[cvar].remove(x2)
+			colordict2[cvar].remove(y2)
+			colordict2[newcolor] = [x2]
+			colordict2[newcolor].append(y2)
 			num += countIsomorphism(graph, colordict)
-			print('colordict after ', colordict)
-			try:
-				colordict.pop(newcolor)
-			except:
-				print('excepted')
-			colordict[cvar].append(x)
-			colordict[cvar].append(y)
+
+			#oud
+			# colordict[cvar].remove(x)
+			# colordict[cvar].remove(y)
+			# colordict[newcolor] = [x]
+			# colordict[newcolor].append(y)
+			# num += countIsomorphism(graph, colordict)
+			# colordict.pop(newcolor)
+			# colordict[cvar].append(x)
+			# colordict[cvar].append(y)
 			# todo: permenantly change colors of nodes.. Instead of resetting them :(
 			# what needs to be done is basically change a nodes color in one graph and one in the other and then use countIsomorphisms on that.
-	print('num is ', num)
+	#print('num is ', num)
 	return num
 
 	return 0
@@ -380,8 +381,8 @@ def findDuplicates(split2):
 	return result
 
 
-compare("GI_TestInstancesWeek1/torus24.grl")
-#compare("GI_TestInstancesWeek1/crefBM_6_15.grl")
+#compare("GI_TestInstancesWeek1/torus24.grl")
+compare("GI_TestInstancesWeek1/crefBM_4_7.grl")
 #print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
 
 

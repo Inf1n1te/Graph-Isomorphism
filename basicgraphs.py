@@ -163,6 +163,9 @@ class graph():
 			self.vertexreprmap[v.__repr__()] = v
 
 	def getvertexbyrepr(self, repr):
+		if not self.vertexreprmap:
+			for v in self._V:
+				self.vertexreprmap[v.__repr__()] = v
 		return self.vertexreprmap[repr]
 
 	def __repr__(self):
