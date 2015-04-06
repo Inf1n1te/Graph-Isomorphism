@@ -39,7 +39,10 @@ def fastrefine(g, colordictarg=-1, startcolor=-1):
 
 		for key in connectednodes.keys():
 			colordictchanged = False
-			colordict[key].sort(key=lambda x: x._label)
+			try:
+				colordict[key].sort(key=lambda x: x._label)
+			except:
+				print('colordict is ', colordict, '  -- connectednodes is ', connectednodes)
 			connectednodes[key].sort(key=lambda x: x._label)
 			if colordict[key] == connectednodes[key]:
 				pass
@@ -191,7 +194,7 @@ def compare(graphlisturl=-1, gs=-1):
 					tempgraph = disjointunion(graphlist[first], graphlist[second])
 					num = countIsomorphism(tempgraph, fastrefine(tempgraph))
 					if num > 0:
-						isomorphisms.append([first,second])
+						isomorphisms.append([first,second, num])
 
 	print('Search ended; Isomorphisms found: ', isomorphisms)
 
@@ -209,10 +212,8 @@ def countIsomorphism(graph, hasColordict=False):
 	isomorphism = True
 	colors = []
 	cvar = -1
-	print("Colordict: ", colordict)
 	for c in colordict.keys():
 		length = len(colordict[c])
-		print('length is ', length)
 		if length >= 4:  # if there are more than 4 elemts in colordict[c], it means there are duplicates
 			colorlength = len(colors)
 			if colorlength == 0 or length <= colorlength:
@@ -226,21 +227,23 @@ def countIsomorphism(graph, hasColordict=False):
 	else:
 		onehalf = colors[0:int(len(colors) / 2)]
 		otherhalf = colors[int((len(colors) / 2)):(len(colors))]
-		print('otherhalf', otherhalf)
 		index = 0
 		x = colors[index]  # we'lls tart with the first color
 		num = 0
 		for y in otherhalf:  # get the middle of colors[] (as it skips the first half)s
-			print('y is ', y)
 			newcolor = max(graph.getcolordict().keys()) + 1  # assign a new color
-			print('x is ', x, ' -- colordict[c] is ', colordict[cvar], ' -- colors is ', colors)
+			print('######', newcolor)
 			colordict[cvar].remove(x)
 			colordict[cvar].remove(y)
 			colordict[newcolor] = [x]
 			colordict[newcolor].append(y)
-			print("Print colordict: ", colordict)
+			print('colordict before ', colordict)
 			num += countIsomorphism(graph, colordict)
-			colordict.pop(newcolor)
+			print('colordict after ', colordict)
+			try:
+				colordict.pop(newcolor)
+			except:
+				print('excepted')
 			colordict[cvar].append(x)
 			colordict[cvar].append(y)
 			# todo: permenantly change colors of nodes.. Instead of resetting them :(
@@ -377,14 +380,9 @@ def findDuplicates(split2):
 	return result
 
 
-def individualizationRefinement():
-	return 0
-
-
-# print(fastrefine(loadgraph("GI_TestInstancesWeek1/crefBM_4_16.grl", readlist=False)))
-#compare("GI_TestInstancesWeek1/torus24.grl")
-compare("GI_TestInstancesWeek1/crefBM_4_7.grl")
-# print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
+compare("GI_TestInstancesWeek1/torus24.grl")
+#compare("GI_TestInstancesWeek1/crefBM_6_15.grl")
+#print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
 
 
 # test preprocessing
