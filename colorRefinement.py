@@ -378,7 +378,7 @@ def preprocessing(g):
     return g, lftwins, ltwins
 
 
-def testpre(graphlisturl):
+def testpre(graphlisturl, GI_only=False):
     global graphlist
     graphlist = loadgraph(graphlisturl, readlist=True)
     ngraphs = len(graphlist[0])
@@ -392,7 +392,7 @@ def testpre(graphlisturl):
     print('number of twins:', nfalsetwins, ntwins)
     for i in range(ngraphs):
         writeDOT(graphlist[0][i], 'after' + str(i) + '.dot')
-    return compare(gs=graphlist[0], preproc=True)
+    return compare(gs=graphlist[0], preproc=True, GI_only=False)
 
 
 def findDuplicates(split2):
