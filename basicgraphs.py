@@ -15,121 +15,125 @@ unsafe = False
 
 
 class GraphError(Exception):
-	def __init__(self, message):
-		self.mess = message
+    def __init__(self, message):
+        self.mess = message
 
-	def __str__(self):
-		return self.mess
+    def __str__(self):
+        return self.mess
 
 
 class vertex():
-	"""
+    """
     Vertex objects have an attribute <_graph> pointing to the graph they are part of,
     and an attribute <_label> which can be anything: it is not used for any methods,
     except for __repr__.
     """
-	colornum = None
+    colornum = None
 
-	nbl = -1
-	incl = -1
+    nbl = -1
+    incl = -1
 
-	def __init__(self, graph, label=0):
-		"""
+    def __init__(self, graph, label=0):
+        """
         Creates a vertex, part of <graph>, with optional label <label>.
         (Labels of different vertices may be chosen the same; this does
         not influence correctness of the methods, but will make the string
         representation of the graph ambiguous.)
         """
-		self._graph = graph
-		self._label = label
+        self._graph = graph
+        self._label = label
 
-	def __repr__(self):
-		return str(self._label)
+    def __repr__(self):
+        return str(self._label)
 
-	def adj(self, other):
-		"""
+    def adj(self, other):
+        """
         Returns True iff vertex <self> is adjacent to <other> vertex.
         """
-		return self._graph.adj(self, other)
+        return self._graph.adj(self, other)
 
-	def inclist(self):
-		"""
+    def inclist(self):
+        """
         Returns the list of edges incident with vertex <self>.
         """
-		if not self._graph.enlist:
-			self._graph.makeinclist()
-		return self._graph.enlist[self]
+        if not self._graph.enlist:
+            self._graph.makeinclist()
+        return self._graph.enlist[self]
 
-	def nbs(self):
-		"""
+    def nbs(self):
+        """
         Returns the list of neighbors of vertex <self>.
         In case of parallel edges: duplicates are not removed from this list!
         """
-		if self.nbl == -1:
-			self.nbl = []
-			for e in self.inclist():
-				self.nbl.append(e.otherend(self))
-		return self.nbl
+        if self.nbl == -1:
+            self.nbl = []
+            for e in self.inclist():
+                self.nbl.append(e.otherend(self))
+        return self.nbl
 
-	def deg(self):
-		"""
+    def fastnbs(self):
+        pass
+
+
+    def deg(self):
+        """
         Returns the degree of vertex <self>.
         """
-		return len(self.inclist())
+        return len(self.inclist())
 
 
 class edge():
-	"""
+    """
     Edges have attributes <_tail> and <_head> which point to the end vertices
     (vertex objects). The order of these is arbitrary (undirected edges).
     """
 
-	def __init__(self, tail, head):
-		"""
+    def __init__(self, tail, head):
+        """
         Creates an edge between vertices <tail> and <head>.
         """
-		# tail and head must be vertex objects.
-		if not tail._graph == head._graph:
-			raise GraphError(
-				'Can only add edges between vertices of the same graph')
-		self._tail = tail
-		self._head = head
+        # tail and head must be vertex objects.
+        if not tail._graph == head._graph:
+            raise GraphError(
+                'Can only add edges between vertices of the same graph')
+        self._tail = tail
+        self._head = head
 
-	def __repr__(self):
-		return '(' + str(self._tail) + ',' + str(self._head) + ')'
+    def __repr__(self):
+        return '(' + str(self._tail) + ',' + str(self._head) + ')'
 
-	def tail(self):
-		return self._tail
+    def tail(self):
+        return self._tail
 
-	def head(self):
-		return self._head
+    def head(self):
+        return self._head
 
-	def otherend(self, oneend):
-		"""
+    def otherend(self, oneend):
+        """
         Given one end vertex <oneend> of the edge <self>, this returns
         the other end vertex of <self>.
         """
-		# <oneend> must be either the head or the tail of this edge.
-		if self._tail == oneend:
-			return self._head
-		elif self._head == oneend:
-			return self._tail
-		raise GraphError(
-			'edge.otherend(oneend): oneend must be head or tail of edge')
+        # <oneend> must be either the head or the tail of this edge.
+        if self._tail == oneend:
+            return self._head
+        elif self._head == oneend:
+            return self._tail
+        raise GraphError(
+            'edge.otherend(oneend): oneend must be head or tail of edge')
 
-	def incident(self, vertex):
-		"""
+    def incident(self, vertex):
+        """
         Returns True iff the edge <self> is incident with the
         vertex <vertex>.
         """
-		if self._tail == vertex or self._head == vertex:
-			return True
-		else:
-			return False
+        if self._tail == vertex or self._head == vertex:
+            return True
+        else:
+            return False
 
 
 class graph():
-	"""
+    """
     A graph object has as main attributes:
      <_V>: the list of its vertices
      <_E>: the list of its edges
@@ -140,8 +144,8 @@ class graph():
      <_nextlabel> is used to assign default labels to vertices.
     """
 
-	def __init__(self, n=0, simple=False):
-		"""
+    def __init__(self, n=0, simple=False):
+        """
         Creates a graph.
         Optional argument <n>: number of vertices.
         Optional argument <simple>: indicates whether the graph should stay simple.
@@ -163,41 +167,41 @@ class graph():
         for v in self._V:
             self.vertexreprmap[v.__repr__()] = v
 
-	def getvertexbyrepr(self, repr):
-		if not self.vertexreprmap:
-			for v in self._V:
-				self.vertexreprmap[v.__repr__()] = v
-		return self.vertexreprmap[repr]
+    def getvertexbyrepr(self, repr):
+        if not self.vertexreprmap:
+            for v in self._V:
+                self.vertexreprmap[v.__repr__()] = v
+        return self.vertexreprmap[repr]
 
-	def __repr__(self):
-		return 'V=' + str(self._V) + '\nE=' + str(self._E)
+    def __repr__(self):
+        return 'V=' + str(self._V) + '\nE=' + str(self._E)
 
-	def generatecolordict(self):
-		colordict0 = dict()
-		for v in self.V():
-			if v.colornum not in colordict0:
-				colordict0[v.colornum] = [v]
-			else:
-				colordict0[v.colornum].append(v)
-		self.colordict = colordict0
+    def generatecolordict(self):
+        colordict0 = dict()
+        for v in self.V():
+            if v.colornum not in colordict0:
+                colordict0[v.colornum] = [v]
+            else:
+                colordict0[v.colornum].append(v)
+        self.colordict = colordict0
 
-	def getcolordict(self):
-		if self.colordict == -1:
-			self.generatecolordict()
-		return self.colordict
+    def getcolordict(self):
+        if self.colordict == -1:
+            self.generatecolordict()
+        return self.colordict
 
-	def makeinclist(self):
-		edges = self.E()
-		r = {}  # key is a node, values are the connected edges
-		for edge in edges:
-			head = edge.head()
-			tail = edge.tail()
-			for e in [head, tail]:
-				if e in r:
-					r[e].append(edge)
-				else:
-					r[e] = [edge]
-		self.enlist = r
+    def makeinclist(self):
+        edges = self.E()
+        r = {}  # key is a node, values are the connected edges
+        for edge in edges:
+            head = edge.head()
+            tail = edge.tail()
+            for e in [head, tail]:
+                if e in r:
+                    r[e].append(edge)
+                else:
+                    r[e] = [edge]
+        self.enlist = r
 
     def makenbsdict(self):
         nbsdict = {}  # key is a node, values are the adjacent nodes
@@ -218,22 +222,22 @@ class graph():
         """
         Returns the list of vertices of the graph.
         """
-		if unsafe:  # but fast
-			return self._V
-		else:
-			return self._V[:]  # return a *copy* of this list
+        if unsafe:  # but fast
+            return self._V
+        else:
+            return self._V[:]  # return a *copy* of this list
 
-	def E(self):
-		"""
+    def E(self):
+        """
         Returns the list of edges of the graph.
         """
-		if unsafe:  # but fast
-			return self._E
-		else:
-			return self._E[:]  # return a *copy* of this list
+        if unsafe:  # but fast
+            return self._E
+        else:
+            return self._E[:]  # return a *copy* of this list
 
-	def __getitem__(self, i):
-		"""
+    def __getitem__(self, i):
+        """
         Returns the <i>th vertex of the graph -- as given in the vertex list;
         this is not related to the vertex labels.
         """
@@ -292,25 +296,25 @@ class graph():
         (Arbitrary in the case of multigraphs.)
         Otherwise this returns <None>.
         """
-		for e in self._E:
-			if (e._tail == u and e._head == v) or (e._tail == v and e._head == u):
-				return e
-		return None
+        for e in self._E:
+            if (e._tail == u and e._head == v) or (e._tail == v and e._head == u):
+                return e
+        return None
 
 
-	def adj(self, u, v):
-		"""
+    def adj(self, u, v):
+        """
         Returns True iff vertices <u> and <v> are adjacent.
         """
-		if self.findedge(u, v) == None:
-			return False
-		else:
-			return True
+        if self.findedge(u, v) == None:
+            return False
+        else:
+            return True
 
-	def isdirected(self):
-		"""
+    def isdirected(self):
+        """
         Returns False, because for now these graphs are always undirected.
         """
-		return self._directed
-		
+        return self._directed
+
 
