@@ -427,9 +427,9 @@ def findDuplicates(split2):
 
 start_time = time.clock()
 
-# compare("GI_TestInstancesWeek1/products72.grl", False)
+compare("GI_TestInstancesWeek1/cubes6.grl", True)
 
-comparepreproc("GI_TestInstancesWeek1/products72.grl")
+# comparepreproc("GI_TestInstancesWeek1/torus72.grl")
 
 elapsed_time = time.clock() - start_time
 print('Time: {0:.4f} sec'.format(elapsed_time))
