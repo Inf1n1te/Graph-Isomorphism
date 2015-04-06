@@ -30,9 +30,9 @@ def disjointunion(G, H):
     vmap = {}
     K = graph()
     for v in G.V() + H.V():
-        vmap[v._label] = K.addvertex()
+        vmap[v] = K.addvertex()
     for e in G.E() + H.E():
-        K.addedge(vmap[e.tail()._label], vmap[e.head()._label])
+        K.addedge(vmap[e.tail()], vmap[e.head()])
     return K
 
 

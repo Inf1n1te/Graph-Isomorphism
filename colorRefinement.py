@@ -153,10 +153,17 @@ def compare(graphlisturl=-1, gs=-1, preproc=False):
     g = graphlist[0]
     subgraphlist = []
     subgraphlist.append(len(g.V()))
+    print(g)
     for i in range(1, len(graphlist)):  # make one big graph from the graphlist
+        print(i)
         h = graphlist[i]
         g = disjointunion(g, h)
+        print(h)
+        print(g)
         subgraphlist.append(len(h.V()))
+    print(g)
+    print('HIER')
+    print(subgraphlist)
     g.makenbsdict()  # update nbs omdat er een nieuwe graph is
     g.makeinclist()
     g.subgraphs = subgraphlist
@@ -391,10 +398,10 @@ def testpre(graphlisturl):
         # print(graphlist[0][i])
         #isgraph(graphlist[0][i])
     print('number of twins:', nfalsetwins, ntwins)
-    print(graphlist[0][0])
     for i in range(ngraphs):
+        print(graphlist[0][i])
         writeDOT(graphlist[0][i], 'after' + str(i) + '.dot')
-    print(graphlist)
+    print('graphs^')
     return compare(gs=graphlist[0], preproc=True)
 
 
@@ -412,10 +419,10 @@ def isgraph(g):
 # compare("GI_TestInstancesWeek1/crefBM_4_9.grl")
 # print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
 
-start_time = time.clock()
-print(compare("GI_TestInstancesWeek1/cographs1.grl"))
-elapsed_time = time.clock() - start_time
-print('total time: {0:.4f} sec'.format(elapsed_time))
+# start_time = time.clock()
+# print(compare("GI_TestInstancesWeek1/cographs1.grl"))
+# elapsed_time = time.clock() - start_time
+# print('total time: {0:.4f} sec'.format(elapsed_time))
 
 start_time = time.clock()
 print(testpre("GI_TestInstancesWeek1/cographs1.grl"))
