@@ -128,12 +128,11 @@ def preproccolordict(g):
     for v in g.V():
         if not v.twin:
             v.colornum = v.deg()
-        else:
-            v.colornum = -v.twinsize
         if v.colornum not in colordict:
             colordict[v.colornum] = [v]
         else:
             colordict[v.colornum].append(v)
+    print('dict', colordict)
     return colordict
 
 
@@ -341,44 +340,6 @@ def gettwins(g):
         twins.keys())  # value zijn twins
 
 
-# def preprocessingold(g):
-# falsetwins, twins, falsetwinsN, twinsN = gettwins(g)
-#     lftwins = len(falsetwins)
-#     ltwins = len(twins)
-#     if lftwins != 0 or ltwins != 0:
-#         deledges = []
-#         for i, e in enumerate(g._E):
-#             if any(e._tail in ftwin for ftwin in falsetwins) or any(e._head in ftwin for ftwin in falsetwins) or any(
-#                             e._tail in twin for twin in twins) or any(e._head in twin for twin in twins):
-#                 deledges.append(i)
-#         deledges.sort(reverse=True)
-#         for i in deledges:
-#             g._E.pop(i)
-#         delnodes = []
-#         for i, V in enumerate(g._V):
-#             if any(V in ftwin for ftwin in falsetwins) or any(V in twin for twin in twins):
-#                 delnodes.append(i)
-#         delnodes.sort(reverse=True)
-#         for i in delnodes:
-#             g._V.pop(i)
-#         #Alles opnieuw aanmaken
-#         combined = falsetwinsN + twinsN
-#         mx = 0
-#         for i, twin in enumerate(falsetwins):
-#             g.addvertex(twin[0]._label, True, len(twin))
-#             mx = max(mx, len(twin))
-#         for i, twin in enumerate(twins):
-#             g.addvertex(twin[0]._label, True, mx + len(twin))
-#         labels = [l._label for l in g.V()]
-#         for i, twin in enumerate(falsetwins + twins):
-#             for j in combined[i]:
-#                 if j._label in labels and twin[0] != j and not g.findedge(twin[0],
-#                                                                           j):  # Geen loop en geen edges dubbel omgedraaid
-#                     g.addedge(twin[0], j)
-#         g._V.sort(key=lambda x: x._label)
-#         print(twins,falsetwins)
-#     return g, lftwins, ltwins
-
 def preprocessing(g):
     falsetwins, twins, falsetwinsN, twinsN = gettwins(g)
     lftwins = len(falsetwins)
@@ -403,10 +364,12 @@ def preprocessing(g):
         combined = falsetwinsN + twinsN
         mx = 0
         for i, twin in enumerate(falsetwins):
-            g.addvertexobject(twin[0])
+            g.addvertexobject(twin[0], True, len(twin))
+            twin[0].colornum = -twin[0].twinsize
             mx = max(mx, len(twin))
         for i, twin in enumerate(twins):
-            g.addvertexobject(twin[0])
+            g.addvertexobject(twin[0], True, len(twin) + mx)
+            twin[0].colornum = -twin[0].twinsize - mx
         for i, twin in enumerate(falsetwins + twins):
             for j in combined[i]:
                 if j in g.V() and twin[0] != j and not g.findedge(twin[0],
@@ -448,10 +411,10 @@ def isgraph(g):
 # compare("GI_TestInstancesWeek1/crefBM_4_9.grl")
 # print(compare("GI_TestInstancesWeek1/threepaths10240.gr"))
 
-# start_time = time.clock()
-# print(compare("GI_TestInstancesWeek1/crefBM_4_4098.grl"))
-# elapsed_time = time.clock() - start_time
-# print('total time: {0:.4f} sec'.format(elapsed_time))
+start_time = time.clock()
+print(compare("GI_TestInstancesWeek1/cographs1.grl"))
+elapsed_time = time.clock() - start_time
+print('total time: {0:.4f} sec'.format(elapsed_time))
 
 start_time = time.clock()
 print(testpre("GI_TestInstancesWeek1/cographs1.grl"))

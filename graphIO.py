@@ -223,7 +223,7 @@ def writeDOT(G, filename, directed=False):
 			options += 'color="' + v.colortext + '",'
 		elif hasattr(v, 'colornum'):
             if v.colornum is None:
-                v.colornum = -10000
+                v.colornum = -100
 			options += 'color=' + str(v.colornum % numcolors + 1) + ', colorscheme=' + defaultcolorscheme + ','
 			if v.colornum >= numcolors:
 				options += 'style=filled,fillcolor=' + str(v.colornum // numcolors + 1) + ','

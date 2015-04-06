@@ -264,7 +264,9 @@ class graph():
         self.enlist = []
         return u
 
-    def addvertexobject(self, vobject):
+    def addvertexobject(self, vobject, twin=False, twinsize=None):
+        vobject.twin = twin
+        vobject.twinsize = twinsize
         self._V.append(vobject)
         self.enlist = []
         return vobject
