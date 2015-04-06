@@ -340,7 +340,7 @@ def comparepreproc(graphlisturl, GI_only=False):
 
 start_time = time.clock()
 
-compare("GI_TestInstancesWeek1/cubes6.grl", True)
+compare("GI_TestInstancesWeek1/bigtrees3.grl", True)
 
 # comparepreproc("GI_TestInstancesWeek1/torus72.grl")
 
