@@ -164,6 +164,19 @@ class graph():
 		for v in self._V:
 			self.vertexreprmap[v.__repr__()] = v
 
+	def getcopy(self):
+		g = graph()
+		g._V = self._V
+		g._E = self._E
+		g._directed = self._directed
+		g.subgraphs = self.subgraphs
+		g._simple = self._simple
+		g._nextlabel = self._nextlabel
+		g.enlist = self.enlist
+		g.colordict = self.colordict
+		g.vertexreprmap = self.vertexreprmap
+		return g
+
 	def getvertexbyrepr(self, repr):
 		if not self.vertexreprmap:
 			for v in self._V:

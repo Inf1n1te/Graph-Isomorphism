@@ -1,7 +1,6 @@
 __author__ = 'Tim (& [Jeroen])'
 
 import time
-import copy
 
 from makegraphs import disjointunion
 from graphIO import *
@@ -195,7 +194,7 @@ def countIsomorphism(graph, hasColordict=False, GI_only=False):
 			colordict[newcolor].append(y)
 
 			applycolors(colordict)
-			graph2 = copy.deepcopy(graph)
+			graph2 = graph.getcopy()
 			graph2.generatecolordict()
 			colordict2 = graph2.getcolordict()
 
