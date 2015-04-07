@@ -1,14 +1,27 @@
-\documentclass[twoside]{article}
+ \documentclass[twoside]{article}
 
 \usepackage{amsmath,amssymb,amsthm} % Mathematical Symbols, styles, etc
 
 \usepackage[utf8]{inputenc} % UTF-8 character encoding stuff
+\usepackage[toc,page]{appendix} % appendix
 
-% Used to enable use of the defined labeled enunciations. Usage: \begin{definition}text\end{definition}
-\newtheorem{theorem}{Theorem}[section]
+% Used to enable use of the defined labeled enunciations. Usage: 
+%\begin{definition}text\end{definition}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{corollary}[theorem]{Corollary}
+
+% Python code
+
+\usepackage{listings}
+\lstset{
+numbers=left
+}
 
 % --Optional-- Font and tweaking used in template
 \usepackage[sc]{mathpazo} % Use the Palatino font
@@ -101,7 +114,7 @@ This paper will discuss the effect of several preprocessing methods on the compu
 
 The graph isomorphism problem is the computational problem of determining whether two finite graphs are isomorphic. Besides its practical importance, the graph isomorphism problem is a curiosity in computational complexity theory as it is one of a very small number of problems belonging to NP neither known to be solvable in polynomial time nor NP-complete: it is one of only 12 such problems listed by Garey \& Johnson (1979)\cite{book:garyJohnson1979}, and one of only two of that list whose complexity remains unresolved. As of 2008 the best algorithm (Eugene Luks, 1983) has run time $2^{O(\sqrt{n log n})}$ for graphs with \emph{n} vertices.\cite{article:davidJohnson2005}\cite{inproceedings:babaiCodenotti2008}\cite{website:wikiGI}
 
-The preprocessing part are algorithms that look at the graphs before determining whether they are isomorphic with the intent of speeding up the actual process of the determining whether the graphs are isomorphic.
+The preprocessing part are algorithms that look at the graphs before determining whether they are isomorphic with the intent of finding some characteristic that might be used to speed up the actual process of the determining whether the graphs are isomorphic.
 
 %------------------------------------------------
 
@@ -109,57 +122,87 @@ The preprocessing part are algorithms that look at the graphs before determining
 
 The aim of this research paper is to determine whether certain preprocessing methods significantly reduce the time required to check whether two graphs are isomorphic. At the core, two cases will be compared: a basic case without preprocessing, and a case with preprocessing. 
 
-For this paper, the time complexity of the algorithms will not be discussed or calculated. The difference in performance of the cases will be shown from a statistical analysis of computational results.
+For this paper, the time complexity of the algorithms will not be discussed or calculated. The difference in performance between the cases will be shown with a statistical analysis on computational results.
 
-This paper will give a description of the algorithms used for preproccesing, as well as proof of correctness. The algorithms used to check for isomorphisms will be left out of consideration.
+This paper will give a description of the algorithms used for preprocessing, as well as proof of correctness. The algorithms used to check for isomorphisms will be left out of consideration.
 
 %------------------------------------------------
 \section{Methods}
+To determine whether the algorithms will speed up the process of finding graph isomorphisms, a computational experiment was performed. In this experiment, the algorithms were used on a variety of differently shaped graphs, and sets of graphs, in conjunction with an algorithm which checks for isomorphisms.
 
-TBD - exact setup of experiment - what methods were used to test
-Used to examine validity of the experiment by outsiders, by very precise, give reasons for methods and setup, possibly give alternatives and arguments for them, but describe why we chose the current methods.
+\subsection{Experiment Setup}
+For the testing, a single laptop was used to collect all the timed data. The tests were run in JetBrains' PyCharm, using the built-in functions to run the python code. The python interpreter used was Python 3.4 and the laptop was running Windows 8.1 at the time of the testing. Efforts were made to ensure all the testing was performed under the same circumstances.
+
+\subsection{Testing}
+In the experiment, two cases were tested: a basic case, without preprocessing, and a case with preprocessing. In both cases a timer was added to the code. The timer started before any other piece of code, and ended only after the algorithms were completely finished. This way everything is timed, including the loading of the graph, the additional time used to run preprocessing algorithms and finding of the isomorphisms.
+
+For every chosen test instance, the run times for both algorithms was determined. After all testing all instances had been completed, the results were compared and tested...
+\\ \\
+\textbf{\emph{TODO:} possibly rewrite the testing process after the testing; make sure timer details are correct; what statistical tests are we using?}
 
 %------------------------------------------------
 \section{Description of Algorithms}
-
-Description of Algorithms here
-Don't forget to reference the slides
-
-%------------------------------------------------
-\section{Proof of Correctness}
-
-\begin{definition}
-Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs. A function $f: V_1 \to V_2$ is called a \textit{graph isomorphism} if (a) $f$ is a bijection, (b) for all $a, b \in V_1, \{a, b\} \in E_1$ if and only if $\{f(a), f(b)\} \in E_2$, and (c) $color(v)$ = $color (f(v)$. When such a function exist, $G_1$ and $G_2$ are called \textit{ismorphic graphs}.
-\end{definition}
+For hard instances of the graph isomorphism problem, the coarsest stable coloring of a graph still has a lot of colors which are not unique. Two structures for which this is the case are twins and false twins, they are defined in definition \ref{deftwins} and \ref{deffalsetwins}.
 \begin{definition}
 Let $G = (V,E)$ be a graph. The \textit{neighbourhood} $N(v)$ of $v \in V$ is:
 $N(v) = \left\{{u \in V : \{u,v\} \in E}\right\}$
 \end{definition}
-\begin{definition}
+\begin{definition}\label{deftwins}
 Let $G = (V,E)$ be a graph.
 Two vertices $u, v \in V$ are \textit{twins} if $\{u,v\} \in E$ and $N(u)\textbackslash {v} = N(v)\textbackslash {u}$.
 \end{definition}
-\begin{definition}
+\begin{definition}\label{deffalsetwins}
 Let $G = (V,E)$ be a graph.
 Two vertices $u, v \in V(G)$ are \textit{false twins} if $N(u) = N(v).$
 \end{definition}
 
+To solve the graph isomorphism problem more efficiently, we use preprocessing algorithms which replaces twins and false twins by single precolored vertices such that:
+\begin{enumerate}
+\item Twins have the same color $\iff$ Twins have the same size (number of vertices).
+\item False twins have the same color $\iff$ False twins have the same size (number of vertices).
+\item A twin and a false twin can't have the same color.
+\end{enumerate}
+\subsection{Implementation}
+The algorithm is divided into two subalgorithms. The subalgorithm \textit{gettwins} finds all twins and false twins and the subalgorithm \textit{preprocessing} replaces each (false) twin by a single colored vertex as described above. In the following subsections these algorithms and their worst case time complexities will be analyzed. The elementary operation is the comparison of two elements. In those subsections $n$ is the number of vertices of a graph $G(V,E)$ and $m$ is the number of edges of that graph.
+
+\subsubsection{Finding twins and false twins}
+The algorithm \textit{gettwins} can be found in appendix \ref{gettwins}. In line 2-10 two lists, \textit{nbs} and \textit{nbs2}, are created. Both lists contains $n$ sorted sublists. In the former list each sublist contains all the neighbours of a node and in the latter each sublist contains all the neighbours of a node and also the node itself. Finding all the neighbours only require going though all the edges once, so the time complexity is $O(m)$. The sorting algorithm has time complexity $O(n \log n)$, but since it's in a for loop of length $n$ the overall time complexity becomes $O(n^2 \log n)$. \\\newline In line 11-16 a dictionary \textit{falsetwins} is created where the keys are all the items from \textit{nbs} and the values a list of the corresponding vertices. Since \textit{nbs} has length $n$ and \textit{falsetwins} has at most length $n$, the time complexity of this is $O(n^2)$. In line 23 the items in the \textit{falsetwins} with only one vertex as value are removed. This is $O(n)$, since len() has $O(1)$. The remaining values of the dictionary \textit{falsetwins} are now all the sets of false twins as defined in definition \ref{deffalsetwins}. A similar dictionary \textit{twins} is created where the keys are the items from \textit{nbs2}. The time complexity of \textit{gettwins} is thus $O(n^2 \log n)$.
+%BRON https://wiki.python.org/moin/TimeComplexity
+
+\subsubsection{Replacing the twins}
+Similar to 4.1
+
+%------------------------------------------------
+\section{Proof of Correctness}
+NOG NIET AF!
+\begin{definition}
+A \textit{colored} graph $G(E,V)$ is a graph where each vertex $v \in V$ has a color label.
+\end{definition}
+\begin{definition}
+Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs. A function $f: V_1 \to V_2$ is called a \textit{graph isomorphism} if (a) $f$ is a bijection, (b) for all $a, b \in V_1, \{a, b\} \in E_1$ if and only if $\{f(a), f(b)\} \in E_2$, and (c) $color(v)$ = $color (f(v)$. When such a function exist, $G_1$ and $G_2$ are called \textit{isomorphic graphs}. 
+\end{definition}
+\begin{theorem}
+Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs where each vertex has the same color and let $H_1 = (V_1, E_1)$ and $H_2 = (V_2, E_2)$ be resp. the same graphs as $G_1$ and $G_2$ where each twin is replaced by a colored vertex such that (a) Each twin
+\end{theorem}
+
+%bron http://pages.cs.wisc.edu/~dieter/Papers/3gi.pdf
+
 %------------------------------------------------
 \section{Computational Experiments}
 
-Computational Experiments here
+Computational Experiments here\\
 Setup good experiments beforehand and test extensively
 
 %------------------------------------------------
 \section{Results}
 
-Results here
+Results here \\
 And statistical analysis of the results
 
 %------------------------------------------------
 \section{Conclusions}
 
-Conclusions here 
+Conclusions here \\
 Is it faster?
 
 %----------------------------------------------------------------------------------------
@@ -170,6 +213,45 @@ Is it faster?
 
 %----------------------------------------------------------------------------------------
 
+
+
 \end{multicols}
+\begin{appendices}
+
+\section{Python code}
+\lstset{language=Python}
+\begin{lstlisting}[label={gettwins}]
+def gettwins(g):
+    nbs = []
+    nbs2 = []
+    for vertex in g.V():
+        nb = vertex.nbs()[:]
+        nb.sort(key=lambda x: x._label)
+        nbs.append(tuple(nb))
+        nb.append(vertex)
+        nb.sort(key=lambda x: x._label)
+        nbs2.append(tuple(nb))
+    falsetwins = {}
+    for i, item in enumerate(nbs):
+        if item in falsetwins.keys():
+            falsetwins[item].append(g.V()[i])
+        else:
+            falsetwins[item] = [g.V()[i]]
+    twins = {}
+    for i, item in enumerate(nbs2):
+        if item in twins.keys():
+            twins[item].append(g.V()[i])
+        else:
+            twins[item] = [g.V()[i]]
+    falsetwins = {k: v for k, v in falsetwins.items() if len(v) > 1}
+    twins = {k: v for k, v in twins.items() if len(v) > 1}
+    return list(falsetwins.values()), list(twins.values()), list(falsetwins.keys()), list(twins.keys())   
+\end{lstlisting}
+\end{appendices}
+
+
+
 
 \end{document}
+Status API Training Shop Blog About
+© 2015 GitHub, Inc. Terms Privacy Security Contact
