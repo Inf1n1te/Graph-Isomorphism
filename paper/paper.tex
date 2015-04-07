@@ -208,13 +208,16 @@ Todo
 %------------------------------------------------
 \section{Results}
 
-Results here
+The results of the experiment are shown in Table \ref{table:results}. Seven sets of graphs were tested for isomorphisms, and three cases the computation times are significantly different. In the other cases, the difference in computation time is not obviously related to the preprocessing time, as the preprocessing time is not equal to the difference in computation times. This is most likely due to the circumstances of both executions of the algorithms did not occur under the exact same circumstances, as it was impossible to ensure the conditions were the same.
+
+Due to the rather large difference in computation times relative to the preprocessing time, only significant differences in computation time will be used as indication of increase or decrease in speed.
 
 %------------------------------------------------
 \section{Conclusions}
 
-Conclusions here \\
-Is it faster?
+In three of the seven test cases, the computation time increased significantly. In the other four, no significant difference in the computation times was found.
+
+From this, it can be concluded that using preprocessing methods does indeed reduce the computation time needed to find graph isomorphisms.
 
 %----------------------------------------------------------------------------------------
 %	REFERENCE LIST
@@ -299,6 +302,7 @@ def preprocessing(g):
 \end{lstlisting}
 
 \section{Table with computation times}
+\begin{table}[h]
 \begin{tabular}{c|C{0.3\textwidth}|C{0.3\textwidth}|c}
 Graph & Computation time (without preprocessing) & Computation time (with preprocessing) & Preprocessing time \\
 \hline
@@ -310,6 +314,9 @@ cubes6 & 45.4422 sec & 45.4181 sec & 0.1503 sec\\
 products72 & 7.5950 sec & 7.5198 sec & 0.0275 sec\\
 torus72 & 25.4586 sec & 25.5244 sec & 0.0167 sec\\
 \end{tabular}
+\caption{Table showing the result from the experiment. For each graph, it shows the computation time without and with preprocessing time, as well as the time it took to perform the preprocessing.}
+\label{table:results}
+\end{table}
 \end{appendices}
 
 \end{document}
