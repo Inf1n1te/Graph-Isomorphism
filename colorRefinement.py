@@ -148,7 +148,7 @@ def compare(graphlisturl=-1, GI_only=False, gs=-1, preproc=False):
 
 	printresult(isomorphisms)
 
-	return colordict
+	return len(isomorphisms)
 
 
 def printresult(isomorphims):
@@ -314,7 +314,7 @@ def preprocessing(g):
 			twin[0].colornum = -twin[0].twinsize - mx
 		for i, twin in enumerate(falsetwins + twins):
 			for j in combined[i]:
-				if j in g.V() and twin[0] != j and not g.findedge(twin[0],j):
+				if j in g.V() and twin[0] != j and not g.findedge(twin[0], j):
 					g.addedge(twin[0], j)
 		g._V.sort(key=lambda x: x._label)
 	return g, lftwins, ltwins
@@ -331,8 +331,7 @@ def comparepreproc(graphlisturl, GI_only=False):
 	print('number of twins:', nfalsetwins, ntwins)
 	elapsed_time = time.clock() - start_time
 	print('Preprocessing: {0:.4f} sec'.format(elapsed_time))
-	nvertices = len(graphlist[0][0].V())
-	return nvertices  # compare(gs=graphlist[0], preproc=True, GI_only=True)
+	return compare(gs=graphlist[0], preproc=True, GI_only=True)
 
 
 def connected(v, ncomponents, g):
@@ -358,7 +357,6 @@ def componentgraphs(graphlisturl):
 	start_time = time.clock()
 	global graphlist
 	graphlist = loadgraph(graphlisturl, readlist=True)
-	print(graphlist)
 	ngraphs = len(graphlist[0])
 	subgraphlist = []
 	for i in range(ngraphs):
@@ -375,10 +373,60 @@ def componentgraphs(graphlisturl):
 						if edge not in graphs[component - 1].E():
 							graphs[component - 1].addedgeobject(edge)
 		subgraphlist.append(graphs)
+	return subgraphlist
 	# print(subgraphlist[2])
+
+def componentpreproc(graphlisturl):
+	grl = componentgraphs(graphlisturl)
+
+	colordicts = []
+	for componentlist in grl:
+		tempcolordicts = []
+		for component in componentlist:
+			tempcolordicts.append(fastrefine(component))
+		colordicts.append(tempcolordicts)
+
+	print(colordicts)
+	colordicts2 = copy.deepcopy(colordicts)
+	for componentcolordictlist in colordicts:
+		for componentcolordict in componentlist:
+			for key in componentcolordict.keys():
+				componentcolordict[key] = len(componentcolordict[key])
+
+	# vanaf nu is een colordict key = kleur, value = aantal nodes in de kleur
+
+	possibleisomorphs = []
+	for i in range(len(colordicts)):
+		for j in range(len(colordicts)):
+			if i < j:
+				if len(colordicts[i]) is len(colordicts[j]):
+					result = []
+					temp1 = colordicts[i]
+					temp2 = colordicts[j]
+					while temp1:
+						for dict in temp2:
+							if dict is temp1[0]:
+								result.append([temp1[0], dict])
+								temp1.remove(temp1[0])
+								temp2.remove(dict)
+					if len(result) is colordicts[i]:  # is goed
+						possibleisomorphs.append(result)
+
+	isomorphisms = []
+	for graph in possibleisomorphs:
+		graphisisomorph = True
+		for component in graph:
+			g1 = grl[possibleisomorphs.index(graph)][colordicts.index(component[0])]
+			g2 = grl[possibleisomorphs.index(graph)][colordicts.index(component[1])]
+			isisomorph = (compare(-1, True, [g1, g2]) > 0)
+			if not isisomorph:
+				graphisisomorph = False
+		if graphisisomorph:
+			isomorphisms.append(grl.index(graph))
+	print('shit finished, isomorphisms:', isomorphisms)
+
 	elapsed_time = time.clock() - start_time
 	print('Components: {0:.4f} sec'.format(elapsed_time))
-
 
 start_time = time.clock()
 
@@ -390,40 +438,9 @@ start_time = time.clock()
 # comparepreproc("GI_TestInstancesWeek1/cographs1.grl")  # GI for cographs1 with preprocessing
 #comparepreproc("GI_TestInstancesWeek1/products72.grl")  # GI for cographs1 with preprocessing
 
-# componentgraphs("GI_TestInstancesWeek1/cubes6.grl")
+# componentgraphs("GI_TestInstancesWeek1/cographs1.grl")
+componentpreproc('GI_TestInstancesWeek1/crefBM_4_16.grl')
 
-a = comparepreproc("GI_TestInstancesWeek1/gc1_k5.gr")
 elapsed_time = time.clock() - start_time
-print(a, 'Time: {0:.4f} sec'.format(elapsed_time))
+print('Time: {0:.4f} sec'.format(elapsed_time))
 
-a = comparepreproc("GI_TestInstancesWeek1/gc1_k6.gr")
-elapsed_time = time.clock() - start_time
-print(a, 'Time: {0:.4f} sec'.format(elapsed_time))
-
-a = comparepreproc("GI_TestInstancesWeek1/gc1_k7.gr")
-elapsed_time = time.clock() - start_time
-print(a, 'Time: {0:.4f} sec'.format(elapsed_time))
-
-a = comparepreproc("GI_TestInstancesWeek1/gc1_k8.gr")
-elapsed_time = time.clock() - start_time
-print(a, 'Time: {0:.4f} sec'.format(elapsed_time))
-
-a = comparepreproc("GI_TestInstancesWeek1/gc1_k9.gr")
-elapsed_time = time.clock() - start_time
-print(a, 'Time: {0:.4f} sec'.format(elapsed_time))
-
-a = comparepreproc("GI_TestInstancesWeek1/gc1_k10.gr")
-elapsed_time = time.clock() - start_time
-print(a, 'Time: {0:.4f} sec'.format(elapsed_time))
-
-a = comparepreproc("GI_TestInstancesWeek1/gc1_k11.gr")
-elapsed_time = time.clock() - start_time
-print(a, 'Time: {0:.4f} sec'.format(elapsed_time))
-
-a = comparepreproc("GI_TestInstancesWeek1/gc1_k12.gr")
-elapsed_time = time.clock() - start_time
-print(a, 'Time: {0:.4f} sec'.format(elapsed_time))
-
-a = comparepreproc("GI_TestInstancesWeek1/gc1_k13.gr")
-elapsed_time = time.clock() - start_time
-print(a, 'Time: {0:.4f} sec'.format(elapsed_time))
