@@ -177,7 +177,7 @@ In line 11-16 a dictionary \emph{falsetwins} is created where the keys are all t
 
 
 \subsubsection{Replacing the twins}
-The algorithm \emph{preprocessing} can be found in appendix \ref{preprocessing}. In line 2 the twins and falsetwins are defined and if there are none the program will terminate. If there are any twins all edges with a head or tail in one of these twins will be deleted. The complexity of this is $O(m +$ number of vertices (\emph{twins}+\emph{falsetwins}))$ < O (nm)$. Then in line 13-19 all vertices which are in twins or falsetwins will be removed. The complexity of this is $O(n^2)$. In line 20-28 a new colored vertex will be added for each (false) twin $(O(n)$ and finnaly the edges from these vertices will be added ($O(n^2 (n+m)$). The worst case complexity of this algorithm is ($O(n^2 (n+m)$), however in average there are much less (false) twins than vertices (there are at most $n/2$). These twins also have much less than $n$ neighbours. 
+The algorithm \emph{preprocessing} can be found in appendix \ref{preprocessing}. In line 2 the twins and falsetwins are defined and if there are none the program will terminate. If there are any twins all edges with a head or tail in one of these twins will be deleted. The complexity of this is $O(m +$ number of vertices in (\emph{twins}+\emph{falsetwins}))$ < O (nm)$. Then in line 13-19 all vertices which are in twins or falsetwins will be removed. The complexity of this is $O(n^2)$. In line 20-28 a new colored vertex will be added for each (false) twin $(O(n)$ and finnaly the edges from these vertices will be added ($O(n^2 (n+m)$). The worst case complexity of this algorithm is ($O(n^2 (n+m)$), however in average there are much less (false) twins than vertices (there are at most $n/2$). These twins also have much less than $n$ neighbours.
 
 %------------------------------------------------
 \section{Proof of Correctness}
@@ -313,6 +313,26 @@ bigtrees3 & 8.2724 sec & 2.8264 sec & 0.0499 sec\\
 cubes6 & 45.4422 sec & 45.4181 sec & 0.1503 sec\\
 products72 & 7.5950 sec & 7.5198 sec & 0.0275 sec\\
 torus72 & 25.4586 sec & 25.5244 sec & 0.0167 sec\\
+\end{tabular}
+\caption{Table showing the result from the experiment. For each set of graphs, it shows the computation time without and with preprocessing time, as well as the time it took to perform the preprocessing.}
+\label{table:results}
+\end{table}
+
+\section{Complexity}
+\begin{table}[h]
+\begin{tabular}{c|c}
+n & time \\
+\hline
+34 & 0.0017\\
+66 & 0.0032\\
+130 & 0.0071\\
+258 & 0.161\\
+514 & 0.0344\\
+1026 & 0.0805\\
+2050 & 0.2019\\
+4098 & 0.5874\\
+8194 & 2.7102
+
 \end{tabular}
 \caption{Table showing the result from the experiment. For each set of graphs, it shows the computation time without and with preprocessing time, as well as the time it took to perform the preprocessing.}
 \label{table:results}
