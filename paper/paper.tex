@@ -137,7 +137,7 @@ This paper will give a description of the algorithms used for preprocessing, as 
 To determine whether the algorithms will speed up the process of finding graph isomorphisms, a computational experiment was performed. In this experiment, the algorithms were used on a variety of differently shaped graphs, and sets of graphs, in conjunction with an algorithm which checks for isomorphisms.
 
 \subsection{Experiment Setup}
-For the testing, a single laptop was used to collect all the timed data. The tests were run in JetBrains' PyCharm, using the built-in functions to run the python code. The python interpreter used was Python 3.4 and the laptop was running Windows 8.1 at the time of the testing. Efforts were made to ensure all the testing was performed under the same circumstances.
+For the testing, a single laptop was used to collect all the timed data. The tests were run in JetBrains' PyCharm, using the built-in functions to run the python code. The python interpreter used was Python 3.4 and the laptop was running Windows 10 Pro Technical Preview (at 3.5 GHz and 8.00 GB) at the time of the testing. Efforts were made to ensure all the testing was performed under the same circumstances.
 
 \subsection{Testing}
 In the experiment, two cases were tested: a basic case, without preprocessing, and a case with preprocessing. In both cases a timer was added to the code. The timer started before any other piece of code, and ended only after the algorithms were completely finished. This way everything is timed, including the loading of the graph, the additional time used to run preprocessing algorithms and finding of the isomorphisms.
@@ -306,13 +306,13 @@ def preprocessing(g):
 \begin{tabular}{c|C{0.3\textwidth}|C{0.3\textwidth}|c}
 Graph & Computation time (without preprocessing) & Computation time (with preprocessing) & Preprocessing time \\
 \hline
-cographs1 & 146.8098 sec & 0.0171 sec & 0.0056 sec \\
-hugecographs & >30 min & 662.5381 sec & 0.0316 sec \\
-cycles175 & 69.8579 sec & 70.8041 sec & 0.0215 sec\\
-bigtrees3 & 8.2724 sec & 2.8264 sec & 0.0499 sec\\
-cubes6 & 45.4422 sec & 45.4181 sec & 0.1503 sec\\
-products72 & 7.5950 sec & 7.5198 sec & 0.0275 sec\\
-torus72 & 25.4586 sec & 25.5244 sec & 0.0167 sec\\
+cographs1 & 6.6017 sec & 0.0048 sec & 0.0027 sec \\
+hugecographs & >30 min & 29.8713 sec & 0.0214 sec \\
+cycles175 & 13.7522 sec & 13.9265 sec & 0.0238 sec\\
+bigtrees3 & 0.9652 sec & 0.2700 sec & 0.0323 sec\\
+cubes6 & 0.5967 sec & 0.5877 sec & 0.0072 sec\\
+products72 & 0.6083 sec & 0.6353 sec & 0.0123 sec\\
+torus72 & 3.5590 sec & 3.6059 sec & 0.0106 sec\\
 \end{tabular}
 \caption{Table showing the result from the experiment. For each set of graphs, it shows the computation time without and with preprocessing time, as well as the time it took to perform the preprocessing.}
 \label{table:results}
