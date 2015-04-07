@@ -184,8 +184,14 @@ A \emph{colored} graph $G(E,V)$ is a graph where each vertex $v \in V$ has a col
 Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs. A function $f: V_1 \to V_2$ is called a \emph{graph isomorphism} if (a) $f$ is a bijection, (b) for all $a, b \in V_1, \{a, b\} \in E_1$ if and only if $\{f(a), f(b)\} \in E_2$, and (c) $color(v)$ = $color (f(v)$. When such a function exist, $G_1$ and $G_2$ are called \emph{isomorphic graphs}. 
 \end{definition}
 \begin{theorem}
-Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs where each vertex has the same color and let $H_1 = (V_1, E_1)$ and $H_2 = (V_2, E_2)$ be resp. the same graphs as $G_1$ and $G_2$ where each twin is replaced by a colored vertex such that (a) Each twin
-\end{theorem}
+Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs where each vertex has the same color and let $H_1 = (V_1, E_1)$ and $H_2 = (V_2, E_2)$ be resp. the same graphs as $G_1$ and $G_2$ where each (false) twin is replaced by a colored vertex such that: \begin{enumerate}
+\item Twins (False twins) have the same color $\iff$ Twins (False twins) have the same size (number of vertices).
+\item A twin and a false twin can't have the same color.
+\end{enumerate}
+Graph $G_1$ and $G_2$ are isomorphic $\iff$ Graph $H_1$ and $H_2$ are isomorphic.
+\begin{proof}
+Todo
+\end{proof}
 
 %bron http://pages.cs.wisc.edu/~dieter/Papers/3gi.pdf
 
