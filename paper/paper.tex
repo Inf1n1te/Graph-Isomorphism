@@ -122,7 +122,7 @@ The preprocessing part are algorithms that look at the graphs before determining
 
 The aim of this research paper is to determine whether certain preprocessing methods significantly reduce the time required to check whether two graphs are isomorphic. At the core, two cases will be compared: a basic case without preprocessing, and a case with preprocessing. 
 
-For this paper, the time complexity of the algorithms will be calculated. The difference in performance between the cases will be shown with a statistical analysis on computational results as well as the calculated time complexities.
+For this paper, the time complexity of the algorithms will be calculated. The difference in performance between the cases will be shown by computational results as well as the calculated time complexities.
 
 This paper will give a description of the algorithms used for preprocessing, as well as proof of correctness. The algorithms used to check for isomorphisms will be left out of consideration.
 
@@ -136,9 +136,9 @@ For the testing, a single laptop was used to collect all the timed data. The tes
 \subsection{Testing}
 In the experiment, two cases were tested: a basic case, without preprocessing, and a case with preprocessing. In both cases a timer was added to the code. The timer started before any other piece of code, and ended only after the algorithms were completely finished. This way everything is timed, including the loading of the graph, the additional time used to run preprocessing algorithms and finding of the isomorphisms.
 
-For every chosen test instance, the run times for both algorithms was determined. After all testing all instances had been completed, the results were compared and tested...
+For every chosen test instance, the run times for both algorithms was determined. After all testing all instances had been completed, the results were compared.
 \\ \\
-\textbf{\emph{TODO:} possibly rewrite the testing process after the testing; make sure timer details are correct; what statistical tests are we using?}
+\textbf{\emph{TODO:} possibly rewrite the testing process after the testing; make sure timer details are correct}
 
 %------------------------------------------------
 \section{Description of Algorithms}
@@ -162,6 +162,7 @@ To solve the graph isomorphism problem more efficiently, we use preprocessing al
 \item False twins have the same color $\iff$ False twins have the same size (number of vertices).
 \item A twin and a false twin can't have the same color.
 \end{compactenum}
+
 \subsection{Implementation}
 The algorithm is divided into two subalgorithms. The subalgorithm \textit{gettwins} finds all twins and false twins and the subalgorithm \textit{preprocessing} replaces each (false) twin by a single colored vertex as described above. In the following subsections these algorithms and their worst case time complexities will be analyzed. The elementary operation is the comparison of two elements. In those subsections $n$ is the number of vertices of a graph $G(V,E)$ and $m$ is the number of edges of that graph.
 
@@ -198,8 +199,7 @@ Setup good experiments beforehand and test extensively
 %------------------------------------------------
 \section{Results}
 
-Results here \\
-And statistical analysis of the results
+Results here
 
 %------------------------------------------------
 \section{Conclusions}
@@ -255,5 +255,3 @@ def gettwins(g):
 
 
 \end{document}
-Status API Training Shop Blog About
-© 2015 GitHub, Inc. Terms Privacy Security Contact
