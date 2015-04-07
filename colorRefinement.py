@@ -326,7 +326,7 @@ def comparepreproc(graphlisturl, GI_only=False):
 	ngraphs = len(graphlist[0])
 	nfalsetwins, ntwins = [None] * ngraphs, [None] * ngraphs
 	for i in range(ngraphs):
-		print(findcomponents(graphlist[0][1]))
+		# print(findcomponents(graphlist[0][1]))
 		graphlist[0][i], nfalsetwins[i], ntwins[i] = preprocessing(graphlist[0][i])
 	print('number of twins:', nfalsetwins, ntwins)
 	elapsed_time = time.clock() - start_time
