@@ -199,6 +199,8 @@ def compare(graphlisturl=-1, GI_only=False, gs=-1, preproc=False):
 	for tuple in undecided:
 		first = tuple[0]
 		second = tuple[1]
+
+		print("Doing ", [first, second])
 		tempgraph = disjointunion(graphlist[first], graphlist[second])
 		num = countIsomorphism(tempgraph, fastrefine(tempgraph), GI_only)
 		if num > 0:
@@ -237,7 +239,7 @@ def countIsomorphism(graph, hasColordict=False, GI_only=False):
 			return 0
 		# if length == 2:
 		# if int(colordict[c][0].__repr__()) <= int(graph.subgraphs[0]) < int(colordict[c][1].__repr__()):
-		# pass
+		# 		pass
 		# 	else:
 		# 		return 0
 	if isomorphism:
@@ -271,6 +273,8 @@ def countIsomorphism(graph, hasColordict=False, GI_only=False):
 			num += countIsomorphism(graph2, colordict2, GI_only)
 	return num
 
+	return 0
+
 
 def applycolors(colordict):
 	for color in colordict.keys():
@@ -300,7 +304,7 @@ def splitColorDict(colordict, g):
 						split[partitions.index(e)][key] = [value]
 					# split[partitions.index(e)].append(value.colornum)
 					split2[partitions.index(e)].append((value.colornum, value))
-	# print('split', split)
+	#print('split', split)
 	return split, split2
 
 
@@ -401,19 +405,19 @@ def comparepreproc(graphlisturl, GI_only=False):
 	print('number of twins:', nfalsetwins, ntwins)
 	elapsed_time = time.clock() - start_time
 	print('Preprocessing: {0:.4f} sec'.format(elapsed_time))
+	#return 1
 	return compare(gs=graphlist[0], preproc=True, GI_only=True)
 
 
+
+
 start_time = time.clock()
-
-compare("GI_TestInstancesWeek1/products72.grl", False)  # #aut for product72
-compare("GI_TestInstancesWeek1/torus72.grl", False)  # #aut for torus72
-compare("GI_TestInstancesWeek1/cubes6.grl", True)  # GI for cubes6
-compare("GI_TestInstancesWeek1/bigtrees3.grl", True)  # GI for bigtrees3
-
-comparepreproc("GI_TestInstancesWeek1/cographs1.grl")  # GI for cographs1 with preprocessing
-comparepreproc("GI_TestInstancesWeek1/bigtrees3.grl")  # GI for cographs1 with preprocessing
-
+compare("GI_TestInstancesWeek1/cubes6.grl", True)
 elapsed_time = time.clock() - start_time
-print('Time: {0:.4f} sec'.format(elapsed_time))
+print('Time without preproc: {0:.4f} sec'.format(elapsed_time))
+
+start_time = time.clock()
+comparepreproc("GI_TestInstancesWeek1/cubes6.grl")
+elapsed_time = time.clock() - start_time
+print('Time with preproc: {0:.4f} sec'.format(elapsed_time))
 

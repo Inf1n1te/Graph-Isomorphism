@@ -20,8 +20,7 @@
 \usepackage{listings}
 \lstset{
 numbers=left,
-breaklines=true,
-tabsize=4
+breaklines=true
 }
 
 % --Optional-- Font and tweaking used in template
@@ -181,19 +180,14 @@ NOG NIET AF!
 A \emph{colored} graph $G(E,V)$ is a graph where each vertex $v \in V$ has a color label.
 \end{definition}
 \begin{definition}
-Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs. A function $f: V_1 \to V_2$ is called a \emph{graph isomorphism} if \begin{compactenum}[\upshape(a)]
-\item $f$ is a bijection, 
-\item for all $a, b \in V_1, \{a, b\} \in E_1$ if and only if $\{f(a), f(b)\} \in E_2$, and 
-\item $color(v)$ = $color (f(v)$. When such a function exist, $G_1$ and $G_2$ are called \emph{isomorphic graphs}. 
-\end{compactenum}
+Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs. A function $f: V_1 \to V_2$ is called a \emph{graph isomorphism} if (a) $f$ is a bijection, (b) for all $a, b \in V_1, \{a, b\} \in E_1$ if and only if $\{f(a), f(b)\} \in E_2$, and (c) $color(v)$ = $color (f(v)$. When such a function exist, $G_1$ and $G_2$ are called \emph{isomorphic graphs}. 
 \end{definition}
 \begin{theorem}
-Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs where each vertex has the same color and let $H_1 = (V_1, E_1)$ and $H_2 = (V_2, E_2)$ be resp. the same graphs as $G_1$ and $G_2$ where each (false) twin is replaced by a colored vertex such that: \begin{compactenum}[\upshape(a)]
+Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs where each vertex has the same color and let $H_1 = (V_1, E_1)$ and $H_2 = (V_2, E_2)$ be resp. the same graphs as $G_1$ and $G_2$ where each (false) twin is replaced by a colored vertex such that: \begin{enumerate}
 \item Twins (False twins) have the same color $\iff$ Twins (False twins) have the same size (number of vertices).
 \item A twin and a false twin can't have the same color.
-\end{compactenum}
+\end{enumerate}
 Graph $G_1$ and $G_2$ are isomorphic $\iff$ Graph $H_1$ and $H_2$ are isomorphic.
-\end{theorem}
 \begin{proof}
 Todo
 \end{proof}
@@ -268,7 +262,7 @@ Graph & Computation time (without preprocessing) & Computation time (with prepro
 cographs1 & 146.8098 sec & 0.0171 sec \\
 hugecographs & >30 min & 662.5381 sec \\
 cycles175 & 69.8579 & 70.8041 sec \\
-bigtrees3 & -1 & -1\\
+bigtrees3 & 8.2151 & 2.5008\\
 cubes6 & -1 & -1\\
 products72 & -1 & -1\\
 torus72 & -1 & -1\\
@@ -314,17 +308,17 @@ def preprocessing(g):
 \end{lstlisting}
 
 \section{Table with computation times}
-\begin{tabular}{c|c|c}
-Graph & Computation time (without preprocessing) & Computation time (with preprocessing) \\
+\begin{tabular}{c|c|c|c}
+Graph & Computation time (without preprocessing) & Computation time (with preprocessing) & Preprocessing time \\
 \hline
-cographs1 & 146.8098 sec & 0.0171 sec \\
-hugecographs & >30 min & 662.5381 sec \\
-cycles175 & 69.8579 & 70.8041 sec \\
-bigtrees3 & -1 & -1\\
+cographs1 & 146.8098 sec & 0.0171 sec & 0.0056 sec \\
+hugecographs & >30 min & 662.5381 sec & 0.0316 sec \\
+cycles175 & 69.8579 sec & 70.8041 sec & 0.0215 sec\\
+bigtrees3 & 8.2724 sec & 2.8264 & 0.0499 sec\\
 cubes6 & -1 & -1\\
 products72 & -1 & -1\\
 torus72 & -1 & -1\\
-
+\end{tabular}
 
 \end{appendices}
 
