@@ -131,7 +131,7 @@ This paper will give a description of the algorithms used for preprocessing, as 
 To determine whether the algorithms will speed up the process of finding graph isomorphisms, a computational experiment was performed. In this experiment, the algorithms were used on a variety of differently shaped graphs, and sets of graphs, in conjunction with an algorithm which checks for isomorphisms.
 
 \subsection{Experiment Setup}
-For the testing, a single laptop was used to collect all the timed data. The tests were run in JetBrains' PyCharm, using the built-in functions to run the python code. The python interpreter used was Python 3.4 and the laptop was running Windows 8.1 at the time of the testing. Efforts were made to ensure all the testing was performed under the same circumstances.
+For the testing, a single laptop was used to collect all the timed data. The tests were run in JetBrains' PyCharm, using the built-in functions to run the python code. The python interpreter used was Python 3.4 and the laptop was running Windows 8.1 @ 1.6 GHz/ 3.67GB RAM at the time of the testing. Efforts were made to ensure all the testing was performed under the same circumstances.
 
 \subsection{Testing}
 In the experiment, two cases were tested: a basic case, without preprocessing, and a case with preprocessing. In both cases a timer was added to the code. The timer started before any other piece of code, and ended only after the algorithms were completely finished. This way everything is timed, including the loading of the graph, the additional time used to run preprocessing algorithms and finding of the isomorphisms.
@@ -188,13 +188,8 @@ Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs w
 %bron http://pages.cs.wisc.edu/~dieter/Papers/3gi.pdf
 
 %------------------------------------------------
-\section{Computational Experiments}
-
-Computational Experiments here\\
-Setup good experiments beforehand and test extensively
-
-%------------------------------------------------
 \section{Results}
+
 
 Results here \\
 And statistical analysis of the results
@@ -247,6 +242,20 @@ def gettwins(g):
     twins = {k: v for k, v in twins.items() if len(v) > 1}
     return list(falsetwins.values()), list(twins.values()), list(falsetwins.keys()), list(twins.keys())   
 \end{lstlisting}
+
+\section{Table with computation times}
+\begin{tabular}{c|c|c}
+Graph & Computation time (without preprocessing) & Computation time (with preprocessing) \\
+\hline
+cographs1 & 146.8098 sec & 0.0171 sec \\
+hugecographs & >30 min & 662.5381 sec \\
+cycles175 & 69.8579 & 70.8041 sec \\
+bigtrees3 & -1 & -1\\
+cubes6 & -1 & -1\\
+products72 & -1 & -1\\
+torus72 & -1 & -1\\
+
+\end{tabular}
 \end{appendices}
 
 
