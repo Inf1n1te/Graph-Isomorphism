@@ -393,23 +393,23 @@ def preprocessing(g):
 
 
 def comparepreproc(graphlisturl, GI_only=False):
-	global graphlist
-	graphlist = loadgraph(graphlisturl, readlist=True)
-	ngraphs = len(graphlist[0])
-	nfalsetwins, ntwins = [None] * ngraphs, [None] * ngraphs
-	for i in range(ngraphs):
-		graphlist[0][i], nfalsetwins[i], ntwins[i] = preprocessing(graphlist[0][i])
-	# print(graphlist[0][i])
-	# isgraph(graphlist[0][i])
-	print('number of twins:', nfalsetwins, ntwins)
-	return compare(gs=graphlist[0], preproc=True, GI_only=False)
+    global graphlist
+    graphlist = loadgraph(graphlisturl, readlist=True)
+    ngraphs = len(graphlist[0])
+    nfalsetwins, ntwins = [None] * ngraphs, [None] * ngraphs
+    for i in range(ngraphs):
+        graphlist[0][i], nfalsetwins[i], ntwins[i] = preprocessing(graphlist[0][i])
+        # print(graphlist[0][i])
+        # isgraph(graphlist[0][i])
+    print('number of twins:', nfalsetwins, ntwins)
+    return compare(gs=graphlist[0], preproc=True, GI_only=True)
 
 
 start_time = time.clock()
 
-# compare("GI_TestInstancesWeek1/products72.grl", False)
+compare("GI_TestInstancesWeek1/products72.grl", False)
 
-comparepreproc("GI_TestInstancesWeek1/cographs1.grl")
+# comparepreproc("GI_TestInstancesWeek1/torus72.grl")
 
 elapsed_time = time.clock() - start_time
 print('Time: {0:.4f} sec'.format(elapsed_time))
