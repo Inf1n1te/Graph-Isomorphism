@@ -137,7 +137,7 @@ This paper will give a description of the algorithms used for preprocessing, as 
 To determine whether the algorithms will speed up the process of finding graph isomorphisms, a computational experiment was performed. In this experiment, the algorithms were used on a variety of differently shaped graphs, and sets of graphs, in conjunction with an algorithm which checks for isomorphisms.
 
 \subsection{Experiment Setup}
-For the testing, a single laptop was used to collect all the timed data. The tests were run in JetBrains' PyCharm, using the built-in functions to run the python code. The python interpreter used was Python 3.4 and the laptop was running Windows 10 Pro Technical Preview (at 3.5 GHz and 8.00 GB) at the time of the testing. Efforts were made to ensure all the testing was performed under the same circumstances.
+For the testing, a single laptop was used to collect all the timed data. The tests were run in JetBrains' PyCharm, using the built-in functions to run the python code. The python interpreter used was Python 3.4 and the laptop was running Windows 10 Pro Technical Preview (at 3.75 GHz (average speed, max 3.9 GHz) and 8.00 GB) at the time of the testing. Efforts were made to ensure all the testing was performed under the same circumstances.
 
 \subsection{Testing}
 In the experiment, two cases were tested: a basic case, without preprocessing, and a case with preprocessing. In both cases a timer was added to the code. The timer started before any other piece of code, and ended only after the algorithms were completely finished. This way everything is timed, including the loading of the graph, the additional time used to run preprocessing algorithms and finding of the isomorphisms.
