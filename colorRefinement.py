@@ -333,6 +333,23 @@ def comparepreproc(graphlisturl, GI_only=False):
 	return compare(gs=graphlist[0], preproc=True, GI_only=True)
 
 
+def connected(v, ncomponents):
+	for vertex in v.nbs():
+		vertex.visited = True
+		vertex.component = ncomponents
+		connected(vertex)
+
+
+def findcomponents(g):
+	ncomponents = 0
+	for vertex in g.V():
+		if not vertex.visited:
+			vertex.visited = True
+			ncomponents += 1
+			vertex.component = ncomponents
+			connected(vertex, ncomponents)
+
+
 start_time = time.clock()
 
 compare("GI_TestInstancesWeek1/products72.grl", False)  # #aut for product72
