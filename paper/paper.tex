@@ -61,7 +61,7 @@ breaklines=true
 \fancyfoot[RO,LE]{\thepage} % Custom footer text
 
 % Bibliography
-\usepackage[backend=bibtex]{biblatex}
+\usepackage[backend=bibtex, sorting=none]{biblatex}
 \bibliography{references.bib}
 
 %----------------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ The preprocessing part are algorithms that look at the graphs before determining
 
 The aim of this research paper is to determine whether certain preprocessing methods significantly reduce the time required to check whether two graphs are isomorphic. At the core, two cases will be compared: a basic case without preprocessing, and a case with preprocessing. 
 
-For this paper, the time complexity of the algorithms will not be discussed or calculated. The difference in performance between the cases will be shown with a statistical analysis on computational results.
+For this paper, the time complexity of the algorithms will be calculated. The difference in performance between the cases will be shown with a statistical analysis on computational results as well as the calculated time complexities.
 
 This paper will give a description of the algorithms used for preprocessing, as well as proof of correctness. The algorithms used to check for isomorphisms will be left out of consideration.
 
@@ -144,30 +144,32 @@ For every chosen test instance, the run times for both algorithms was determined
 \section{Description of Algorithms}
 For hard instances of the graph isomorphism problem, the coarsest stable coloring of a graph still has a lot of colors which are not unique. Two structures for which this is the case are twins and false twins, they are defined in definition \ref{deftwins} and \ref{deffalsetwins}.
 \begin{definition}
-Let $G = (V,E)$ be a graph. The \textit{neighbourhood} $N(v)$ of $v \in V$ is:
+Let $G = (V,E)$ be a graph. The \emph{neighbourhood} $N(v)$ of $v \in V$ is:
 $N(v) = \left\{{u \in V : \{u,v\} \in E}\right\}$
 \end{definition}
 \begin{definition}\label{deftwins}
 Let $G = (V,E)$ be a graph.
-Two vertices $u, v \in V$ are \textit{twins} if $\{u,v\} \in E$ and $N(u)\textbackslash {v} = N(v)\textbackslash {u}$.
+Two vertices $u, v \in V$ are \emph{twins} if $\{u,v\} \in E$ and $N(u)\textbackslash {v} = N(v)\textbackslash {u}$.
 \end{definition}
 \begin{definition}\label{deffalsetwins}
 Let $G = (V,E)$ be a graph.
-Two vertices $u, v \in V(G)$ are \textit{false twins} if $N(u) = N(v).$
+Two vertices $u, v \in V(G)$ are \emph{false twins} if $N(u) = N(v).$
 \end{definition}
 
 To solve the graph isomorphism problem more efficiently, we use preprocessing algorithms which replaces twins and false twins by single precolored vertices such that:
-\begin{enumerate}
+\begin{compactenum}
 \item Twins have the same color $\iff$ Twins have the same size (number of vertices).
 \item False twins have the same color $\iff$ False twins have the same size (number of vertices).
 \item A twin and a false twin can't have the same color.
-\end{enumerate}
+\end{compactenum}
 \subsection{Implementation}
 The algorithm is divided into two subalgorithms. The subalgorithm \textit{gettwins} finds all twins and false twins and the subalgorithm \textit{preprocessing} replaces each (false) twin by a single colored vertex as described above. In the following subsections these algorithms and their worst case time complexities will be analyzed. The elementary operation is the comparison of two elements. In those subsections $n$ is the number of vertices of a graph $G(V,E)$ and $m$ is the number of edges of that graph.
 
 \subsubsection{Finding twins and false twins}
-The algorithm \textit{gettwins} can be found in appendix \ref{gettwins}. In line 2-10 two lists, \textit{nbs} and \textit{nbs2}, are created. Both lists contains $n$ sorted sublists. In the former list each sublist contains all the neighbours of a node and in the latter each sublist contains all the neighbours of a node and also the node itself. Finding all the neighbours only require going though all the edges once, so the time complexity is $O(m)$. The sorting algorithm has time complexity $O(n \log n)$, but since it's in a for loop of length $n$ the overall time complexity becomes $O(n^2 \log n)$. \\\newline In line 11-16 a dictionary \textit{falsetwins} is created where the keys are all the items from \textit{nbs} and the values a list of the corresponding vertices. Since \textit{nbs} has length $n$ and \textit{falsetwins} has at most length $n$, the time complexity of this is $O(n^2)$. In line 23 the items in the \textit{falsetwins} with only one vertex as value are removed. This is $O(n)$, since len() has $O(1)$. The remaining values of the dictionary \textit{falsetwins} are now all the sets of false twins as defined in definition \ref{deffalsetwins}. A similar dictionary \textit{twins} is created where the keys are the items from \textit{nbs2}. The time complexity of \textit{gettwins} is thus $O(n^2 \log n)$.
-%BRON https://wiki.python.org/moin/TimeComplexity
+The algorithm \emph{gettwins} can be found in appendix \ref{gettwins}. In line 2-10 two lists, \emph{nbs} and \emph{nbs2}, are created. Both lists contains $n$ sorted sublists. In the former list each sublist contains all the neighbours of a node and in the latter each sublist contains all the neighbours of a node and also the node itself. Finding all the neighbours only require going though all the edges once, so the time complexity is $O(m)$. The sorting algorithm has time complexity $O(n \log n)$, but since it's in a for loop of length $n$ the overall time complexity becomes $O(n^2 \log n)$. 
+
+In line 11-16 a dictionary \emph{falsetwins} is created where the keys are all the items from \emph{nbs} and the values a list of the corresponding vertices. Since \emph{nbs} has length $n$ and \emph{falsetwins} has at most length $n$, the time complexity of this is $O(n^2)$. In line 23 the items in the \emph{falsetwins} with only one vertex as value are removed. This is $O(n)$, since len() has $O(1)$.\cite{website:pythonTimeComplexity} The remaining values of the dictionary \emph{falsetwins} are now all the sets of false twins as defined in definition \ref{deffalsetwins}. A similar dictionary \emph{twins} is created where the keys are the items from \emph{nbs2}. The time complexity of \textit{gettwins} is thus $O(n^2 \log n)$.
+
 
 \subsubsection{Replacing the twins}
 Similar to 4.1
@@ -176,10 +178,10 @@ Similar to 4.1
 \section{Proof of Correctness}
 NOG NIET AF!
 \begin{definition}
-A \textit{colored} graph $G(E,V)$ is a graph where each vertex $v \in V$ has a color label.
+A \emph{colored} graph $G(E,V)$ is a graph where each vertex $v \in V$ has a color label.
 \end{definition}
 \begin{definition}
-Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs. A function $f: V_1 \to V_2$ is called a \textit{graph isomorphism} if (a) $f$ is a bijection, (b) for all $a, b \in V_1, \{a, b\} \in E_1$ if and only if $\{f(a), f(b)\} \in E_2$, and (c) $color(v)$ = $color (f(v)$. When such a function exist, $G_1$ and $G_2$ are called \textit{isomorphic graphs}. 
+Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs. A function $f: V_1 \to V_2$ is called a \emph{graph isomorphism} if (a) $f$ is a bijection, (b) for all $a, b \in V_1, \{a, b\} \in E_1$ if and only if $\{f(a), f(b)\} \in E_2$, and (c) $color(v)$ = $color (f(v)$. When such a function exist, $G_1$ and $G_2$ are called \emph{isomorphic graphs}. 
 \end{definition}
 \begin{theorem}
 Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs where each vertex has the same color and let $H_1 = (V_1, E_1)$ and $H_2 = (V_2, E_2)$ be resp. the same graphs as $G_1$ and $G_2$ where each twin is replaced by a colored vertex such that (a) Each twin
