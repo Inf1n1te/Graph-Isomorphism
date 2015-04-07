@@ -199,6 +199,8 @@ def compare(graphlisturl=-1, GI_only=False, gs=-1, preproc=False):
 	for tuple in undecided:
 		first = tuple[0]
 		second = tuple[1]
+
+		print("Doing ", [first, second])
 		tempgraph = disjointunion(graphlist[first], graphlist[second])
 		num = countIsomorphism(tempgraph, fastrefine(tempgraph), GI_only)
 		if num > 0:
@@ -271,6 +273,8 @@ def countIsomorphism(graph, hasColordict=False, GI_only=False):
 			num += countIsomorphism(graph2, colordict2, GI_only)
 	return num
 
+	return 0
+
 
 def applycolors(colordict):
 	for color in colordict.keys():
@@ -300,7 +304,7 @@ def splitColorDict(colordict, g):
 						split[partitions.index(e)][key] = [value]
 					# split[partitions.index(e)].append(value.colornum)
 					split2[partitions.index(e)].append((value.colornum, value))
-	# print('split', split)
+	#print('split', split)
 	return split, split2
 
 
@@ -402,6 +406,23 @@ def comparepreproc(graphlisturl, GI_only=False):
 	elapsed_time = time.clock() - start_time
 	print('Preprocessing: {0:.4f} sec'.format(elapsed_time))
 	return compare(gs=graphlist[0], preproc=True, GI_only=True)
+
+
+def connected(v, ncomponents):
+	for vertex in v.nbs():
+		vertex.visited = True
+		vertex.component = ncomponents
+		connected(vertex)
+
+
+def findcomponents(g):
+	ncomponents = 0
+	for vertex in g.V():
+		if not vertex.visited:
+			vertex.visited = True
+			ncomponents += 1
+			vertex.component = ncomponents
+			connected(vertex, ncomponents)
 
 
 start_time = time.clock()
