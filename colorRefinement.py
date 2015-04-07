@@ -358,22 +358,32 @@ def componentgraphs(graphlisturl):
 	start_time = time.clock()
 	global graphlist
 	graphlist = loadgraph(graphlisturl, readlist=True)
+	print(graphlist)
 	ngraphs = len(graphlist[0])
-	for i in range(ngraphs - 1):
+	subgraphlist = []
+	for i in range(ngraphs):
 		ncomponents = findcomponents(graphlist[0][i])
+		if i > 0:
+			mincomponents = min(mincomponents, ncomponents)
+		else:
+			mincomponents = ncomponents
 		g = graphlist[0][i]
 		if ncomponents > 1:
 			graphs = []
-			for component in range(ncomponents):
-				graphs.append(graph())
+			for component in range(ncomponents + 1):
+				if component != ncomponents:
+					graphs.append(graph())
 				for vertex in g.V():
 					if vertex.component == component:
 						graphs[component - 1].addvertexobject(vertex)
 						for edge in vertex.inclist():
 							if edge not in graphs[component - 1].E():
 								graphs[component - 1].addedgeobject(edge)
-		for j in range(ncomponents):
-			print(i, j, graphs)
+		subgraphlist.append(graphs)
+	# print(subgraphlist[2])
+
+
+
 	elapsed_time = time.clock() - start_time
 	print('Components: {0:.4f} sec'.format(elapsed_time))
 
@@ -384,8 +394,8 @@ start_time = time.clock()
 # compare("GI_TestInstancesWeek1/cubes6.grl", True)  # GI for cubes6
 # compare("GI_TestInstancesWeek1/bigtrees3.grl", True)  # GI for bigtrees3
 #
-comparepreproc("GI_TestInstancesWeek1/cographs1.grl")  # GI for cographs1 with preprocessing
-# comparepreproc("GI_TestInstancesWeek1/bigtrees3.grl")  # GI for cographs1 with preprocessing
+# comparepreproc("GI_TestInstancesWeek1/cographs1.grl")  # GI for cographs1 with preprocessing
+#comparepreproc("GI_TestInstancesWeek1/products72.grl")  # GI for cographs1 with preprocessing
 
 componentgraphs("GI_TestInstancesWeek1/cographs1.grl")
 
