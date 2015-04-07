@@ -237,30 +237,30 @@ From this, it can be concluded that using preprocessing methods does indeed redu
 \lstset{language=Python}
 \begin{lstlisting}[label={gettwins}]
 def gettwins(g):
-    nbs = []
-    nbs2 = []
-    for vertex in g.V():
-        nb = vertex.nbs()[:]
-        nb.sort(key=lambda x: x._label)
-        nbs.append(tuple(nb))
-        nb.append(vertex)
-        nb.sort(key=lambda x: x._label)
-        nbs2.append(tuple(nb))
-    falsetwins = {}
-    for i, item in enumerate(nbs):
-        if item in falsetwins.keys():
-            falsetwins[item].append(g.V()[i])
-        else:
-            falsetwins[item] = [g.V()[i]]
-    twins = {}
-    for i, item in enumerate(nbs2):
-        if item in twins.keys():
-            twins[item].append(g.V()[i])
-        else:
-            twins[item] = [g.V()[i]]
-    falsetwins = {k: v for k, v in falsetwins.items() if len(v) > 1}
-    twins = {k: v for k, v in twins.items() if len(v) > 1}
-    return list(falsetwins.values()), list(twins.values()), list(falsetwins.keys()), list(twins.keys())   
+	nbs = []
+	nbs2 = []
+	for vertex in g.V():
+		nb = vertex.nbs()[:]
+		nb.sort(key=lambda x: x._label)
+		nbs.append(tuple(nb))
+		nb.append(vertex)
+		nb.sort(key=lambda x: x._label)
+		nbs2.append(tuple(nb))
+	falsetwins = {}
+	for i, item in enumerate(nbs):
+		if item in falsetwins.keys():
+			falsetwins[item].append(g.V()[i])
+		else:
+			falsetwins[item] = [g.V()[i]]
+	twins = {}
+	for i, item in enumerate(nbs2):
+		if item in twins.keys():
+			twins[item].append(g.V()[i])
+		else:
+			twins[item] = [g.V()[i]]
+	falsetwins = {k: v for k, v in falsetwins.items() if len(v) > 1}
+	twins = {k: v for k, v in twins.items() if len(v) > 1}
+	return list(falsetwins.values()), list(twins.values()), list(falsetwins.keys()), list(twins.keys())   
 \end{lstlisting}
 
 
@@ -314,7 +314,7 @@ cubes6 & 45.4422 sec & 45.4181 sec & 0.1503 sec\\
 products72 & 7.5950 sec & 7.5198 sec & 0.0275 sec\\
 torus72 & 25.4586 sec & 25.5244 sec & 0.0167 sec\\
 \end{tabular}
-\caption{Table showing the result from the experiment. For each graph, it shows the computation time without and with preprocessing time, as well as the time it took to perform the preprocessing.}
+\caption{Table showing the result of the experiment. For each graph, it shows the computation time without and with preprocessing time, as well as the time it took to perform the preprocessing.}
 \label{table:results}
 \end{table}
 \end{appendices}
