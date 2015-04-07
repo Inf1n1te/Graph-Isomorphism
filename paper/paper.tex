@@ -153,7 +153,7 @@ $N(v) = \left\{{u \in V : \{u,v\} \in E}\right\}$
 \end{definition}
 \begin{definition}\label{deftwins}
 Let $G = (V,E)$ be a graph.
-Two vertices $u, v \in V$ are \emph{twins} if $\{u,v\} \in E$ and $N(u)\textbackslash {v} = N(v)\textbackslash {u}$.
+Two vertices $u, v \in V$ are \emph{twins} if $\{u,v\} \in E$ and $N(u)\textbackslash \{v\} = N(v)\textbackslash \{u\}$.
 \end{definition}
 \begin{definition}\label{deffalsetwins}
 Let $G = (V,E)$ be a graph.
@@ -162,9 +162,8 @@ Two vertices $u, v \in V(G)$ are \emph{false twins} if $N(u) = N(v).$
 
 To solve the graph isomorphism problem more efficiently, we use preprocessing algorithms which replaces twins and false twins by single precolored vertices such that:
 \begin{compactenum}
-\item Twins have the same color $\iff$ Twins have the same size (number of vertices).
-\item False twins have the same color $\iff$ False twins have the same size (number of vertices).
-\item A twin and a false twin can't have the same color.
+\item Vertices in the new graph have the same color $\iff$ The corresponding twinsets or false twinsets in the old graph have the same size (number of vertices).
+\item Two vertices in the new graph can't have the same color if one of them corresponds to a twinset and the other one two a false twinset in the old graph.
 \end{compactenum}
 
 \subsection{Implementation}
@@ -193,14 +192,19 @@ Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs. 
 \end{compactenum}
 \end{definition}
 \begin{theorem}
-Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs where each vertex has the same color and let $H_1 = (V_1, E_1)$ and $H_2 = (V_2, E_2)$ be resp. the same graphs as $G_1$ and $G_2$ where each (false) twin is replaced by a colored vertex such that: \begin{compactenum}[\upshape(a)]
-\item Twins (False twins) have the same color $\iff$ Twins (False twins) have the same size (number of vertices).
-\item A twin and a false twin can't have the same color.
+Let $G_1 = (V_{G1}, E_{G1})$ and $G_2 = (V_{G2}, E_{G2})$ be two undirected colored graphs where each vertex has color 0 and let $H_1 = (V_{H1}, E_{H1})$ and $H_2 = (V_{H2}, E_{H2})$ be resp. the same graphs as $G_1$ and $G_2$ where each (false) twin is replaced by a colored vertex such that: \begin{compactenum}[\upshape(a)]
+\item Vertices in $H_1$ ($H_2$) have the same color $\iff$ The corresponding twinsets or false twinsets in $G_1$ ($G_2$) have the same size (number of vertices).
+\item Two vertices in $H_1$ ($H_2$) can't have the same color if one of them corresponds to a twinset in $G_1$ ($G_2$) and the other one corresponds to a false twinset in $G_1$ ($G_2$). They also can't have color 0.
 \end{compactenum}
 Graph $G_1$ and $G_2$ are isomorphic $\iff$ Graph $H_1$ and $H_2$ are isomorphic.
 \end{theorem}
 \begin{proof}
-Todo
+$\Leftarrow$:  $\exists$ graph isomorphism $h: H_1 \to H_2$. We want to proof that $g: G_1 \to G_2$ is a graph isomorphism. If $v \in V_{H1}$ has color 0 we define $g(v) = h(v)$.  If $v \in V_{H1}$ has color $\neq$ 0, $\exists$ $ w \in V_{H2}$ such that color($v$) = color($w$) (since $H_1$ and $H_2$ are isomorphs). $v$ and $w$ either have resp. corresponding false twinsets \emph{ftw} $\subseteq V_{G1}$ and \emph{ftw2} $\subseteq V_{G2}$ or they have resp. corresponding twinsets \emph{tw} $\subseteq V_{G1}$ and \emph{tw2} $\subseteq V_{G2}$. In the first case map each $x \in$ \emph{ftw} to a different $y \in$ \emph{ftw2}. Since they are false twins it doesn't matter which $x$ is mapped to which $y$.
+
+Similar for twins
+
+
+
 \end{proof}
 
 %bron http://pages.cs.wisc.edu/~dieter/Papers/3gi.pdf
