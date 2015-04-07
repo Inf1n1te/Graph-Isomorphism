@@ -5,6 +5,10 @@
 \usepackage[utf8]{inputenc} % UTF-8 character encoding stuff
 \usepackage[toc,page]{appendix} % appendix
 
+\usepackage{array}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+
 % Used to enable use of the defined labeled enunciations. Usage: 
 %\begin{definition}text\end{definition}
 \theoremstyle{definition}
@@ -15,6 +19,7 @@
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{corollary}[theorem]{Corollary}
+
 
 % Python code
 \usepackage{listings}
@@ -294,17 +299,16 @@ def preprocessing(g):
 \end{lstlisting}
 
 \section{Table with computation times}
-\begin{tabular}{c|c|c}
-Graph & Computation time (without preprocessing) & Computation time (with preprocessing) \\
+\begin{tabular}{c|C{0.3\textwidth}|C{0.3\textwidth}|c}
+Graph & Computation time (without preprocessing) & Computation time (with preprocessing) & Preprocessing time \\
 \hline
-cographs1 & 146.8098 sec & 0.0171 sec \\
-hugecographs & >30 min & 662.5381 sec \\
-cycles175 & 69.8579 & 70.8041 sec \\
-bigtrees3 & -1 & -1\\
-cubes6 & -1 & -1\\
-products72 & -1 & -1\\
-torus72 & -1 & -1\\
-
+cographs1 & 146.8098 sec & 0.0171 sec & 0.0056 sec \\
+hugecographs & >30 min & 662.5381 sec & 0.0316 sec \\
+cycles175 & 69.8579 sec & 70.8041 sec & 0.0215 sec\\
+bigtrees3 & 8.2724 sec & 2.8264 sec & 0.0499 sec\\
+cubes6 & 45.4422 sec & 45.4181 sec & 0.1503 sec\\
+products72 & 5.0530 sec & 5.4318 sec & 0.0207 sec\\
+torus72 & 25.4586 sec & 25.5244 sec & 0.0167 sec\\
 \end{tabular}
 \end{appendices}
 
