@@ -161,6 +161,7 @@ class graph():
 		self.enlist = []
 		self.colordict = -1
 		self.vertexreprmap = dict()
+		self.component = 0
 		for v in self._V:
 			self.vertexreprmap[v.__repr__()] = v
 
@@ -271,6 +272,12 @@ class graph():
 		self._E.append(e)
 		self.enlist = []
 		return e
+
+	def addedgeobject(self, eobject):
+		self._E.append(eobject)
+		self.enlist = []
+		return eobject
+
 
 	def findedge(self, u, v):
 		"""

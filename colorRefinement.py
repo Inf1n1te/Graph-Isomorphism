@@ -5,6 +5,7 @@ import copy
 
 from makegraphs import disjointunion
 from graphIO import *
+from basicgraphs import graph
 
 
 def fastrefine(g, colordictarg=-1, startcolor=-1, preproc=False):
@@ -334,11 +335,12 @@ def comparepreproc(graphlisturl, GI_only=False):
 	return compare(gs=graphlist[0], preproc=True, GI_only=True)
 
 
-def connected(v, ncomponents):
+def connected(v, ncomponents, g):
 	for vertex in v.nbs():
-		vertex.visited = True
-		vertex.component = ncomponents
-		connected(vertex, ncomponents)
+		if not vertex.visited:
+			vertex.visited = True
+			vertex.component = ncomponents
+			connected(vertex, ncomponents, g)
 
 
 def findcomponents(g):
@@ -348,20 +350,44 @@ def findcomponents(g):
 			vertex.visited = True
 			ncomponents += 1
 			vertex.component = ncomponents
-			connected(vertex, ncomponents)
+			connected(vertex, ncomponents, g)
 	return ncomponents
 
 
+def componentgraphs(graphlisturl):
+	start_time = time.clock()
+	global graphlist
+	graphlist = loadgraph(graphlisturl, readlist=True)
+	ngraphs = len(graphlist[0])
+	for i in range(ngraphs - 1):
+		ncomponents = findcomponents(graphlist[0][i])
+		g = graphlist[0][i]
+		if ncomponents > 1:
+			graphs = []
+			for component in range(ncomponents):
+				graphs.append(graph())
+				for vertex in g.V():
+					if vertex.component == component:
+						graphs[component - 1].addvertexobject(vertex)
+						for edge in vertex.inclist():
+							if edge not in graphs[component - 1].E():
+								graphs[component - 1].addedgeobject(edge)
+		for j in range(ncomponents):
+			print(i, j, graphs)
+	elapsed_time = time.clock() - start_time
+	print('Components: {0:.4f} sec'.format(elapsed_time))
+
 start_time = time.clock()
 
-compare("GI_TestInstancesWeek1/products72.grl", False)  # #aut for product72
-compare("GI_TestInstancesWeek1/torus72.grl", False)  # #aut for torus72
-compare("GI_TestInstancesWeek1/cubes6.grl", True)  # GI for cubes6
-compare("GI_TestInstancesWeek1/bigtrees3.grl", True)  # GI for bigtrees3
-
+# compare("GI_TestInstancesWeek1/products72.grl", False)  # #aut for product72
+# compare("GI_TestInstancesWeek1/torus72.grl", False)  # #aut for torus72
+# compare("GI_TestInstancesWeek1/cubes6.grl", True)  # GI for cubes6
+# compare("GI_TestInstancesWeek1/bigtrees3.grl", True)  # GI for bigtrees3
+#
 comparepreproc("GI_TestInstancesWeek1/cographs1.grl")  # GI for cographs1 with preprocessing
-comparepreproc("GI_TestInstancesWeek1/bigtrees3.grl")  # GI for cographs1 with preprocessing
+# comparepreproc("GI_TestInstancesWeek1/bigtrees3.grl")  # GI for cographs1 with preprocessing
 
+componentgraphs("GI_TestInstancesWeek1/cographs1.grl")
 
 
 elapsed_time = time.clock() - start_time
