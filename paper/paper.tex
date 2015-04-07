@@ -177,7 +177,7 @@ In line 11-16 a dictionary \emph{falsetwins} is created where the keys are all t
 
 
 \subsubsection{Replacing the twins}
-The algorithm \emph{preprocessing} can be found in appendix \ref{preprocessing}. In line 2 the twins and falsetwins are defined and if there are none the program will terminate. If there are any twins all edges with a head or tail in one of these twins will be deleted. The complexity of this is $O(m +$ number of vertices (\emph{twins}+\emph{falsetwins}))$ < O (nm)$. Then in line 13-19 all vertices which are in twins or falsetwins will be removed. The complexity of this is $O(n^2)$. In line 20-28 a new colored vertex will be added for each (false) twin $(O(n)$ and finnaly the edges from these vertices will be added ($O(n^2 (n+m)$). The worst case complexity of this algorithm is ($O(n^2 (n+m)$), however in average there are much less (false) twins than vertices (there are at most $n/2$). These twins also have much less than $n$ neighbours.
+The algorithm \emph{preprocessing} can be found in appendix \ref{preprocessing}. In line 2 the twins and falsetwins are defined and if there are none the program will terminate. If there are any twins all edges with a head or tail in one of these twins will be deleted. The complexity of this is $O(m +$ number of vertices (\emph{twins}+\emph{falsetwins}))$ < O (nm)$. Then in line 13-19 all vertices which are in twins or falsetwins will be removed. The complexity of this is $O(n^2)$. In line 20-28 a new colored vertex will be added for each (false) twin $(O(n)$ and finnaly the edges from these vertices will be added ($O(n^2 (n+m)$). The worst case complexity of this algorithm is ($O(n^2 (n+m)$), however in average there are much less (false) twins than vertices (there are at most $n/2$). These twins also have much less than $n$ neighbours. 
 
 %------------------------------------------------
 \section{Proof of Correctness}
@@ -208,7 +208,7 @@ Todo
 %------------------------------------------------
 \section{Results}
 
-The results of the experiment are shown in Table \ref{table:results}. Seven sets of graphs were tested for isomorphisms, and three cases the computation times are significantly different. In the other cases, the difference in computation time is not obviously related to the preprocessing time, as the preprocessing time is not equal to the difference in computation times. This is most likely due to the circumstances of both executions of the algorithms did not occur under the exact same circumstances, as it was impossible to ensure the conditions were the same.
+The results of the experiment are shown in Table \ref{table:results}. Seven sets of graphs were tested for isomorphisms, and three cases the computation times are significantly different. In the other cases, the preprocessing time is relatively very small. This is because the low complexity of \emph{gettwins} and the fact that \emph{preprocessing} does nothing when there are no (false) twins. The difference in computation time is not obviously related to the preprocessing time, as the preprocessing time is not equal to the difference in computation times. This is most likely due to the circumstances of both executions of the algorithms did not occur under the exact same circumstances, as it was impossible to ensure the conditions were the same.  
 
 Due to the rather large difference in computation times relative to the preprocessing time, only significant differences in computation time will be used as indication of increase or decrease in speed.
 
@@ -314,7 +314,7 @@ cubes6 & 45.4422 sec & 45.4181 sec & 0.1503 sec\\
 products72 & 7.5950 sec & 7.5198 sec & 0.0275 sec\\
 torus72 & 25.4586 sec & 25.5244 sec & 0.0167 sec\\
 \end{tabular}
-\caption{Table showing the result of the experiment. For each graph, it shows the computation time without and with preprocessing time, as well as the time it took to perform the preprocessing.}
+\caption{Table showing the result from the experiment. For each set of graphs, it shows the computation time without and with preprocessing time, as well as the time it took to perform the preprocessing.}
 \label{table:results}
 \end{table}
 \end{appendices}
