@@ -67,54 +67,6 @@ def fastrefine(g, colordictarg=-1, startcolor=-1, preproc=False):
 	return colordict
 
 
-def fastrefine2(g, colordictarg=-1, startcolor=-1, preproc=False):
-	# initialize
-	if colordictarg == -1:
-		colordict = degcolordict(g)
-	else:
-		colordict = colordictarg
-
-	done = False
-	counter = 0
-	while not done:
-		done = True
-		counter += 1
-		if counter % 100 == 0:
-			print(counter)
-		tempcolordict = dict()
-
-		for key in colordict.keys():
-			nextcolor = max(colordict.keys()) + 1
-			buren = tuple()
-			for value in colordict[key]:
-				nc = sorted(tuple(getNeighbourColors(value)))
-				if len(buren) == 0:
-					buren = nc
-
-				if buren != nc:
-					done = False
-					if nextcolor in tempcolordict:
-						tempcolordict[nextcolor].append(value)
-					else:
-						tempcolordict[nextcolor] = [value]
-
-				else:
-					if key in tempcolordict:
-						tempcolordict[key].append(value)
-					else:
-						tempcolordict[key] = [value]
-
-		colordict = tempcolordict.copy()
-
-		for key in colordict.keys():
-			for value in colordict[key]:
-				value.colornum = key
-
-	finalcolors = []
-	for node in g.V():
-		finalcolors.append(node.colornum)
-	return colordict
-
 def degcolordict(g):
 	colordict = {}  # dictionary with key=c and value=vertex array
 	for v in g.V():
@@ -146,7 +98,7 @@ def getNeighbourColors(v):
 
 
 def compare(graphlisturl=-1, GI_only=False, gs=-1, preproc=False):
-	assert graphlisturl != -1 or gs != -1
+	print('Now comparing graphs in graphlist ', graphlisturl)
 
 	if gs is -1:
 		graphlist = loadgraph(graphlisturl, readlist=True)[0]
@@ -166,7 +118,6 @@ def compare(graphlisturl=-1, GI_only=False, gs=-1, preproc=False):
 	else:
 		colordict = fastrefine(g)
 	graphcolors = splitColorDict(colordict, g)[0]  # is a list of colordicts
-	print(graphcolors)
 	isomorphisms = []
 	undecided = []
 
@@ -186,21 +137,9 @@ def compare(graphlisturl=-1, GI_only=False, gs=-1, preproc=False):
 					elif iso and single:
 						isomorphisms.append([i, j, 1])
 
-	if not undecided:  # status update
-		if isomorphisms:
-			print("Isomorphisms found: ", isomorphisms)
-		else:
-			print("No Isomorphisms found.")
-		return colordict
-	else:
-		print('Isomorphisms found: ', isomorphisms)
-		print('There are still undecided graphs left, continuing search..')
-
 	for tuple in undecided:
 		first = tuple[0]
 		second = tuple[1]
-
-		print("Doing ", [first, second])
 		tempgraph = disjointunion(graphlist[first], graphlist[second])
 		num = countIsomorphism(tempgraph, fastrefine(tempgraph), GI_only)
 		if num > 0:
@@ -219,7 +158,6 @@ def printresult(isomorphims):
 
 
 def countIsomorphism(graph, hasColordict=False, GI_only=False):
-	# print("CountIsomorphism bruh!")
 	if hasColordict is False:
 		colordict = fastrefine(graph)
 	else:
@@ -235,13 +173,8 @@ def countIsomorphism(graph, hasColordict=False, GI_only=False):
 				colors = colordict[c]  # add these to colors.
 				cvar = c
 				isomorphism = False  # meaning we found no isomorphism again
-		if length % 2 == 1:  # if there is an uneven number, it means we have no isomorphism (since there are unequal amount of colors in each graph)
+		if length % 2 == 1:
 			return 0
-		# if length == 2:
-		# if int(colordict[c][0].__repr__()) <= int(graph.subgraphs[0]) < int(colordict[c][1].__repr__()):
-		# 		pass
-		# 	else:
-		# 		return 0
 	if isomorphism:
 		return 1
 	else:
@@ -273,8 +206,6 @@ def countIsomorphism(graph, hasColordict=False, GI_only=False):
 			num += countIsomorphism(graph2, colordict2, GI_only)
 	return num
 
-	return 0
-
 
 def applycolors(colordict):
 	for color in colordict.keys():
@@ -304,7 +235,6 @@ def splitColorDict(colordict, g):
 						split[partitions.index(e)][key] = [value]
 					# split[partitions.index(e)].append(value.colornum)
 					split2[partitions.index(e)].append((value.colornum, value))
-	#print('split', split)
 	return split, split2
 
 
@@ -347,8 +277,6 @@ def gettwins(g):
 			twins[item] = [g.V()[i]]
 	falsetwins = {k: v for k, v in falsetwins.items() if len(v) > 1}
 	twins = {k: v for k, v in twins.items() if len(v) > 1}
-	# elapsed_time = time.clock() - start_time
-	# print('gettwins: {0:.4f} sec'.format(elapsed_time))
 	return list(falsetwins.values()), list(twins.values()), list(falsetwins.keys()), list(
 		twins.keys())  # value zijn twins
 
@@ -385,8 +313,7 @@ def preprocessing(g):
 			twin[0].colornum = -twin[0].twinsize - mx
 		for i, twin in enumerate(falsetwins + twins):
 			for j in combined[i]:
-				if j in g.V() and twin[0] != j and not g.findedge(twin[0],
-																  j):  # Geen loop en geen edges dubbel omgedraaid
+				if j in g.V() and twin[0] != j and not g.findedge(twin[0],j):
 					g.addedge(twin[0], j)
 		g._V.sort(key=lambda x: x._label)
 	return g, lftwins, ltwins
@@ -400,24 +327,39 @@ def comparepreproc(graphlisturl, GI_only=False):
 	nfalsetwins, ntwins = [None] * ngraphs, [None] * ngraphs
 	for i in range(ngraphs):
 		graphlist[0][i], nfalsetwins[i], ntwins[i] = preprocessing(graphlist[0][i])
-	# print(graphlist[0][i])
-	# isgraph(graphlist[0][i])
 	print('number of twins:', nfalsetwins, ntwins)
 	elapsed_time = time.clock() - start_time
 	print('Preprocessing: {0:.4f} sec'.format(elapsed_time))
-	#return 1
 	return compare(gs=graphlist[0], preproc=True, GI_only=True)
 
 
+def connected(v, ncomponents):
+	for vertex in v.nbs():
+		vertex.visited = True
+		vertex.component = ncomponents
+		connected(vertex)
+
+
+def findcomponents(g):
+	ncomponents = 0
+	for vertex in g.V():
+		if not vertex.visited:
+			vertex.visited = True
+			ncomponents += 1
+			vertex.component = ncomponents
+			connected(vertex, ncomponents)
 
 
 start_time = time.clock()
-compare("GI_TestInstancesWeek1/cubes6.grl", True)
-elapsed_time = time.clock() - start_time
-print('Time without preproc: {0:.4f} sec'.format(elapsed_time))
 
-start_time = time.clock()
-comparepreproc("GI_TestInstancesWeek1/cubes6.grl")
+compare("GI_TestInstancesWeek1/products72.grl", False)  # #aut for product72
+compare("GI_TestInstancesWeek1/torus72.grl", False)  # #aut for torus72
+compare("GI_TestInstancesWeek1/cubes6.grl", True)  # GI for cubes6
+compare("GI_TestInstancesWeek1/bigtrees3.grl", True)  # GI for bigtrees3
+
+comparepreproc("GI_TestInstancesWeek1/cographs1.grl")  # GI for cographs1 with preprocessing
+comparepreproc("GI_TestInstancesWeek1/bigtrees3.grl")  # GI for cographs1 with preprocessing
+
 elapsed_time = time.clock() - start_time
-print('Time with preproc: {0:.4f} sec'.format(elapsed_time))
+print('Time: {0:.4f} sec'.format(elapsed_time))
 

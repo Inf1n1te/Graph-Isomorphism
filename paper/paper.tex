@@ -20,7 +20,8 @@
 \usepackage{listings}
 \lstset{
 numbers=left,
-breaklines=true
+breaklines=true,
+tabsize=4
 }
 
 % --Optional-- Font and tweaking used in template
@@ -131,7 +132,7 @@ This paper will give a description of the algorithms used for preprocessing, as 
 To determine whether the algorithms will speed up the process of finding graph isomorphisms, a computational experiment was performed. In this experiment, the algorithms were used on a variety of differently shaped graphs, and sets of graphs, in conjunction with an algorithm which checks for isomorphisms.
 
 \subsection{Experiment Setup}
-For the testing, a single laptop was used to collect all the timed data. The tests were run in JetBrains' PyCharm, using the built-in functions to run the python code. The python interpreter used was Python 3.4 and the laptop was running Windows 8.1 @ 1.6 GHz/ 3.67GB RAM at the time of the testing. Efforts were made to ensure all the testing was performed under the same circumstances.
+For the testing, a single laptop was used to collect all the timed data. The tests were run in JetBrains' PyCharm, using the built-in functions to run the python code. The python interpreter used was Python 3.4 and the laptop was running Windows 8.1 at the time of the testing. Efforts were made to ensure all the testing was performed under the same circumstances.
 
 \subsection{Testing}
 In the experiment, two cases were tested: a basic case, without preprocessing, and a case with preprocessing. In both cases a timer was added to the code. The timer started before any other piece of code, and ended only after the algorithms were completely finished. This way everything is timed, including the loading of the graph, the additional time used to run preprocessing algorithms and finding of the isomorphisms.
@@ -180,25 +181,24 @@ NOG NIET AF!
 A \emph{colored} graph $G(E,V)$ is a graph where each vertex $v \in V$ has a color label.
 \end{definition}
 \begin{definition}
-Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs. A function $f: V_1 \to V_2$ is called a \emph{graph isomorphism} if (a) $f$ is a bijection, (b) for all $a, b \in V_1, \{a, b\} \in E_1$ if and only if $\{f(a), f(b)\} \in E_2$, and (c) $color(v)$ = $color (f(v)$. When such a function exist, $G_1$ and $G_2$ are called \emph{isomorphic graphs}. 
+Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs. A function $f: V_1 \to V_2$ is called a \emph{graph isomorphism} if \begin{compactenum}[\upshape(a)]
+\item $f$ is a bijection, 
+\item for all $a, b \in V_1, \{a, b\} \in E_1$ if and only if $\{f(a), f(b)\} \in E_2$, and 
+\item $color(v)$ = $color (f(v)$. When such a function exist, $G_1$ and $G_2$ are called \emph{isomorphic graphs}. 
+\end{compactenum}
 \end{definition}
 \begin{theorem}
-Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs where each vertex has the same color and let $H_1 = (V_1, E_1)$ and $H_2 = (V_2, E_2)$ be resp. the same graphs as $G_1$ and $G_2$ where each (false) twin is replaced by a colored vertex such that: \begin{enumerate}
+Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs where each vertex has the same color and let $H_1 = (V_1, E_1)$ and $H_2 = (V_2, E_2)$ be resp. the same graphs as $G_1$ and $G_2$ where each (false) twin is replaced by a colored vertex such that: \begin{compactenum}[\upshape(a)]
 \item Twins (False twins) have the same color $\iff$ Twins (False twins) have the same size (number of vertices).
 \item A twin and a false twin can't have the same color.
-\end{enumerate}
+\end{compactenum}
 Graph $G_1$ and $G_2$ are isomorphic $\iff$ Graph $H_1$ and $H_2$ are isomorphic.
+\end{theorem}
 \begin{proof}
 Todo
 \end{proof}
 
 %bron http://pages.cs.wisc.edu/~dieter/Papers/3gi.pdf
-
-%------------------------------------------------
-\section{Computational Experiments}
-
-Computational Experiments here\\
-Setup good experiments beforehand and test extensively
 
 %------------------------------------------------
 \section{Results}
@@ -255,20 +255,6 @@ def gettwins(g):
     return list(falsetwins.values()), list(twins.values()), list(falsetwins.keys()), list(twins.keys())   
 \end{lstlisting}
 
-\section{Table with computation times}
-\begin{tabular}{c|c|c}
-Graph & Computation time (without preprocessing) & Computation time (with preprocessing) \\
-\hline
-cographs1 & 146.8098 sec & 0.0171 sec \\
-hugecographs & >30 min & 662.5381 sec \\
-cycles175 & 69.8579 & 70.8041 sec \\
-bigtrees3 & 8.2151 & 2.5008\\
-cubes6 & -1 & -1\\
-products72 & -1 & -1\\
-torus72 & -1 & -1\\
-
-\end{tabular}
-
 
 \begin{lstlisting}[label={preprocessing}]
 def preprocessing(g):
@@ -308,21 +294,18 @@ def preprocessing(g):
 \end{lstlisting}
 
 \section{Table with computation times}
-\begin{tabular}{c|c|c|c}
-Graph & Computation time (without preprocessing) & Computation time (with preprocessing) & Preprocessing time \\
+\begin{tabular}{c|c|c}
+Graph & Computation time (without preprocessing) & Computation time (with preprocessing) \\
 \hline
-cographs1 & 146.8098 sec & 0.0171 sec & 0.0056 sec \\
-hugecographs & >30 min & 662.5381 sec & 0.0316 sec \\
-cycles175 & 69.8579 sec & 70.8041 sec & 0.0215 sec\\
-bigtrees3 & 8.2724 sec & 2.8264 & 0.0499 sec\\
+cographs1 & 146.8098 sec & 0.0171 sec \\
+hugecographs & >30 min & 662.5381 sec \\
+cycles175 & 69.8579 & 70.8041 sec \\
+bigtrees3 & -1 & -1\\
 cubes6 & -1 & -1\\
 products72 & -1 & -1\\
 torus72 & -1 & -1\\
+
 \end{tabular}
-
 \end{appendices}
-
-
-
 
 \end{document}
