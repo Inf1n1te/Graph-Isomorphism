@@ -402,12 +402,12 @@ def comparepreproc(graphlisturl, GI_only=False):
         # print(graphlist[0][i])
         # isgraph(graphlist[0][i])
     print('number of twins:', nfalsetwins, ntwins)
-    return compare(gs=graphlist[0], preproc=True, GI_only=False)
+    return compare(gs=graphlist[0], preproc=True, GI_only=True)
 
 
 start_time = time.clock()
 
-compare("GI_TestInstancesWeek1/cubes6.grl", True)
+compare("GI_TestInstancesWeek1/products72.grl", False)
 
 # comparepreproc("GI_TestInstancesWeek1/torus72.grl")
 
