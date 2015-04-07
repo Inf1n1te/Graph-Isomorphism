@@ -326,6 +326,7 @@ def comparepreproc(graphlisturl, GI_only=False):
 	ngraphs = len(graphlist[0])
 	nfalsetwins, ntwins = [None] * ngraphs, [None] * ngraphs
 	for i in range(ngraphs):
+		print(findcomponents(graphlist[0][1]))
 		graphlist[0][i], nfalsetwins[i], ntwins[i] = preprocessing(graphlist[0][i])
 	print('number of twins:', nfalsetwins, ntwins)
 	elapsed_time = time.clock() - start_time
@@ -337,7 +338,7 @@ def connected(v, ncomponents):
 	for vertex in v.nbs():
 		vertex.visited = True
 		vertex.component = ncomponents
-		connected(vertex)
+		connected(vertex, ncomponents)
 
 
 def findcomponents(g):
@@ -348,17 +349,20 @@ def findcomponents(g):
 			ncomponents += 1
 			vertex.component = ncomponents
 			connected(vertex, ncomponents)
+	return ncomponents
 
 
 start_time = time.clock()
 
-compare("GI_TestInstancesWeek1/products72.grl", False)  # #aut for product72
-compare("GI_TestInstancesWeek1/torus72.grl", False)  # #aut for torus72
-compare("GI_TestInstancesWeek1/cubes6.grl", True)  # GI for cubes6
-compare("GI_TestInstancesWeek1/bigtrees3.grl", True)  # GI for bigtrees3
-
+# compare("GI_TestInstancesWeek1/products72.grl", False)  # #aut for product72
+# compare("GI_TestInstancesWeek1/torus72.grl", False)  # #aut for torus72
+# compare("GI_TestInstancesWeek1/cubes6.grl", True)  # GI for cubes6
+# compare("GI_TestInstancesWeek1/bigtrees3.grl", True)  # GI for bigtrees3
+#
 comparepreproc("GI_TestInstancesWeek1/cographs1.grl")  # GI for cographs1 with preprocessing
-comparepreproc("GI_TestInstancesWeek1/bigtrees3.grl")  # GI for cographs1 with preprocessing
+# comparepreproc("GI_TestInstancesWeek1/bigtrees3.grl")  # GI for cographs1 with preprocessing
+
+
 
 elapsed_time = time.clock() - start_time
 print('Time: {0:.4f} sec'.format(elapsed_time))
