@@ -327,12 +327,12 @@ def comparepreproc(graphlisturl, GI_only=False):
 	ngraphs = len(graphlist[0])
 	nfalsetwins, ntwins = [None] * ngraphs, [None] * ngraphs
 	for i in range(ngraphs):
-		# print(findcomponents(graphlist[0][1]))
 		graphlist[0][i], nfalsetwins[i], ntwins[i] = preprocessing(graphlist[0][i])
 	print('number of twins:', nfalsetwins, ntwins)
 	elapsed_time = time.clock() - start_time
 	print('Preprocessing: {0:.4f} sec'.format(elapsed_time))
-	return compare(gs=graphlist[0], preproc=True, GI_only=True)
+	nvertices = len(graphlist[0][0].V())
+	return nvertices  # compare(gs=graphlist[0], preproc=True, GI_only=True)
 
 
 def connected(v, ncomponents, g):
@@ -363,29 +363,22 @@ def componentgraphs(graphlisturl):
 	subgraphlist = []
 	for i in range(ngraphs):
 		ncomponents = findcomponents(graphlist[0][i])
-		if i > 0:
-			mincomponents = min(mincomponents, ncomponents)
-		else:
-			mincomponents = ncomponents
 		g = graphlist[0][i]
-		if ncomponents > 1:
-			graphs = []
-			for component in range(ncomponents + 1):
-				if component != ncomponents:
-					graphs.append(graph())
-				for vertex in g.V():
-					if vertex.component == component:
-						graphs[component - 1].addvertexobject(vertex)
-						for edge in vertex.inclist():
-							if edge not in graphs[component - 1].E():
-								graphs[component - 1].addedgeobject(edge)
+		graphs = []
+		for component in range(ncomponents + 1):
+			if component != ncomponents:
+				graphs.append(graph())
+			for vertex in g.V():
+				if vertex.component == component:
+					graphs[component - 1].addvertexobject(vertex)
+					for edge in vertex.inclist():
+						if edge not in graphs[component - 1].E():
+							graphs[component - 1].addedgeobject(edge)
 		subgraphlist.append(graphs)
 	# print(subgraphlist[2])
-
-
-
 	elapsed_time = time.clock() - start_time
 	print('Components: {0:.4f} sec'.format(elapsed_time))
+
 
 start_time = time.clock()
 
@@ -397,9 +390,40 @@ start_time = time.clock()
 # comparepreproc("GI_TestInstancesWeek1/cographs1.grl")  # GI for cographs1 with preprocessing
 #comparepreproc("GI_TestInstancesWeek1/products72.grl")  # GI for cographs1 with preprocessing
 
-componentgraphs("GI_TestInstancesWeek1/cographs1.grl")
+# componentgraphs("GI_TestInstancesWeek1/cubes6.grl")
 
-
+a = comparepreproc("GI_TestInstancesWeek1/gc1_k5.gr")
 elapsed_time = time.clock() - start_time
-print('Time: {0:.4f} sec'.format(elapsed_time))
+print(a, 'Time: {0:.4f} sec'.format(elapsed_time))
 
+a = comparepreproc("GI_TestInstancesWeek1/gc1_k6.gr")
+elapsed_time = time.clock() - start_time
+print(a, 'Time: {0:.4f} sec'.format(elapsed_time))
+
+a = comparepreproc("GI_TestInstancesWeek1/gc1_k7.gr")
+elapsed_time = time.clock() - start_time
+print(a, 'Time: {0:.4f} sec'.format(elapsed_time))
+
+a = comparepreproc("GI_TestInstancesWeek1/gc1_k8.gr")
+elapsed_time = time.clock() - start_time
+print(a, 'Time: {0:.4f} sec'.format(elapsed_time))
+
+a = comparepreproc("GI_TestInstancesWeek1/gc1_k9.gr")
+elapsed_time = time.clock() - start_time
+print(a, 'Time: {0:.4f} sec'.format(elapsed_time))
+
+a = comparepreproc("GI_TestInstancesWeek1/gc1_k10.gr")
+elapsed_time = time.clock() - start_time
+print(a, 'Time: {0:.4f} sec'.format(elapsed_time))
+
+a = comparepreproc("GI_TestInstancesWeek1/gc1_k11.gr")
+elapsed_time = time.clock() - start_time
+print(a, 'Time: {0:.4f} sec'.format(elapsed_time))
+
+a = comparepreproc("GI_TestInstancesWeek1/gc1_k12.gr")
+elapsed_time = time.clock() - start_time
+print(a, 'Time: {0:.4f} sec'.format(elapsed_time))
+
+a = comparepreproc("GI_TestInstancesWeek1/gc1_k13.gr")
+elapsed_time = time.clock() - start_time
+print(a, 'Time: {0:.4f} sec'.format(elapsed_time))
