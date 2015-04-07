@@ -354,13 +354,13 @@ def findcomponents(g):
 
 start_time = time.clock()
 
-# compare("GI_TestInstancesWeek1/products72.grl", False)  # #aut for product72
-# compare("GI_TestInstancesWeek1/torus72.grl", False)  # #aut for torus72
-# compare("GI_TestInstancesWeek1/cubes6.grl", True)  # GI for cubes6
-# compare("GI_TestInstancesWeek1/bigtrees3.grl", True)  # GI for bigtrees3
-#
+compare("GI_TestInstancesWeek1/products72.grl", False)  # #aut for product72
+compare("GI_TestInstancesWeek1/torus72.grl", False)  # #aut for torus72
+compare("GI_TestInstancesWeek1/cubes6.grl", True)  # GI for cubes6
+compare("GI_TestInstancesWeek1/bigtrees3.grl", True)  # GI for bigtrees3
+
 comparepreproc("GI_TestInstancesWeek1/cographs1.grl")  # GI for cographs1 with preprocessing
-# comparepreproc("GI_TestInstancesWeek1/bigtrees3.grl")  # GI for cographs1 with preprocessing
+comparepreproc("GI_TestInstancesWeek1/bigtrees3.grl")  # GI for cographs1 with preprocessing
 
 
 
