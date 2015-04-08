@@ -439,7 +439,7 @@ start_time = time.clock()
 #comparepreproc("GI_TestInstancesWeek1/products72.grl")  # GI for cographs1 with preprocessing
 
 # componentgraphs("GI_TestInstancesWeek1/cographs1.grl")
-componentpreproc('GI_TestInstancesWeek1/crefBM_4_16.grl')
+# componentpreproc('GI_TestInstancesWeek1/crefBM_4_16.grl')
 
 elapsed_time = time.clock() - start_time
 print('Time: {0:.4f} sec'.format(elapsed_time))
