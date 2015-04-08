@@ -6,7 +6,7 @@ from makegraphs import disjointunion
 from graphIO import *
 
 
-def fastrefine(g, colordictarg=-1, startcolor=-1, preproc=False):
+def fastrefine2(g, colordictarg=-1, startcolor=-1, preproc=False):
 	if colordictarg is -1:
 		if g.colordict == -1:
 			if not preproc:
@@ -66,6 +66,52 @@ def fastrefine(g, colordictarg=-1, startcolor=-1, preproc=False):
 	return colordict
 
 
+def fastrefine(g, colordictarg=-1, startcolor=-1, preproc=False):
+	# initialize
+	if colordictarg == -1:
+		colordict = degcolordict(g)
+	else:
+		colordict = colordictarg
+
+	done = False
+	while not done:
+		done = True
+		tempcolordict = dict()
+
+		for key in colordict.keys():
+			nextcolor = max(colordict.keys()) + 1
+			buren = tuple()
+			for value in colordict[key]:
+				nc = sorted(tuple(getNeighbourColors(value)))
+				if len(buren) == 0:
+					buren = nc
+
+				if buren != nc:
+					done = False
+					if nextcolor in tempcolordict:
+						tempcolordict[nextcolor].append(value)
+					else:
+						tempcolordict[nextcolor] = [value]
+
+				else:
+					if key in tempcolordict:
+						tempcolordict[key].append(value)
+					else:
+						tempcolordict[key] = [value]
+
+		colordict = tempcolordict.copy()
+
+		for key in colordict.keys():
+			for value in colordict[key]:
+				value.colornum = key
+
+	finalcolors = []
+	for node in g.V():
+		finalcolors.append(node.colornum)
+
+	return colordict
+
+
 def degcolordict(g):
 	colordict = {}  # dictionary with key=c and value=vertex array
 	for v in g.V():
@@ -99,8 +145,8 @@ def getNeighbourColors(v):
 def compare(graphlisturl=-1, GI_only=False, gs=-1, preproc=False):
 	print('Now comparing graphs in graphlist ', graphlisturl)
 	if graphlisturl.endswith('.gr'):
-		gs = [loadgraph(graphlisturl, readlist=False),loadgraph(graphlisturl, readlist=False)]
-
+		gs = [loadgraph(graphlisturl, readlist=False), loadgraph(graphlisturl, readlist=False)]
+	print('cc', fastrefine(loadgraph(graphlisturl, readlist=False)))
 	if gs is -1:
 		graphlist = loadgraph(graphlisturl, readlist=True)[0]
 	else:
@@ -118,7 +164,6 @@ def compare(graphlisturl=-1, GI_only=False, gs=-1, preproc=False):
 		colordict = fastrefine(g, preproc=True)
 	else:
 		colordict = fastrefine(g)
-	print(colordict)
 	writeDOT(g, "GI_TestInstancesWeek1/dinges.dot")
 
 	graphcolors = splitColorDict(colordict, g)[0]  # is a list of colordicts
@@ -190,7 +235,9 @@ def countIsomorphism(graph, hasColordict=False, GI_only=False):
 		for y in otherhalf:  # get the middle of colors[] (as it skips the first half)s
 			if GI_only and num > 0:
 				break
-			newcolor = max(graph.getcolordict().keys()) + 1  # assign a new color
+			newcolor = max(colordict.keys()) + 1  # assign a new color
+			# if cvar == newcolor:
+			# 	newcolor +=1
 			applycolors(colordict)
 
 			colordict[cvar].remove(x)
@@ -203,6 +250,8 @@ def countIsomorphism(graph, hasColordict=False, GI_only=False):
 			graph2.generatecolordict()
 			colordict2 = graph2.getcolordict()
 
+			if cvar == newcolor:
+				print('##########################')
 			colordict.pop(newcolor)
 			colordict[cvar].append(x)
 			colordict[cvar].append(y)
@@ -317,7 +366,7 @@ def preprocessing(g):
 			twin[0].colornum = -twin[0].twinsize - mx
 		for i, twin in enumerate(falsetwins + twins):
 			for j in combined[i]:
-				if j in g.V() and twin[0] != j and not g.findedge(twin[0],j):
+				if j in g.V() and twin[0] != j and not g.findedge(twin[0], j):
 					g.addedge(twin[0], j)
 		g._V.sort(key=lambda x: x._label)
 	return g, lftwins, ltwins
@@ -360,12 +409,13 @@ start_time = time.clock()
 
 
 # compare("GI_TestInstancesWeek1/basicAut1.gr", False)  # #aut for product72
-compare("GI_TestInstancesWeek1/basicAut2.gr", False)  # #aut for product72
+# compare("GI_TestInstancesWeek1/basicAut2.gr", False)  # #aut for product72
 # compare("GI_TestInstancesWeek1/basicGI1.grl", True)  # #aut for product72
 # compare("GI_TestInstancesWeek1/basicGI2.grl", True)  # #aut for product72
 # compare("GI_TestInstancesWeek1/basicGI3.grl", True)  # #aut for product72
 # compare("GI_TestInstancesWeek1/basicGIAut.grl", True)  # #aut for product72
 # compare("GI_TestInstancesWeek1/basicGIAut.grl", False)  # #aut for product72
+
 # compare("GI_TestInstancesWeek1/torus72.grl", False)  # #aut for torus72
 # compare("GI_TestInstancesWeek1/cubes6.grl", True)  # GI for cubes6
 # compare("GI_TestInstancesWeek1/bigtrees3.grl", True)  # GI for bigtrees3
