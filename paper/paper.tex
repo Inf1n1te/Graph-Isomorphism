@@ -180,29 +180,42 @@ The algorithm \emph{preprocessing} can be found in appendix \ref{preprocessing}.
 
 %------------------------------------------------
 \section{Proof of Correctness}
-NOG NIET AF!
 \begin{definition}
 A \emph{colored} graph $G(E,V)$ is a graph where each vertex $v \in V$ has a color label.
 \end{definition}
-\begin{definition}
-Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs. A function $f: V_1 \to V_2$ is called a \emph{graph isomorphism} if \begin{compactenum}[\upshape(a)]
-\item $f$ is a bijection, 
-\item for all $a, b \in V_1, \{a, b\} \in E_1$ if and only if $\{f(a), f(b)\} \in E_2$, and 
-\item $color(v)$ = $color (f(v)$. When such a function exist, $G_1$ and $G_2$ are called \emph{isomorphic graphs}. 
+\begin{definition}\label{def:iso}
+Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected graphs. A function $f: V_1 \to V_2$ is called a \emph{graph isomorphism} if:
+\begin{compactenum}[\upshape(a)]
+\item $f$ is a bijection. \label{voorwaarde1}
+\item $\forall a, b \in V_1, \{a, b\} \in E_1$ if and only if $\{f(a), f(b)\} \in E_2$.
 \end{compactenum}
+When such a function exists, $G_1$ and $G_2$ are called \emph{isomorphic graphs}. 
+\end{definition}
+\begin{definition}
+Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs. A function $f: V_1 \to V_2$ is called a \emph{colored graph isomorphism} if: 
+\begin{compactenum}[\upshape(a)]
+\item $f$ is a graph isomorphism.
+\item $\forall v \in V_1$: $color(v)$ = $color (f(v)$. 
+\end{compactenum}
+When such a function exists, $G_1$ and $G_2$ are called \emph{colored isomorphic graphs}. 
 \end{definition}
 \begin{theorem}
-Let $G_1 = (V_{G1}, E_{G1})$ and $G_2 = (V_{G2}, E_{G2})$ be two undirected colored graphs where each vertex has color 0 and let $H_1 = (V_{H1}, E_{H1})$ and $H_2 = (V_{H2}, E_{H2})$ be resp. the same graphs as $G_1$ and $G_2$ where each (false) twin is replaced by a colored vertex such that: \begin{compactenum}[\upshape(a)]
+Let $G_1 = (V_{G1}, E_{G1})$ and $G_2 = (V_{G2}, E_{G2})$ be two undirected  graphs and let $H_1 = (V_{H1}, E_{H1})$ and $H_2 = (V_{H2}, E_{H2})$ be resp. the same graphs as $G_1$ and $G_2$ where vertices which aren't (false) twins with any other vertex get color 0 and each (false) twin is replaced by a colored vertex such that: \begin{compactenum}[\upshape(a)]
 \item Vertices in $H_1$ ($H_2$) have the same color $\iff$ The corresponding twinsets or false twinsets in $G_1$ ($G_2$) have the same size (number of vertices).
 \item Two vertices in $H_1$ ($H_2$) can't have the same color if one of them corresponds to a twinset in $G_1$ ($G_2$) and the other one corresponds to a false twinset in $G_1$ ($G_2$). They also can't have color 0.
 \end{compactenum}
-Graph $G_1$ and $G_2$ are isomorphic $\iff$ Graph $H_1$ and $H_2$ are isomorphic.
+Graph $G_1$ and $G_2$ are isomorphic $\iff$ Graph $H_1$ and $H_2$ are colored isomorphic.
 \end{theorem}
 \begin{proof}
-$\Leftarrow$:  $\exists$ graph isomorphism $h: H_1 \to H_2$. We want to proof that $g: G_1 \to G_2$ is a graph isomorphism. If $v \in V_{H1}$ has color 0 we define $g(v) = h(v)$.  If $v \in V_{H1}$ has color $\neq$ 0, $\exists$ $ w \in V_{H2}$ such that color($v$) = color($w$) (since $H_1$ and $H_2$ are isomorphs). $v$ and $w$ either have resp. corresponding false twinsets \emph{ftw} $\subseteq V_{G1}$ and \emph{ftw2} $\subseteq V_{G2}$ or they have resp. corresponding twinsets \emph{tw} $\subseteq V_{G1}$ and \emph{tw2} $\subseteq V_{G2}$. In the first case map each $x \in$ \emph{ftw} to a different $y \in$ \emph{ftw2}. Since they are false twins it doesn't matter which $x$ is mapped to which $y$.
+$\Leftarrow$:  $\exists$ graph isomorphism $h: H_1 \to H_2$. If $v \in V_{H1}$ has color 0: we define $g(v) = h(v)$.
+If $v \in V_{H1}$ has color $\neq$ 0, $\exists$ $ w \in V_{H2}$ such that color($v$) = color($w$) (since $H_1$ and $H_2$ are isomorphs). $v$ and $w$ either have resp. corresponding false twinsets \emph{ftw} $\subseteq V_{G1}$ and \emph{ftw2} $\subseteq V_{G2}$ or they have resp. corresponding twinsets \emph{tw} $\subseteq V_{G1}$ and \emph{tw2} $\subseteq V_{G2}$. In the first case $g$ maps each $x \in$ \emph{ftw} to a different $y \in$ \emph{ftw2}. Since they are false twins it doesn't matter which $x$ is mapped to which $y$. In the second case $g$ maps $x \in$ \emph{tw} to $y \in$ \emph{tw2} similarly. 
 
-Similar for twins
+We want to prove that $g: G_1 \to G_2$ is a graph isomorphism. $V_{H1}$ and $V_{H2}$ have the same size and each $v_1 \in V_{H1}$ corresponds to a $v_2 \in V_{H1}$ with the same color. The colors of $v_1$ and $v_2$ defines the sizes of the corresponding (false) twinsets in resp. $G_{H1}$ and $G_{H2}$, thus $G_{H1}$ and $G_{H2}$ also have the same size. Since $g$ is defined such that it is an injection and $V_{G1}$ and $V_{G2}$ have the same size, $g$ is a bijection \cite{website:proofwiki}. Thus condition \ref{voorwaarde1} of definition \ref{def:iso} is satisfied.
 
+Define a module $M_i \subseteq V_{G1}: \{v \in V_{G1}$ $|$ corresponding vertex in $H_1$ has color $i \}$. $\forall a, b \in V_{G1}$ such that $a,b \in M_i$ for some $i$: $\{a,b\} \in E_{G1} \iff \{c,d\} \in E_{H1}$. $c,d$ are the corresponding vertices of resp. $a,b$. $\{c,d\} \in E_{H1} \iff$
+
+
+%$\forall a, b \in V_{G1}$ such that $a \in M_i$ and $b \in M_j$ for some $i,j: i\neq j$:
 
 
 \end{proof}
