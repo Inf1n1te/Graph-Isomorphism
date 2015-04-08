@@ -144,7 +144,7 @@ def getNeighbourColors(v):
 
 def compare(graphlisturl=-1, GI_only=False, gs=-1, preproc=False):
 	print('Now comparing graphs in graphlist ', graphlisturl)
-	if graphlisturl.endswith('.gr'):
+	if not preproc and graphlisturl.endswith('.gr'):
 		gs = [loadgraph(graphlisturl, readlist=False), loadgraph(graphlisturl, readlist=False)]
 	if gs is -1:
 		graphlist = loadgraph(graphlisturl, readlist=True)[0]
@@ -195,7 +195,7 @@ def compare(graphlisturl=-1, GI_only=False, gs=-1, preproc=False):
 
 	printresult(isomorphisms)
 
-	return colordict
+	return
 
 
 def printresult(isomorphims):
