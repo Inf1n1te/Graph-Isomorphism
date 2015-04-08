@@ -98,6 +98,8 @@ def getNeighbourColors(v):
 
 def compare(graphlisturl=-1, GI_only=False, gs=-1, preproc=False):
 	print('Now comparing graphs in graphlist ', graphlisturl)
+	if graphlisturl.endswith('.gr'):
+		gs = [loadgraph(graphlisturl, readlist=False),loadgraph(graphlisturl, readlist=False)]
 
 	if gs is -1:
 		graphlist = loadgraph(graphlisturl, readlist=True)[0]
@@ -116,6 +118,9 @@ def compare(graphlisturl=-1, GI_only=False, gs=-1, preproc=False):
 		colordict = fastrefine(g, preproc=True)
 	else:
 		colordict = fastrefine(g)
+	print(colordict)
+	writeDOT(g, "GI_TestInstancesWeek1/dinges.dot")
+
 	graphcolors = splitColorDict(colordict, g)[0]  # is a list of colordicts
 	isomorphisms = []
 	undecided = []
@@ -353,13 +358,20 @@ def findcomponents(g):
 
 start_time = time.clock()
 
-compare("GI_TestInstancesWeek1/products72.grl", False)  # #aut for product72
-compare("GI_TestInstancesWeek1/torus72.grl", False)  # #aut for torus72
-compare("GI_TestInstancesWeek1/cubes6.grl", True)  # GI for cubes6
-compare("GI_TestInstancesWeek1/bigtrees3.grl", True)  # GI for bigtrees3
 
-comparepreproc("GI_TestInstancesWeek1/cographs1.grl")  # GI for cographs1 with preprocessing
-comparepreproc("GI_TestInstancesWeek1/bigtrees3.grl")  # GI for cographs1 with preprocessing
+# compare("GI_TestInstancesWeek1/basicAut1.gr", False)  # #aut for product72
+compare("GI_TestInstancesWeek1/basicAut2.gr", False)  # #aut for product72
+# compare("GI_TestInstancesWeek1/basicGI1.grl", True)  # #aut for product72
+# compare("GI_TestInstancesWeek1/basicGI2.grl", True)  # #aut for product72
+# compare("GI_TestInstancesWeek1/basicGI3.grl", True)  # #aut for product72
+# compare("GI_TestInstancesWeek1/basicGIAut.grl", True)  # #aut for product72
+# compare("GI_TestInstancesWeek1/basicGIAut.grl", False)  # #aut for product72
+# compare("GI_TestInstancesWeek1/torus72.grl", False)  # #aut for torus72
+# compare("GI_TestInstancesWeek1/cubes6.grl", True)  # GI for cubes6
+# compare("GI_TestInstancesWeek1/bigtrees3.grl", True)  # GI for bigtrees3
+#
+# comparepreproc("GI_TestInstancesWeek1/cographs1.grl")  # GI for cographs1 with preprocessing
+# comparepreproc("GI_TestInstancesWeek1/bigtrees3.grl")  # GI for cographs1 with preprocessing
 
 
 
