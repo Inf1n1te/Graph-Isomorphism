@@ -176,7 +176,7 @@ In line 11-16 a dictionary \emph{falsetwins} is created where the keys are all t
 
 
 \subsubsection{Replacing the twins}
-The algorithm \emph{preprocessing} can be found in appendix \ref{preprocessing}. In line 2 the twins and falsetwins are defined and if there are none the program will terminate. If there are any twins all edges with a head or tail in one of these twins will be deleted. The complexity of this is $O(m +$ number of vertices in (\emph{twins}+\emph{falsetwins}))$ < O (nm)$. Then in line 13-19 all vertices which are in twins or falsetwins will be removed. The complexity of this is $O(n^2)$. In line 20-28 a new colored vertex will be added for each (false) twin $(O(n)$ and finnaly the edges from these vertices will be added ($O(n^2 (n+m)$). The worst case complexity of this algorithm is ($O(n^2 (n+m)$), however in average there are much less (false) twins than vertices (there are at most $n/2$). These twins also have much less than $n$ neighbours.
+The algorithm \emph{preprocessing} can be found in appendix \ref{preprocessing}. In line 2 the twins and falsetwins are defined and if there are none the program will terminate. If there are any twins all edges with a head or tail in one of these twins will be deleted. The complexity of this is $O(m +$ number of vertices in (\emph{twins}+\emph{falsetwins}))$ < O (nm)$. Then in line 13-19 all vertices which are in twins or falsetwins will be removed. The complexity of this is $O(n^2)$. In line 20-26 a new colored vertex will be added for each (false) twin $(O(n)$ and finnaly the edges from these vertices will be added ($O(n^2 (n+m)$). The worst case complexity of this algorithm is ($O(n^2 (n+m)$), however in average there are much less (false) twins than vertices (there are at most $n/2$). These twins also have much less than $n$ neighbours.
 
 %------------------------------------------------
 \section{Proof of Correctness}
@@ -187,15 +187,15 @@ A \emph{colored} graph $G(E,V)$ is a graph where each vertex $v \in V$ has a col
 Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected graphs. A function $f: V_1 \to V_2$ is called a \emph{graph isomorphism} if:
 \begin{compactenum}[\upshape(a)]
 \item $f$ is a bijection. \label{voorwaarde1}
-\item $\forall a, b \in V_1, \{a, b\} \in E_1$ if and only if $\{f(a), f(b)\} \in E_2$.
+\item $\forall a, b \in V_1, \{a, b\} \in E_1$ if and only if $\{f(a), f(b)\} \in E_2$.\label{voorwaarde2}
 \end{compactenum}
 When such a function exists, $G_1$ and $G_2$ are called \emph{isomorphic graphs}. 
 \end{definition}
-\begin{definition}
+\begin{definition}\label{def:coloriso}
 Let $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$ be two undirected colored graphs. A function $f: V_1 \to V_2$ is called a \emph{colored graph isomorphism} if: 
 \begin{compactenum}[\upshape(a)]
-\item $f$ is a graph isomorphism.
-\item $\forall v \in V_1$: $color(v)$ = $color (f(v)$. 
+\item $f$ is a graph isomorphism.\label{voorwaarde4}
+\item $\forall v \in V_1$: $color(v)$ = $color (f(v)$. \label{voorwaarde3}
 \end{compactenum}
 When such a function exists, $G_1$ and $G_2$ are called \emph{colored isomorphic graphs}. 
 \end{definition}
@@ -207,20 +207,33 @@ Let $G_1 = (V_{G1}, E_{G1})$ and $G_2 = (V_{G2}, E_{G2})$ be two undirected  gra
 Graph $G_1$ and $G_2$ are isomorphic $\iff$ Graph $H_1$ and $H_2$ are colored isomorphic.
 \end{theorem}
 \begin{proof}
-$\Leftarrow$:  $\exists$ graph isomorphism $h: H_1 \to H_2$. If $v \in V_{H1}$ has color 0: we define $g(v) = h(v)$.
+%We shall define $f_i$: $G_i\to H_i$ as the transformation descriped above and   and $f_i^{-1}$: $H_i\to G_i$ as the inverse of that transformation. Note that $f_i^{-1}$ maps a vertex with color $\neq$ 0 to a set of twins or falsetwins. Also w.l.o.g we assume $f$ gives color (
+
+
+$\Leftarrow$:  $\exists$ colored graph isomorphism $h: H_1 \to H_2$. If $v \in V_{H1}$ has color 0: we define $g(v) = h(v)$.
 If $v \in V_{H1}$ has color $\neq$ 0, $\exists$ $ w \in V_{H2}$ such that color($v$) = color($w$) (since $H_1$ and $H_2$ are isomorphs). $v$ and $w$ either have resp. corresponding false twinsets \emph{ftw} $\subseteq V_{G1}$ and \emph{ftw2} $\subseteq V_{G2}$ or they have resp. corresponding twinsets \emph{tw} $\subseteq V_{G1}$ and \emph{tw2} $\subseteq V_{G2}$. In the first case $g$ maps each $x \in$ \emph{ftw} to a different $y \in$ \emph{ftw2}. Since they are false twins it doesn't matter which $x$ is mapped to which $y$. In the second case $g$ maps $x \in$ \emph{tw} to $y \in$ \emph{tw2} similarly. 
 
-We want to prove that $g: G_1 \to G_2$ is a graph isomorphism. $V_{H1}$ and $V_{H2}$ have the same size and each $v_1 \in V_{H1}$ corresponds to a $v_2 \in V_{H1}$ with the same color. The colors of $v_1$ and $v_2$ defines the sizes of the corresponding (false) twinsets in resp. $G_{H1}$ and $G_{H2}$, thus $G_{H1}$ and $G_{H2}$ also have the same size. Since $g$ is defined such that it is an injection and $V_{G1}$ and $V_{G2}$ have the same size, $g$ is a bijection \cite{website:proofwiki}. Thus condition \ref{voorwaarde1} of definition \ref{def:iso} is satisfied.
+We want to prove that $g: G_1 \to G_2$ is a graph isomorphism. $V_{H1}$ and $V_{H2}$ have the same size and each $v_1 \in V_{H1}$ corresponds to a $v_2 \in V_{H1}$ with the same color. The colors of $v_1$ and $v_2$ defines the sizes of the corresponding (false) twinsets in resp. $G_{H1}$ and $G_{H2}$, thus $G_{H1}$ and $G_{H2}$ also have the same size. Since $g$ is defined such that it is an injection and $V_{G1}$ and $V_{G2}$ have the same size, $g$ is a bijection \cite{website:proofwiki}. Thus condition \ref{voorwaarde1} of definition \ref{def:iso} is satisfied. 
 
-Define a module $M_i \subseteq V_{G1}: \{v \in V_{G1}$ $|$ corresponding vertex in $H_1$ has color $i \}$. $\forall a, b \in V_{G1}$ such that $a,b \in M_i$ for some $i$: $\{a,b\} \in E_{G1} \iff \{c,d\} \in E_{H1}$. $c,d$ are the corresponding vertices of resp. $a,b$. $\{c,d\} \in E_{H1} \iff \{h(c),h(d)\} \in E_{H2} \iff \{g(a),g(b)\} \in E_{G2}$, because $g(a)$ and $g(b)$ are elements of the corresponding (false) twinset of resp. $c$ and $d$ and all those elements have the same neighbours.
+Define a module $M_i \subseteq V_{G1}: \{v \in V_{G1}$ $|$ corresponding vertex in $H_1$ has color $i \}$. $\forall a, b \in V_{G1}$, $a \in M_i$ and $b$ $\in$ $M_j$ for some $i,j$: 
+\begin{compactenum}
+\item if $i = j$: $\{a,b\} \in E_{G1} \iff \{c,d\} \in E_{H1}$. $c,d$ are the corresponding vertices of resp. $a,b$. $\{c,d\} \in E_{H1} \iff \{h(c),h(d)\} \in E_{H2} \iff \{g(a),g(b)\} \in E_{G2}$, because $g(a)$ and $g(b)$ are elements of the corresponding (false) twinset of resp. $c$ and $d$ and all those elements have the same neighbours. 
+\item if $i \neq j$: If $M_i$ is a false twin, $\{a,b\} \notin E_{G1} $ and $\{g(a),g(b)\} \in E_{G2}$. If $M_j$ is a twin $\{a,b\} \in E_{G1} $ and $\{g(a),g(b)\}\in E_{G2}$. If $i = 0$, the loop consists in $G_1 \iff$ it exists in $H_1 \iff$ it exists in $H_2 \iff$ it exists in $G_2$.
+\end{compactenum} 
+$\forall a, b \in V_{G1}, \{a, b\} \in E_{G1} \iff \{g(a), g(b)\} \in E_{G2}$.
+Thus condition \ref{voorwaarde2} of definition \ref{def:iso} is satisfied and $g$ is a graph isomorphism. 
 
 
-%$\forall a, b \in V_{G1}$ such that $a \in M_i$ and $b \in M_j$ for some $i,j: i\neq j$:
+$\Rightarrow$: $\exists$ graph isomorphism $g: G_1 \to G_2$. $\forall M_i (G_1) \subseteq V_{G1}, M_i (G_2) \subseteq V_{G2}$. The function $h$ maps the corresponding vertex of $M_i (G_1)$ in $H_1$ to the corresponding vertex of $M_i (G_2)$ in $H_2$.
+
+We want to prove that $h: H_1 \to H_2$ is a colored graph isomorphism. It is defined such that it is color preserving, so condition \ref{voorwaarde3} of definition \ref{def:coloriso} is satisfied. For each $M_i (G_1) \subseteq V_{G1}$ $\exists$ $M_i (G_2) \subseteq V_{G2}$ with the same size and each $M_i$ in $G$ is a single vertex in $H$. Thus $V_{H1}$ and $V_{H2}$ have the same size (since $V_{G1}$ and $V_{G2}$ have the same size). Since $G_1$ and $G_2$ are isomorphic, they contain the same modules $M_i$. Thus $h$ can map each corresponding vertex of $M_i (G1)$ to a unique corresponding vertex of $M_i (G2)$. So $h$ is an injection and $V_{H1}$ and $V_{H2}$ have the same size, thus $h$ is also a bijection \cite{website:proofwiki}.
+
+$\forall a, b \in V_{H1}$: color($a$) = i, color($b$) = j, $a$ corresponds to $M_i (G_1)$ and $b$ corresponds to $M_j (G_1)$. If $i=j: M_i$ and $M_j$ can either be the same set of (false) twins or different sets of equal size and both twins or both false twins.  $ \{a, b\} \in E_{H1} \iff \{c,d\} \in E_{G1}, c \in  M_i, d \in  M_j \iff \{g(c),g(d)\} \in E_{G2} \iff \{h(a),h(b)\} \in E_{H2}$. Because $h(a)$ and $h(b)$ corresponds to resp. $g(c)$ and $g(d)$. By definition \ref{def:iso}, $h$ is graph isomorphism. Condition \ref{voorwaarde4} of definition \ref{def:coloriso} is satisfied and $h$ is a colored graph isomorphism.
+
+
 
 
 \end{proof}
-
-%bron http://pages.cs.wisc.edu/~dieter/Papers/3gi.pdf
 
 %------------------------------------------------
 \section{Results}
@@ -241,6 +254,7 @@ From this, it can be concluded that using preprocessing methods does indeed redu
 %----------------------------------------------------------------------------------------
 
 \printbibliography
+%bibliography{references}
 
 %----------------------------------------------------------------------------------------
 
@@ -290,7 +304,7 @@ def preprocessing(g):
 		deledges = []
 		for i, e in enumerate(g._E):
 			if any(e._tail in ftwin for ftwin in falsetwins) or any(e._head in ftwin for ftwin in falsetwins) or any(e._tail in twin for twin in twins) or any(e._head in twin for twin in twins):
-				deledges.append(i)
+		deledges.append(i)
 		deledges.sort(reverse=True)
 		for i in deledges:
 			g._E.pop(i)
@@ -302,14 +316,12 @@ def preprocessing(g):
 		for i in delnodes:
 			g._V.pop(i)
 		combined = falsetwinsN + twinsN
-		mx = 0
 		for i, twin in enumerate(falsetwins):
 			g.addvertexobject(twin[0], True, len(twin))
 			twin[0].colornum = -twin[0].twinsize
-			mx = max(mx, len(twin))
 		for i, twin in enumerate(twins):
-			g.addvertexobject(twin[0], True, len(twin) + mx)
-			twin[0].colornum = -twin[0].twinsize - mx
+			g.addvertexobject(twin[0], True, len(twin))
+			twin[0].colornum = twin[0].twinsize
 		for i, twin in enumerate(falsetwins + twins):
 			for j in combined[i]:
 				if j in g.V() and twin[0] != j and not g.findedge(twin[0],k)
@@ -343,7 +355,7 @@ n & time \\
 34 & 0.0017\\
 66 & 0.0032\\
 130 & 0.0071\\
-258 & 0.161\\
+258 & 0.0161\\
 514 & 0.0344\\
 1026 & 0.0805\\
 2050 & 0.2019\\
