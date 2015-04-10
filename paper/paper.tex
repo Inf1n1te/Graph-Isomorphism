@@ -128,7 +128,7 @@ The preprocessing part are algorithms that look at the graphs before determining
 
 The aim of this research paper is to determine whether certain preprocessing methods significantly reduce the time required to check whether two graphs are isomorphic. At the core, two cases will be compared: a basic case without preprocessing, and a case with preprocessing. 
 
-For this paper, the time complexity of the algorithms will be calculated. The difference in performance between the cases will be shown by computational results as well as the calculated time complexities.
+For this paper, the time complexity of the algorithms will be calculated. The difference in performance between the cases will be shown by computational results.
 
 This paper will give a description of the algorithms used for preprocessing, as well as proof of correctness. The algorithms used to check for isomorphisms will be left out of consideration.
 
@@ -167,16 +167,16 @@ To solve the graph isomorphism problem more efficiently, we use preprocessing al
 \end{compactenum}
 
 \subsection{Implementation}
-The algorithm is divided into two subalgorithms. The subalgorithm \emph{gettwins} finds all twins and false twins and the subalgorithm \emph{preprocessing} replaces each (false) twin by a single colored vertex as described above. In the following subsections these algorithms and their worst case time complexities will be analyzed. The elementary operation is the comparison of two elements. In those subsections $n$ is the number of vertices of a graph $G(V,E)$ and $m$ is the number of edges of that graph.
+The algorithm is divided into two subroutines. The subroutine \emph{gettwins} finds all twins and false twins and the subroutine \emph{preprocessing} replaces each (false) twin by a single colored vertex as described above. In the following subsections these algorithms and their worst case time complexities will be analyzed. The elementary operation is the comparison of two elements. In those subsections $n$ is the number of vertices of a graph $G(V,E)$ and $m$ is the number of edges of that graph.
 
 \subsubsection{Finding twins and false twins}
-The algorithm \emph{gettwins} can be found in appendix \ref{gettwins}. In line 2-10 two lists, \emph{nbs} and \emph{nbs2}, are created. Both lists contains $n$ sorted sublists. In the former list each sublist contains all the neighbours of a node and in the latter each sublist contains all the neighbours of a node and also the node itself. Finding all the neighbours only require going though all the edges once, so the time complexity is $O(m)$. The sorting algorithm has time complexity $O(n \log n)$, but since it's in a for loop of length $n$ the overall time complexity becomes $O(n^2 \log n)$. 
+The subroutine \emph{gettwins} can be found in appendix \ref{gettwins}. In line 2-10 two lists, \emph{nbs} and \emph{nbs2}, are created. Both lists contains $n$ sorted sublists. In the former list each sublist contains all the neighbours of a node and in the latter each sublist contains all the neighbours of a node and also the node itself. Finding all the neighbours only require going though all the edges once, so the time complexity is $O(m)$. The sorting algorithm has time complexity $O(y \log y)$, $y=$max(len($x$)), $x \in $ \emph{nbs} < $O(n \log n)$, but since it's in a for loop of length $n$ the overall time complexity becomes at most $O(n^2 \log n)$. 
 
-In line 11-16 a dictionary \emph{falsetwins} is created where the keys are all the items from \emph{nbs} and the values a list of the corresponding vertices. Since \emph{nbs} has length $n$ and \emph{falsetwins} has at most length $n$, the time complexity of this is $O(n^2)$. In line 23 the items in the \emph{falsetwins} with only one vertex as value are removed. This is $O(n)$, since len() has $O(1)$.\cite{website:pythonTimeComplexity} The remaining values of the dictionary \emph{falsetwins} are now all the sets of false twins as defined in definition \ref{deffalsetwins}. A similar dictionary \emph{twins} is created where the keys are the items from \emph{nbs2}. The time complexity of \textit{gettwins} is thus $O(n^2 \log n)$.
+In line 11-16 a dictionary \emph{falsetwins} is created where the keys are all the items from \emph{nbs} and the values a list of the corresponding vertices. The worst case time complexity of checking if an item is in a dictionary is $O(k+l)$ where $k$ is the number of keys and $l$ the length of the key which is a tuple. The average case is however only $O(l)$ \cite{website:pythonTimeComplexity}.  $l\leq n$ and $k\leq n$, and this dictionary operation is in a for loop of length $n$, so the worst case time complexity of this is $O(n^3)$, but the average case is $O(n^2)$. In line 23 the items in the \emph{falsetwins} with only one vertex as value are removed. This is $O(n)$, since len() has $O(1)$.\cite{website:pythonTimeComplexity} The remaining values of the dictionary \emph{falsetwins} are now all the sets of false twins as defined in definition \ref{deffalsetwins}. A similar dictionary \emph{twins} is created where the keys are the items from \emph{nbs2}. The worst case time complexity of \textit{gettwins} is thus $O(n^3)$.
 
 
 \subsubsection{Replacing the twins}
-The algorithm \emph{preprocessing} can be found in appendix \ref{preprocessing}. In line 2 the twins and falsetwins are defined and if there are none the program will terminate. If there are any twins all edges with a head or tail in one of these twins will be deleted. The complexity of this is $O(m +$ number of vertices in (\emph{twins}+\emph{falsetwins}))$ < O (nm)$. Then in line 13-19 all vertices which are in twins or falsetwins will be removed. The complexity of this is $O(n^2)$. In line 20-26 a new colored vertex will be added for each (false) twin $(O(n)$ and finnaly the edges from these vertices will be added ($O(n^2 (n+m)$). The worst case complexity of this algorithm is ($O(n^2 (n+m)$), however in average there are much less (false) twins than vertices (there are at most $n/2$). These twins also have much less than $n$ neighbours.
+The algorithm \emph{preprocessing} can be found in appendix \ref{preprocessing}. In line 2 the twins and falsetwins are defined and if there are none the program will terminate. If there are any twins all edges with a head or tail in one of these twins will be deleted. The complexity of this is $O(mv) < O (nm)$, where $v$ is the number of vertices in (\emph{twins}+\emph{falsetwins}). Then in line 13-19 all vertices which are in twins or falsetwins will be removed. The complexity of this is $O(nv) < O(n^2)$. In line 20-26 a new colored vertex will be added for each (false) twin $(O(n))$ and finally the edges from these vertices will be added ($O(n^2 (n+m))$). The worst case time complexity of this algorithm is ($O(n^2 (n+m)$), but if there are only $v$ vertices which are \emph{twins} or \emph{falsetwins} and they have maximally $w$ neighbours, the complexity is $O(vw) (n+m)$.
 
 %------------------------------------------------
 \section{Proof of Correctness}
@@ -224,7 +224,7 @@ $\forall a, b \in V_{G1}, \{a, b\} \in E_{G1} \iff \{g(a), g(b)\} \in E_{G2}$.
 Thus condition \ref{voorwaarde2} of definition \ref{def:iso} is satisfied and $g$ is a graph isomorphism. 
 
 
-$\Rightarrow$: $\exists$ graph isomorphism $g: G_1 \to G_2$. $\forall M_i (G_1) \subseteq V_{G1}, M_i (G_2) \subseteq V_{G2}$. The function $h$ maps the corresponding vertex of $M_i (G_1)$ in $H_1$ to the corresponding vertex of $M_i (G_2)$ in $H_2$.
+$\Rightarrow$: $\exists$ graph isomorphism $g: G_1 \to G_2$. $\forall M_i (G_1) \subseteq V_{G1}, M_i (G_2) \subseteq V_{G2}$. The function $h$ maps the corresponding vertex of $M_i (G_1)$ in $H_1$ (with color i) to the corresponding vertex of $M_i (G_2)$ in $H_2$ (with color i).
 
 We want to prove that $h: H_1 \to H_2$ is a colored graph isomorphism. It is defined such that it is color preserving, so condition \ref{voorwaarde3} of definition \ref{def:coloriso} is satisfied. For each $M_i (G_1) \subseteq V_{G1}$ $\exists$ $M_i (G_2) \subseteq V_{G2}$ with the same size and each $M_i$ in $G$ is a single vertex in $H$. Thus $V_{H1}$ and $V_{H2}$ have the same size (since $V_{G1}$ and $V_{G2}$ have the same size). Since $G_1$ and $G_2$ are isomorphic, they contain the same modules $M_i$. Thus $h$ can map each corresponding vertex of $M_i (G1)$ to a unique corresponding vertex of $M_i (G2)$. So $h$ is an injection and $V_{H1}$ and $V_{H2}$ have the same size, thus $h$ is also a bijection \cite{website:proofwiki}.
 
@@ -238,9 +238,11 @@ $\forall a, b \in V_{H1}$: color($a$) = i, color($b$) = j, $a$ corresponds to $M
 %------------------------------------------------
 \section{Results}
 
-The results of the experiment are shown in Table \ref{table:results}. Seven sets of graphs were tested for isomorphisms, and three cases the computation times are significantly different. In the other cases, the preprocessing time is relatively very small. This is because the low complexity of \emph{gettwins} and the fact that \emph{preprocessing} does nothing when there are no (false) twins. The difference in computation time is not obviously related to the preprocessing time, as the preprocessing time is not equal to the difference in computation times. This is most likely due to the circumstances of both executions of the algorithms did not occur under the exact same circumstances, as it was impossible to ensure the conditions were the same.  
+The results of the experiment are shown in table \ref{table:results}. Seven sets of graphs were tested for isomorphisms, and three cases the computation times are significantly different. In the other cases, the preprocessing time is relatively very small. This is because the low complexity of \emph{gettwins} and the fact that \emph{preprocessing} does nothing when there are no (false) twins. The difference in computation time is not obviously related to the preprocessing time, as the preprocessing time is not equal to the difference in computation times. This is most likely due to the circumstances of both executions of the algorithms did not occur under the exact same circumstances, as it was impossible to ensure the conditions were the same.  
 
 Due to the rather large difference in computation times relative to the preprocessing time, only significant differences in computation time will be used as indication of increase or decrease in speed.
+
+The preprocessing times for single graphs with $n$ nodes can be found in table \ref{table:results2}. These graphs contain no (false) twins, so these times are  only of the subroutine \emph{gettwins}. This is the extra computation time in case the preprocessing does nothing. 
 
 %------------------------------------------------
 \section{Conclusions}
@@ -261,7 +263,6 @@ From this, it can be concluded that using preprocessing methods does indeed redu
 
 
 \end{multicols}
-\newpage
 \begin{appendices}
 
 \section{Python code}
@@ -330,8 +331,8 @@ def preprocessing(g):
 	return g, lftwins, ltwins
 \end{lstlisting}
 
-\section{Table with computation times}
-\begin{table}[h]
+\section{Tables with computation times}
+\begin{table}[h]\centering
 \begin{tabular}{c|C{0.3\textwidth}|C{0.3\textwidth}|c}
 Graph & Computation time (without preprocessing) & Computation time (with preprocessing) & Preprocessing time \\
 \hline
@@ -346,9 +347,8 @@ torus72 & 3.5590 sec & 3.6059 sec & 0.0106 sec\\
 \caption{Table showing the result from the experiment. For each set of graphs, it shows the computation time without and with preprocessing time, as well as the time it took to perform the preprocessing.}
 \label{table:results}
 \end{table}
+\begin{table}[h]\centering
 
-\section{Complexity}
-\begin{table}[h]
 \begin{tabular}{c|c}
 n & time \\
 \hline
@@ -363,8 +363,8 @@ n & time \\
 8194 & 2.7102
 
 \end{tabular}
-\caption{Table showing the result from the experiment. For each set of graphs, it shows the computation time without and with preprocessing time, as well as the time it took to perform the preprocessing.}
-\label{table:results}
+\caption{Table showing various preprocessing times, for graphs with $n$ nodes and no (false) twins.}
+\label{table:results2}
 \end{table}
 \end{appendices}
 
